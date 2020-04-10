@@ -1,3 +1,4 @@
+const path = require('path')
 module.exports = {
     client: 'pg',
     connection: process.env.PG_CONNECTION_STRING,
@@ -6,9 +7,9 @@ module.exports = {
       max: 2
     },
     migrations: {
-      directory: __dirname + '/knex/migrations',
+      directory: path.join(__dirname, '/knex/migrations'),
     },
     seeds: {
-      directory: __dirname + '/knex/seeds'
+      directory: path.join(__dirname, '/knex/seeds'),
     }
   }

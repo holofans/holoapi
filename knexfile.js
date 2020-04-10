@@ -1,4 +1,5 @@
 // Update with your config settings.
+const path = require('path')
 
 module.exports = {
 
@@ -12,11 +13,10 @@ module.exports = {
       max: 5
     },
     migrations: {
-      directory: __dirname + '/knex/migrations',
+      directory: path.join(__dirname, '/knex/migrations'),
     },
     seeds: {
-      directory: __dirname + '/knex/seeds'
+      directory: path.join(__dirname, '/knex/seeds')
     }
   }
-
 };
