@@ -43,3 +43,11 @@ host    all             all             127.0.0.1/32            trust
 change the pg_hba.conf for postgres from `md5` to `trust` to give pg permissions. This allows SSH tunneling to log in to postgres.
 
 Connection instructions: set up SSH tunnel using your ssh-key or it can come with any db administration tools (tableplus, pgAdmin4). Then use `holotools` user to log in.
+
+
+Installing Memcached: [Detailed Guide](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-memcached-on-ubuntu-16-04)
+```
+$ sudo apt-get install memcached
+$ sudo apt-get install libmemcached-tools
+```
+this sets up memcached service at localhost:11211
