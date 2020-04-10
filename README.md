@@ -2,9 +2,9 @@
 Monolith tools and services in consuming Hololive content
 
 
-## development
+## Development
 
-## deployment
+## Deployment
 
 Set up deployment of holotools-api by using the following deployment methods:
 
@@ -13,7 +13,7 @@ Set up deployment of holotools-api by using the following deployment methods:
   - or if you'd rather not deploy from local, and would like it semi-automated, use a webhook: https://github.com/adnanh/webhook
 
 
-## deployment setup on Digital Ocean
+## Deployment setup on Digital Ocean
 
 Setting up a dev user account
 ```
@@ -27,22 +27,22 @@ Setting up postgresql
     $  sudo apt update && sudo apt install postgresql postgresql-contrib
     $  sudo -i -u postgres
 
-    Create a new role:
+    #  Create a new user in postgres with same username as the dev user (holotools):
     $  createuser --interactive
-    and set it up with the holotools user.
+
+    #  Set it up with the holotools user.
     $  createdb holotools
-    and connect the holotools user to access the holotools db.
 ```
 
-Now you have `holotools` user which can modify `holotools` database.
+Now you have `holotools` user which can modify `holotools` database without pg auth.
 
-For testing connections from outside:
+For testing connections from outside, modify the pg_hba.conf for your postgres install:
 ```
 host    all             all             127.0.0.1/32            trust
 ``` 
-change the pg_hba.conf for postgres from `md5` to `trust` to give pg permissions. This allows SSH tunneling to log in to postgres.
+change the pg_hba.conf for localhost (127.0.0.1/32) from `md5` to `trust` to give pg permissions. This allows SSH tunneling to log in to postgres.
 
-Connection instructions: set up SSH tunnel using your ssh-key or it can come with any db administration tools (tableplus, pgAdmin4). Then use `holotools` user to log in.
+To connect to postgres from external: set up SSH tunnel `-L 9999:localhost:5432` or, use SSH-tunnel connection option bundled with any db administration tools (tableplus, pgAdmin4). Then use `holotools` user to log in. No db password is needed in this setup, but don't open up the db to external or security issues may arise.
 
 
 Installing Memcached: [Detailed Guide](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-memcached-on-ubuntu-16-04)
@@ -50,4 +50,4 @@ Installing Memcached: [Detailed Guide](https://www.digitalocean.com/community/tu
 $ sudo apt-get install memcached
 $ sudo apt-get install libmemcached-tools
 ```
-this sets up memcached service at localhost:11211, well, it's not daemonized, so not running exactly, but we can set it up to run.
+This sets up memcached service at localhost:11211, well, it's not daemonized.
