@@ -23,7 +23,6 @@ CREATE TABLE "video" (
   "liveSchedule" text,
   "liveStart" timestamp,
   "liveEnd" timestamp,
-  PRIMARY KEY ("videoId")
 );
 
 CREATE TABLE "comments" (

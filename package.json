@@ -10,7 +10,9 @@
   },
   "scripts": {
     "knex": "knex",
-    "db-init": "npm run knex migrate:latest",
+    "migrate": "npm run knex migrate:latest",
+    "rollback": "npm run knex migrate:rollback",
+    "new-migration": "npm run knex migrate:make ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
