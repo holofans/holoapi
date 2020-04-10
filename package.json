@@ -7,11 +7,10 @@
     "pg": "^8.0.2"
   },
   "devDependencies": {
-    "sqlite3": "^4.1.1"
   },
   "scripts": {
     "knex": "knex",
-    "db-init": "knex migrate:latest",
+    "db-init": "npm run knex migrate:latest",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
