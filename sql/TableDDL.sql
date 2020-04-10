@@ -5,7 +5,7 @@ CREATE TABLE "channel" (
   "bbSpaceId" text,
   "name" text,
   "description" text,
-  "publishedAt" datetime,
+  "publishedAt" timestamp,
   "thumbnail" text,
   "ytUploadsId" text,
   "bbRoomId" text,
@@ -19,10 +19,10 @@ CREATE TABLE "video" (
   "channelId" text,
   "title" text,
   "description" text,
-  "publishedAt" datetime,
+  "publishedAt" timestamp,
   "liveSchedule" text,
-  "liveStart" datetime,
-  "liveEnd" datetime,
+  "liveStart" timestamp,
+  "liveEnd" timestamp,
   PRIMARY KEY ("videoId")
 );
 
