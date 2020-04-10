@@ -50,4 +50,4 @@ Installing Memcached: [Detailed Guide](https://www.digitalocean.com/community/tu
 $ sudo apt-get install memcached
 $ sudo apt-get install libmemcached-tools
 ```
-this sets up memcached service at localhost:11211
+this sets up memcached service at localhost:11211, well, it's not daemonized, so not running exactly, but we can set it up to run.
