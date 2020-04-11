@@ -1,5 +1,5 @@
 {
-  "name": "holotools-services",
+  "name": "holoapi",
   "version": "1.0.0",
   "description": "Monolith tools and services in consuming Hololive content",
   "dependencies": {
@@ -17,12 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/holotools/holotools-api.git"
+    "url": "git+https://github.com/holofans/holoapi.git"
   },
   "author": "",
   "license": "GPL v3",
   "bugs": {
-    "url": "https://github.com/holotools/holotools-api/issues"
+    "url": "https://github.com/holofans/holoapi/issues"
   },
-  "homepage": "https://github.com/holotools/holotools-api#readme"
+  "homepage": "https://github.com/holofans/holoapi#readme"
 }

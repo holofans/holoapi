@@ -1,0 +1,22 @@
+{
+  "application": {
+    "crawlCommentsAge": 172800
+  },
+  "channels": [
+    
+  ],
+  "timings": {
+    "crawl-channels": "0 0 0 * * *",
+    "crawl-videos": "0 * * * * *",
+    "videos-feed": "0 */2 * * * *",
+    "videos-info": "59 */2 * * * *",
+    "videos-live": "30 */2 * * * *",
+    "crawl-comments": "0 */5 * * * *"
+  }
+}
+
+
+
+
+
+
