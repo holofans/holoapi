@@ -1,6 +1,7 @@
 
 exports.up = async function(knex) {
-  const rawSQL = [`CREATE TABLE "channel" (
+  const rawSQL = [
+    `CREATE TABLE "channel" (
     "id" text PRIMARY KEY,
     "type" text,
     "ytChannelId" text,
@@ -13,9 +14,8 @@ exports.up = async function(knex) {
     "bbRoomId" text,
     "views" int,
     "subscribers" int
-  );`
-  ,
-  `CREATE TABLE "video" (
+  );`,
+    `CREATE TABLE "video" (
     "videoId" text PRIMARY KEY,
     "type" text,
     "channelId" text,
@@ -25,26 +25,22 @@ exports.up = async function(knex) {
     "liveSchedule" text,
     "liveStart" timestamp,
     "liveEnd" timestamp
-  );`
-  ,
-  `CREATE TABLE "comments" (
+  );`,
+    `CREATE TABLE "comments" (
     "videoId" text,
     "videoTime" int,
     "message" text
-  );`
-  ,
-  `ALTER TABLE "video" ADD FOREIGN KEY ("channelId") REFERENCES "channel" ("id");`
-  ,
-  `ALTER TABLE "comments" ADD FOREIGN KEY ("videoId") REFERENCES "video" ("videoId");`
-    ,
-  `CREATE UNIQUE INDEX ON "channel" ("id");`
-  ,
-  `CREATE INDEX ON "video" ("channelId");`,
-  `CREATE INDEX ON "video" ("publishedAt");`]
-  return rawSQL.reduce((prev, curSQL) => prev.then(() => knex.raw(curSQL)), Promise.resolve())
+  );`,
+    `ALTER TABLE "video" ADD FOREIGN KEY ("channelId") REFERENCES "channel" ("id");`,
+    `ALTER TABLE "comments" ADD FOREIGN KEY ("videoId") REFERENCES "video" ("videoId");`,
+    `CREATE UNIQUE INDEX ON "channel" ("id");`,
+    `CREATE INDEX ON "video" ("channelId");`,
+    `CREATE INDEX ON "video" ("publishedAt");`,
+  ];
+  return rawSQL.reduce((prev, curSQL) => prev.then(() => knex.raw(curSQL)), Promise.resolve());
   // knex.raw(rawSQL)
 };
 
 exports.down = function(knex) {
-  
+
 };
