@@ -2,7 +2,7 @@
   "name": "holoapi-crawler-youtube",
   "scripts": {
     "start": "node ./src",
-    "dev": "cross-env NODE_ENV=development nodemon ./src"
+    "dev": "nodemon ./src"
   },
   "dependencies": {
     "axios": "^0.19.2",

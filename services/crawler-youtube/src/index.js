@@ -2,7 +2,7 @@ const config = require('config');
 // const schedule = require('node-schedule-tz');
 const log = require('./modules/logger');
 
-// const crawlChannels = require('./tasks/crawl-channels');
+// const channelInfo = require('./tasks/channel-info');
 // const crawlVideos = require('./tasks/crawl-videos');
 // const videosFeed = require('./tasks/videos-feed');
 // const videosInfo = require('./tasks/videos-info');
@@ -11,9 +11,9 @@ const log = require('./modules/logger');
 
 log.info(`RUNNING YOUTUBE CRAWLER | ${config.env} | ${new Date().toISOString()}`);
 
-// // Update channel information and get today's stats
-// schedule.scheduleJob(config.timings['crawl-channels'], function() {
-//   crawlChannels();
+// Update channel information and get today's stats
+// schedule.scheduleJob('channel-info', config.timings['channel-info'], 'Asia/Tokyo', () => {
+//   channelInfo();
 // });
 
 // // Gets all videos from all channels since the beginning
