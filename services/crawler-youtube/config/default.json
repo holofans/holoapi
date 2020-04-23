@@ -1,4 +1,5 @@
 {
+  "env": "default",
   "application": {
     "crawlCommentsAge": 172800
   },
