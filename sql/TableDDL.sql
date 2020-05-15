@@ -22,7 +22,7 @@ CREATE TABLE "video" (
   "publishedAt" timestamp,
   "liveSchedule" text,
   "liveStart" timestamp,
-  "liveEnd" timestamp,
+  "liveEnd" timestamp
 );
 
 CREATE TABLE "comments" (
