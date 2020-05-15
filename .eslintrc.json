@@ -5,7 +5,7 @@
     "node": true
   },
   "extends": [
-    "google"
+    "airbnb-base"
   ],
   "globals": {
     "Atomics": "readonly",
@@ -15,9 +15,5 @@
     "ecmaVersion": 2018
   },
   "rules": {
-    "max-len": 0,
-    "no-unused-vars": 0,
-    "linebreak-style": "off",
-    "guard-for-in": "warn"
   }
 }

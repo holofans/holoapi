@@ -7,7 +7,7 @@
     
   ],
   "timings": {
-    "crawl-channels": "0 0 0 * * *",
+    "channel-info": "0 0 0 * * *",
     "crawl-videos": "0 * * * * *",
     "videos-feed": "0 */2 * * * *",
     "videos-info": "59 */2 * * * *",
