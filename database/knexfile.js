@@ -5,30 +5,21 @@ module.exports = {
   development: {
     client: 'pg',
     connection: process.env.PG_CONNECTION_STRING,
-    pool: {
-      min: 1,
-      max: 2,
-    },
     migrations: {
-      directory: path.join(__dirname, '/knex/migrations'),
+      directory: path.join(__dirname, 'migrations'),
     },
     seeds: {
-      directory: path.join(__dirname, '/knex/seeds'),
+      directory: path.join(__dirname, 'seeds'),
     },
   },
-  // staging: {...}, (what staging?)
   production: {
     client: 'pg',
     connection: 'postgresql://holotools@localhost:5432/holotools',
-    pool: {
-      min: 1,
-      max: 5,
-    },
     migrations: {
-      directory: path.join(__dirname, '/knex/migrations'),
+      directory: path.join(__dirname, 'migrations'),
     },
     seeds: {
-      directory: path.join(__dirname, '/knex/seeds'),
+      directory: path.join(__dirname, 'seeds'),
     },
   },
 };
