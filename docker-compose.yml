@@ -4,6 +4,8 @@ services:
   postgres:
     container_name: hf-postgres
     image: postgres:12.3
+    volumes:
+      - /database/pgdata:/data/postgres
     environment:
       POSTGRES_USER: holotools
       POSTGRES_PASSWORD: ux6LxHmQG6Rg3Dfs
@@ -17,6 +19,8 @@ services:
   pgadmin:
     container_name: hf-pgadmin
     image: dpage/pgadmin4
+    volumes:
+      - ./database/pgadmin:/root/.pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@holotools.app
       PGADMIN_DEFAULT_PASSWORD: PNvM5cX8NfK6yFU7
