@@ -14,15 +14,13 @@
     "knex": "^0.20.13",
     "pg": "^8.0.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/holofans/holoapi.git"
-  },
-  "author": "",
-  "license": "GPL v3",
-  "bugs": {
-    "url": "https://github.com/holofans/holoapi/issues"
-  },
-  "homepage": "https://github.com/holofans/holoapi#readme"
+  }
 }
