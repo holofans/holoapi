@@ -3,7 +3,7 @@ version: '3.0'
 services:
   postgres:
     container_name: hf-postgres
-    image: postgres
+    image: postgres:12.3
     environment:
       POSTGRES_USER: holotools
       POSTGRES_PASSWORD: ux6LxHmQG6Rg3Dfs
@@ -35,8 +35,10 @@ services:
     volumes:
       - ./:/usr/src/app
     environment:
-      - NODE_ENV=docker
+      - NODE_ENV=development
       - NPM_CONFIG_LOGLEVEL=silent
+      - POSTGRES_USER=holotools
+      - POSTGRES_PASSWORD=ux6LxHmQG6Rg3Dfs
     networks:
       holofans_network:
         ipv4_address: 192.168.106.103
