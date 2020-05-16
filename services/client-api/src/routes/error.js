@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const {log} = require('../library');
+// const {log} = require('../library');
 
 const router = new Router();
 
@@ -10,7 +10,7 @@ router.use((req, res) => {
 
 // Default 404 Handler
 router.use((err, req, res, next) => {
-  log.error('Error', err);
+  // log.error('Error', err);
   res.status(500).send({error: err.message}).end();
 });
 

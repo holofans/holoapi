@@ -1,0 +1,52 @@
+version: '3.0'
+
+services:
+  postgres:
+    container_name: hf-postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: holotools
+      POSTGRES_PASSWORD: ux6LxHmQG6Rg3Dfs
+      PGDATA: /data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      holofans_network:
+        ipv4_address: 192.168.106.101
+
+  pgadmin:
+    container_name: hf-pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@holotools.app
+      PGADMIN_DEFAULT_PASSWORD: PNvM5cX8NfK6yFU7
+    ports:
+      - "2334:80"
+    networks:
+      holofans_network:
+        ipv4_address: 192.168.106.102
+
+  holoapi:
+    container_name: hf-holoapi
+    build: ./
+    image: holofans/holoapi
+    ports:
+      - "2434:8081"
+    volumes:
+      - ./:/usr/src/app
+    environment:
+      - NODE_ENV=docker
+      - NPM_CONFIG_LOGLEVEL=silent
+    networks:
+      holofans_network:
+        ipv4_address: 192.168.106.103
+
+networks:
+  holofans_network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 192.168.106.0/24
