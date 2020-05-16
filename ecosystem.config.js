@@ -3,6 +3,7 @@ module.exports = {
     {
       name: 'client-api',
       script: './services/client-api/src/index.js',
+      watch: ['services'],
       env: {
         NODE_ENV: 'development',
       },

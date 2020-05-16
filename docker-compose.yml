@@ -41,6 +41,7 @@ services:
     environment:
       - NODE_ENV=development
       - NPM_CONFIG_LOGLEVEL=silent
+      - SERVER_PORT=8081
       - POSTGRES_USER=holotools
       - POSTGRES_PASSWORD=ux6LxHmQG6Rg3Dfs
     networks:

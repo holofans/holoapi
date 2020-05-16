@@ -7,8 +7,8 @@ const helmet = require('helmet');
 const app = express();
 app.use(helmet());
 app.use(cors());
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json({strict: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ strict: false }));
 
 const routesSystem = require('./routes/system');
 const routesError = require('./routes/error');
@@ -18,7 +18,7 @@ app.use(routesSystem);
 app.use(routesError);
 
 app.listen(process.env.SERVER_PORT, () => {
-  console.log('HOLOAPI | %d', process.env.SERVER_PORT);
+  console.log('HOLOAPI | %s | %d', process.env.NODE_ENV, process.env.SERVER_PORT);
   
   // log.info('HOLOTOOLS WEB | :%d | %s', process.env.SERVER_PORT, process.env.NODE_ENV);
 });
