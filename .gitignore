@@ -104,5 +104,6 @@ dist
 .tern-port
 
 # Custom
+gcp-key.json
 database/pgdata
 database/pgadmin
