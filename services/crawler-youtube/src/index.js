@@ -1,43 +1,56 @@
-const config = require('config');
-const schedule = require('node-schedule');
+const moment = require('moment-timezone');
+const schedule = require('node-schedule-tz');
 
-const crawlChannels = require('./tasks/crawl-channels');
-const crawlVideos = require('./tasks/crawl-videos');
-const videosFeed = require('./tasks/videos-feed');
-const videosInfo = require('./tasks/videos-info');
-const videosLive = require('./tasks/videos-live');
-const crawlComments = require('./tasks/crawl-comments');
+const { log } = require('./modules');
+// const channels = require('./tasks/channels');
+// const videoListAPI = require('./tasks/video-list-api')
+// const videoListFeed = require('./tasks/video-list-feed')
+// const videoListScrape = require('./tasks/video-list-scrape')
+// const videoInfoAPI = require('./tasks/video-info-api')
+// const videoStatusAPI = require('./tasks/video-status-api')
+// const videoStatusHeart = require('./tasks/video-status-heart')
+// const comments = require('./tasks/comments')
 
-const GCP_AUTH = JSON.parse(process.env.GCP_AUTH);
+const { env } = process;
 
-console.log('RUNNING YOUTUBE CRAWLER', process.env.NODE_ENV, new Date().toString(), GCP_AUTH.type);
+log.info('YOUTUBE CRAWLER | %s | %s', env.NODE_ENV, moment().format('YYYY-MM-DD HH:mm:ss ZZ'));
 
 // Update channel information and get today's stats
-schedule.scheduleJob(config.timings['crawl-channels'], function() {
-  crawlChannels();
+schedule.scheduleJob('channels', env.SCHEDULE_CHANNEL, 'Asia/Tokyo', () => {
+  // channels();
 });
 
-// Gets all videos from all channels since the beginning
-// schedule.scheduleJob(config.timings['crawl-videos'], function(){
-//   crawlVideos()
+// Run only at the beginning to get all past videos
+// schedule.scheduleJob('video-list-api', config.timings['video-list-api'], 'Asia/Tokyo', function(){
+//   videoListAPI()
 // })
 
 // Gets latest videos from each channel through YouTube XML feed
-schedule.scheduleJob(config.timings['videos-feed'], function() {
-  videosFeed();
-});
+// schedule.scheduleJob('video-list-feed', config.timings['video-list-feed'], 'Asia/Tokyo', function(){
+//   videoListFeed()
+// })
+
+// Gets latest videos from each channel through web scraping
+// schedule.scheduleJob('video-list-scrape', config.timings['video-list-scrape'], 'Asia/Tokyo', function(){
+//   videoListScrape()
+// })
 
 // Checks the status of newly added videos if they're past, upcoming, or live
-schedule.scheduleJob(config.timings['videos-info'], function() {
-  videosInfo();
-});
+// schedule.scheduleJob('video-info-api', config.timings['video-info-api'], 'Asia/Tokyo', function(){
+//   videoInfoAPI()
+// })
+
+// Checks status of known live videos using YouTube Data API
+// schedule.scheduleJob('video-status-api', config.timings['video-status-api'], 'Asia/Tokyo', function(){
+//   videoStatusAPI()
+// })
 
 // Checks status of known live videos using heartbeat
-schedule.scheduleJob(config.timings['videos-live'], function() {
-  videosLive();
-});
+// schedule.scheduleJob('video-status-heart', config.timings['video-status-heart'], 'Asia/Tokyo', function(){
+//   videoStatusHeart()
+// })
 
 // Gets comments from videos to check for timestamps
 // schedule.scheduleJob(config.timings['crawl-comments'], function(){
-//   crawlComments()
+//   comments()
 // })

@@ -6,13 +6,12 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
-    "config": "^3.3.1",
-    "cross-env": "^7.0.2",
+    "dotenv": "^8.2.0",
     "googleapis": "^48.0.0",
     "knex": "^0.20.15",
     "moment-timezone": "^0.5.29",
-    "mysql": "^2.18.1",
     "node-schedule-tz": "^1.2.1-4",
+    "pg": "^8.2.1",
     "winston": "^3.2.1"
   },
   "devDependencies": {
