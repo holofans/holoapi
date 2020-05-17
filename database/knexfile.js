@@ -5,10 +5,10 @@ module.exports = {
     client: 'pg',
     version: '12.3',
     connection: {
-      host: 'postgres',
+      host: process.env.POSTGRES_HOST,
       user: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
-      database: 'holotools',
+      database: process.env.POSTGRES_DBNAME,
     },
     migrations: {
       directory: path.join(__dirname, 'migrations'),
