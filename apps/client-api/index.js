@@ -2,7 +2,10 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
-// const {env, log, settings} = require('./library');
+const moment = require('moment-timezone');
+const { log } = require('../../library');
+
+const { env } = process;
 
 const app = express();
 app.use(helmet());
@@ -18,6 +21,5 @@ app.use(routesSystem);
 app.use(routesError);
 
 app.listen(process.env.SERVER_PORT, () => {
-  console.log('HOLOAPI | %s | %d', process.env.NODE_ENV, process.env.SERVER_PORT);
-  // log.info('HOLOTOOLS WEB | :%d | %s', process.env.SERVER_PORT, process.env.NODE_ENV);
+  log.info('HOLOAPI | %s | %s | :%d', env.NODE_ENV, moment().format('YYYY-MM-DD HH:mm:ss ZZ'), env.SERVER_PORT);
 });

@@ -2,17 +2,17 @@ module.exports = {
   apps: [
     {
       name: 'client-api',
-      script: './services/client-api/src/index.js',
+      script: './apps/client-api/index.js',
       exec_mode: 'cluster',
       instances: 1, // add more in prod
-      watch: ['services'], // dev only
+      watch: ['./apps/client-api'], // dev only
     },
     {
       name: 'crawler-youtube',
-      script: './services/crawler-youtube/index.js',
+      script: './apps/crawler-youtube/index.js',
       exec_mode: 'cluster',
       instances: 1,
-      watch: ['services'], // dev only
+      watch: ['./apps/crawler-youtube'], // dev only
     },
   ],
 };
