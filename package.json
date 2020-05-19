@@ -8,8 +8,14 @@
     "rollback": "knex migrate:rollback --knexfile database/knexfile.js"
   },
   "dependencies": {
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
+    "googleapis": "^51.0.0",
     "knex": "^0.21.1",
-    "pg": "^8.0.2"
+    "moment-timezone": "^0.5.31",
+    "node-schedule-tz": "^1.2.1-4",
+    "pg": "^8.0.2",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
