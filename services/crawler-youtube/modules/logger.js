@@ -19,7 +19,9 @@ const logger = winston.createLogger();
 logger.configure({
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.printf((info) => `${info.timestamp} | [${info.level}] ${info.message}`),
+    winston.format.splat(),
+    winston.format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'label'] }),
+    winston.format.printf((info) => `${info.timestamp} | [${info.level}] ${info.message} | ${JSON.stringify(info.metadata)}`),
   ),
   transports: [
     new (winston.transports.File)({
