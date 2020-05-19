@@ -19,6 +19,5 @@ app.use(routesError);
 
 app.listen(process.env.SERVER_PORT, () => {
   console.log('HOLOAPI | %s | %d', process.env.NODE_ENV, process.env.SERVER_PORT);
-  
   // log.info('HOLOTOOLS WEB | :%d | %s', process.env.SERVER_PORT, process.env.NODE_ENV);
 });
