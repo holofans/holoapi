@@ -3,6 +3,11 @@ const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
 const moment = require('moment-timezone');
+
+const routesSystem = require('./routes/system');
+const routesError = require('./routes/error');
+// const routesV1 = require('./routes/v1');
+
 const { log } = require('../../library');
 
 const { env } = process;
@@ -13,9 +18,6 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ strict: false }));
 
-const routesSystem = require('./routes/system');
-const routesError = require('./routes/error');
-// const routesV1 = require('./routes/v1');
 app.use(routesSystem);
 // app.use('/v1', routesV1);
 app.use(routesError);

@@ -1,88 +1,60 @@
-const {Router} = require('express');
+const { Router } = require('express');
 const moment = require('moment-timezone');
-const {HoloVideo} = require('../../classes');
-const {consts, Firestore, Memcached, log} = require('../../library');
+const { HoloVideo } = require('../../classes');
+const { consts, Firestore, Memcached, log } = require('../../library');
 
 // Initialize Router
 const router = new Router();
 
-router.get('/:videoId', (req, res) => {
-  (async () => {
-    const {videoId} = req.params;
+router.get('/:videoId', async (req, res) => {
+  const { videoId } = req.params;
 
-    const memcacheVideoId = `songs:${videoId}`;
-    const liveCache = await Memcached.get(memcacheVideoId);
-    if (liveCache) {
-      try {
-        liveCache = JSON.parse(liveCache);
-        liveCache.cached = true;
-        return liveCache;
-      } catch (error) {
-        liveCache = null;
-      }
-    }
+  const memcacheVideoId = `songs:${videoId}`;
+  const cache = await Memcached.get(memcacheVideoId);
+  const liveCache = cache ? JSON.parse(cache) : {};
+  liveCache.cached = !!Object.keys(liveCache).length;
+  if (liveCache.cached) return liveCache;
 
-    const results = {}; // TODO define this.
-    const doc = await Firestore.collection('videocomment').get();
-    // TODO not finished here.
+  const results = {}; // TODO define this.
+  const doc = await Firestore.collection('videocomment').get();
+  // TODO not finished here.
 
-    const videoData = doc.data();
+  const videoData = doc.data();
 
-    if (!videoData) throw Error('videoId not found');
-    Memcached.set(
-        memcacheVideoId,
-        JSON.stringify(results),
-        consts.CACHE_TTL.SONG_TIMINGS);
-    return videoData;
-  })()
-      .then((result) => {
-        res
-            .set('Cache-Control', `public, max-age=3000`)
-            .json(result);
-      })
-      .catch((err) => {
-        res.json({error: err.message});
-      });
+  if (!videoData) throw Error('videoId not found');
+  Memcached.set(
+    memcacheVideoId,
+    JSON.stringify(results),
+    consts.CACHE_TTL.SONG_TIMINGS
+  );
+
+  return res.set('Cache-Control', 'public, max-age=3000').json(videoData);
 });
 
-router.get('/search', (req, res) => {
-  (async () => {
-    // Get query:
-    const {q} = req.query;
+router.get('/search', async (req, res) => {
+  // Get query:
+  const { q } = req.query;
 
-    if (!q) throw new Error('expected ?q param');
+  if (!q) throw new Error('expected ?q param');
 
-    // Check cache, and return if it exists
-    const liveCache = await Memcached.get('live');
-    if (liveCache) {
-      try {
-        liveCache = JSON.parse(liveCache);
-        liveCache.cached = true;
-        return liveCache;
-      } catch (error) {
-        liveCache = null;
-      }
-    }
+  // Check cache, and return if it exists
+  const cache = await Memcached.get('live');
+  const liveCache = cache ? JSON.parse(cache) : {};
+  liveCache.cached = !!Object.keys(liveCache).length;
+  if (liveCache.cached) return liveCache;
 
-    // Result structure
-    // TODO define this
-    const results = {
-    };
+  // Result structure
+  // TODO define this
+  const results = {
+  };
 
-    const videoCollection = Firestore.collection('videocomment');
+  const videoCollection = Firestore.collection('videocomment');
 
-    // TODO not finished here.
-    Memcached.set('live', JSON.stringify(results), consts.CACHE_TTL.SONG_SEARCH);
+  // TODO not finished here.
+  Memcached.set('live', JSON.stringify(results), consts.CACHE_TTL.SONG_SEARCH);
 
-    // Return results
-    return results;
-  })()
-      .then((result) => {
-        res.json(result);
-      })
-      .catch((err) => {
-        res.json({error: err.message});
-      });
+  // Return results
+  return res.json(results);
 });
 
 module.exports = router;
