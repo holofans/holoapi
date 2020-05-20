@@ -1,10 +1,29 @@
-# holotools-api
-Monolith tools and services in consuming Hololive content
-
+# HoloFans API
+Platform to serve Hololive information to community tools
 
 ## Development
+* Requirements
+  * `docker`, `docker-compose` (local only)
+* Have a `gcp-key.json` on project root
+  * You may get this from your GCP Project, [under credentials](https://console.cloud.google.com/apis/credentials)
+    * Create **Service Account**
+    * Choose **JSON key file**, this is your `gcp-key.json`
+* Copy `.env.example` into `.env`
+  * Change values for your environment
+* Copy `ecosystem.config.sample.js` into `ecosystem.config.js`
+  * Change values for your environment
+* Execute `docker-compose up` on root
+  * API is then accessible through `http://localhost:2434/`
 
-## Deployment
+## Applications
+### Client API
+
+### Cralwer: YouTube
+
+### Cralwer: BiliBili
+
+
+## Production Deployment
 
 Set up deployment of holotools-api by using the following deployment methods:
 
@@ -12,8 +31,7 @@ Set up deployment of holotools-api by using the following deployment methods:
 - [Digital Ocean Deployment](https://www.digitalocean.com/community/tutorials/how-to-set-up-automatic-deployment-with-git-with-a-vps)
   - or if you'd rather not deploy from local, and would like it semi-automated, use a webhook: https://github.com/adnanh/webhook
 
-
-## Deployment setup on Digital Ocean
+### Digital Ocean
 
 Setting up a dev user account
 ```

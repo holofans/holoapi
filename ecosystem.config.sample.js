@@ -11,7 +11,7 @@ module.exports = {
       name: 'crawler-youtube',
       script: './apps/crawler-youtube/index.js',
       exec_mode: 'cluster',
-      instances: 1,
+      instances: 1, // only 1 in prod, important
       watch: ['./apps/crawler-youtube'], // dev only
     },
   ],
