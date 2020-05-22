@@ -1,4 +1,5 @@
 const { Model } = require('sequelize');
+const consts = require('../../consts');
 
 class Channel extends Model {
   static init(sequelize, DataTypes) {
@@ -66,7 +67,7 @@ class Channel extends Model {
         },
       },
       {
-        tableName: 'channel',
+        tableName: consts.TABLE_CHANNEL,
         freezeTableName: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',
