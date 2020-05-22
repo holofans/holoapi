@@ -109,3 +109,5 @@ gcp-key.json
 database/pgdata
 database/pgadmin
 /dev
+.vscode/
+.idea/
