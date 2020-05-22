@@ -11,7 +11,7 @@ const { notFoundHandler, errorHandler } = require('./middleware/error');
 const routesSystem = require('./routes/system');
 
 const app = express();
-const PORT = process.env.SERVER_PORT || 2324;
+const PORT = process.env.SERVER_PORT || 2434;
 
 app.use(helmet());
 app.use(cors());
