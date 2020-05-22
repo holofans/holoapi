@@ -149,7 +149,7 @@ module.exports = {
         },
         onDelete: 'cascade',
       },
-      stamp: {
+      timecode: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },

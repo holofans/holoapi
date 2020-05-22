@@ -14,7 +14,7 @@ class VideoComment extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        stamp: {
+        timecode: {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
