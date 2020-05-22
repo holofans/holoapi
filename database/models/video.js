@@ -29,7 +29,7 @@ class Video extends Model {
         status: {
           type: DataTypes.STRING,
           allowNull: false,
-          defaultValue: 'new',
+          defaultValue: consts.STATUSES.NEW,
         },
         live_schedule: DataTypes.DATE,
         live_start: DataTypes.DATE,

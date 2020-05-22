@@ -42,7 +42,7 @@ class Channel extends Model {
         status: {
           type: DataTypes.STRING,
           allowNull: false,
-          defaultValue: 'new',
+          defaultValue: consts.STATUSES.NEW,
         },
         twitter_link: {
           type: DataTypes.STRING,
