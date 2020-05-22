@@ -1,20 +1,31 @@
-const knex = require('knex');
+const fs = require('fs');
+const path = require('path');
+const { Sequelize } = require('sequelize');
+const logger = require('./logger');
 
-const { env } = process;
-
-const connection = knex({
-  client: 'pg',
-  version: '12.3',
+const db = new Sequelize(process.env.DATABASE_URL, {
+  schema: process.env.DATABASE_SCHEMA,
   pool: {
-    min: env.DBPOOL_MIN || 1,
-    max: env.DBPOOL_MAX || 2,
+    min: Number(process.env.DBPOOL_MIN) || 1,
+    max: Number(process.env.DBPOOL_MAX) || 2,
+    idle: 15000,
+    acquire: 60000,
+    evict: 5000,
   },
-  connection: {
-    host: env.POSTGRES_HOST,
-    user: env.POSTGRES_USER,
-    password: env.POSTGRES_PASSWORD,
-    database: env.POSTGRES_DBNAME,
-  },
+  logging: (message) => logger.verbose(message),
 });
 
-module.exports = connection;
+const modelsPath = path.resolve('database', 'models');
+fs.readdirSync(modelsPath)
+  .filter((file) => file.indexOf('.') !== 0 && file.slice(-3) === '.js')
+  .forEach((file) => {
+    // eslint-disable-next-line global-require,import/no-dynamic-require
+    const model = require(path.join(modelsPath, file));
+    model.init(db, Sequelize);
+  });
+
+Object.values(db.models)
+  .filter((model) => typeof model.associate === 'function')
+  .forEach((model) => model.associate(db));
+
+module.exports = db;

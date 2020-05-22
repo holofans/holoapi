@@ -1,9 +1,12 @@
+const Sequelize = require('sequelize');
 const { Router } = require('express');
-// const {settings} = require('../library');
+const { database } = require('../../../library');
 
 const router = new Router();
 
-// Root
-module.exports = router.get('/', (req, res) => {
-  res.json({ time: Date.now() });
+router.get('/', async (req, res) => {
+  const channel = await database.models.Channel.findOne({ order: Sequelize.literal('RANDOM()') });
+  res.json({ time: Date.now(), channel });
 });
+
+module.exports = router;

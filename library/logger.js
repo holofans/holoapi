@@ -39,7 +39,10 @@ logger.configure({
 
 // Development environment, writes debug logs, and outputs to console
 if (process.env.NODE_ENV === 'development') {
-  logger.add(new winston.transports.Console({ level: ['debug'], colorize: true }));
+  logger.add(new winston.transports.Console({
+    level: ['debug'],
+    colorize: true,
+  }));
   logger.add(new winston.transports.File({
     name: 'all-debug',
     filename: path.join(logDirDate, 'debug.log'),
