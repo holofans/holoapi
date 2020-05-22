@@ -1,7 +1,7 @@
 const moment = require('moment-timezone');
 const schedule = require('node-schedule-tz');
 
-const { log } = require('../../library');
+const { log } = require('../../modules');
 // const channels = require('./tasks/channels');
 // const videoListAPI = require('./tasks/video-list-api')
 // const videoListFeed = require('./tasks/video-list-feed')

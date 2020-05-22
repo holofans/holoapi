@@ -9,7 +9,7 @@ const routesSystem = require('./routes/system');
 const routesError = require('./routes/error');
 // const routesV1 = require('./routes/v1');
 
-const { log } = require('../../library');
+const { log } = require('../../modules');
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 2324;
