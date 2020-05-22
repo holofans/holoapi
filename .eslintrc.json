@@ -5,19 +5,19 @@
     "node": true
   },
   "extends": [
-    "google"
+    "airbnb-base"
   ],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
-  "parserOptions": {
-    "ecmaVersion": 2018
-  },
   "rules": {
-    "max-len": 0,
-    "no-unused-vars": 0,
-    "linebreak-style": "off",
-    "guard-for-in": "warn"
+    "eqeqeq": "error",
+    "no-console": [
+    "error",
+    {
+      "allow": [
+      "group",
+      "groupEnd"
+      ]
+    }
+    ],
+    "no-underscore-dangle": "off"
   }
 }
