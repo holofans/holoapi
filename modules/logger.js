@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const winston = require('winston');
+const { createLogger, format, transports } = require('winston');
 
 // Ensure log directory exists
 const logDir = path.join(process.cwd(), 'logs');
@@ -13,25 +13,26 @@ const logDirDate = path.join(appLogDir, new Date().toISOString().slice(0, 10));
 if (!fs.existsSync(logDirDate)) fs.mkdirSync(logDirDate);
 
 // New logger instance
-const logger = winston.createLogger();
+const logger = createLogger();
 
 // Default configuration
 logger.configure({
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.splat(),
-    winston.format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'label'] }),
-    winston.format.printf(
+  format: format.combine(
+    format.timestamp(),
+    format.colorize(),
+    format.splat(),
+    format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'label'] }),
+    format.printf(
       (info) => `${info.timestamp} | [${info.level}] ${info.message} | ${JSON.stringify(info.metadata)}`,
     ),
   ),
   transports: [
-    new (winston.transports.File)({
+    new transports.File({
       name: 'all-info',
       filename: path.join(logDirDate, 'info.log'),
       level: 'info',
     }),
-    new (winston.transports.File)({
+    new transports.File({
       name: 'all-errors',
       filename: path.join(logDirDate, 'error.log'),
       level: 'error',
@@ -41,11 +42,11 @@ logger.configure({
 
 // Development environment, writes debug logs, and outputs to console
 if (process.env.NODE_ENV === 'development') {
-  logger.add(new winston.transports.Console({
-    level: ['debug'],
+  logger.add(new transports.Console({
+    level: 'verbose',
     colorize: true,
   }));
-  logger.add(new winston.transports.File({
+  logger.add(new transports.File({
     name: 'all-debug',
     filename: path.join(logDirDate, 'debug.log'),
     level: 'debug',
