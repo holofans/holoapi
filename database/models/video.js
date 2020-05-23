@@ -54,6 +54,11 @@ class Video extends Model {
       },
     );
   }
+
+  static associate(models) {
+    this.channel = this.belongsTo(models.Channel);
+    this.comments = this.hasMany(models.VideoComment);
+  }
 }
 
 module.exports = Video;

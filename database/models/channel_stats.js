@@ -29,6 +29,10 @@ class ChannelStats extends Model {
       },
     );
   }
+
+  static associate(models) {
+    this.channel = this.belongsTo(models.Channel);
+  }
 }
 
 module.exports = ChannelStats;

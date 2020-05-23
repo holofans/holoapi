@@ -75,6 +75,11 @@ class Channel extends Model {
       },
     );
   }
+
+  static associate(models) {
+    this.videos = this.hasMany(models.Video);
+    this.stats = this.hasOne(models.ChannelStats);
+  }
 }
 
 module.exports = Channel;

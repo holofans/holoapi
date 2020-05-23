@@ -26,6 +26,6 @@ fs.readdirSync(modelsPath)
 
 Object.values(db.models)
   .filter((model) => typeof model.associate === 'function')
-  .forEach((model) => model.associate(db));
+  .forEach((model) => model.associate(db.models));
 
 module.exports = { db, ...db.models };

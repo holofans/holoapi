@@ -34,6 +34,10 @@ class VideoComment extends Model {
       },
     );
   }
+
+  static associate(models) {
+    this.video = this.belongsTo(models.Video);
+  }
 }
 
 module.exports = VideoComment;
