@@ -5,9 +5,28 @@ const { db } = require('../../../modules');
 const router = new Router();
 
 router.get('/', async (req, res) => {
-  const channel = await db.Channel.findOne({ order: Sequelize.literal('RANDOM()') });
+  const channel = await db.Channel.findOne({
+    include: [{
+      as: 'stats',
+      model: db.ChannelStats,
+    }, {
+      as: 'videos',
+      model: db.Video,
+      include: [
+        {
+          as: 'comments',
+          model: db.VideoComment,
+        },
+      ],
+    }],
+    order: Sequelize.literal('RANDOM()'),
+  });
 
-  res.json({ time: Date.now(), channel });
+
+  res.json({
+    time: Date.now(),
+    channel,
+  });
 });
 
 module.exports = router;

@@ -22,16 +22,13 @@ class ChannelStats extends Model {
       },
       {
         tableName: consts.TABLE_CHANNEL_STATS,
-        freezeTableName: true,
-        updatedAt: 'updated_at',
-        createdAt: 'created_at',
         sequelize,
       },
     );
   }
 
   static associate(models) {
-    this.channel = this.belongsTo(models.Channel);
+    this.channel = this.belongsTo(models.Channel, { as: 'channel', foreignKey: 'channel_id' });
   }
 }
 

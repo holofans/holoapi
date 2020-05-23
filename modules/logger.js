@@ -22,9 +22,7 @@ logger.configure({
     format.colorize(),
     format.splat(),
     format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'label'] }),
-    format.printf(
-      (info) => `${info.timestamp} | [${info.level}] ${info.message} | ${JSON.stringify(info.metadata)}`,
-    ),
+    format.printf((info) => `${info.timestamp} | [${info.level}] | ${info.message}`),
   ),
   transports: [
     new transports.File({

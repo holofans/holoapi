@@ -12,6 +12,12 @@ const db = new Sequelize(process.env.DATABASE_URL, {
     acquire: 60000,
     evict: 5000,
   },
+  define: {
+    freezeTableName: true,
+    underscored: true,
+    updatedAt: 'updated_at',
+    createdAt: 'created_at',
+  },
   logging: (message) => logger.verbose(message),
 });
 

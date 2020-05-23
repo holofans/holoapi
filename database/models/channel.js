@@ -68,17 +68,14 @@ class Channel extends Model {
       },
       {
         tableName: consts.TABLE_CHANNEL,
-        freezeTableName: true,
-        updatedAt: 'updated_at',
-        createdAt: 'created_at',
         sequelize,
       },
     );
   }
 
   static associate(models) {
-    this.videos = this.hasMany(models.Video);
-    this.stats = this.hasOne(models.ChannelStats);
+    this.videos = this.hasMany(models.Video, { as: 'videos', foreignKey: 'channel_id' });
+    this.stats = this.hasOne(models.ChannelStats, { as: 'stats', foreignKey: 'channel_id' });
   }
 }
 

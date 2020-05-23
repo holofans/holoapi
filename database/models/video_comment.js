@@ -27,16 +27,13 @@ class VideoComment extends Model {
       },
       {
         tableName: consts.TABLE_VIDEO_COMMENT,
-        freezeTableName: true,
-        updatedAt: 'updated_at',
-        createdAt: 'created_at',
         sequelize,
       },
     );
   }
 
   static associate(models) {
-    this.video = this.belongsTo(models.Video);
+    this.video = this.belongsTo(models.Video, { as: 'video', foreignKey: 'video_id' });
   }
 }
 

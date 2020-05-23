@@ -46,18 +46,15 @@ class Video extends Model {
         updated_at: DataTypes.DATE,
       },
       {
-        tableName: consts.TABLE_CHANNEL_STATS,
-        freezeTableName: true,
-        updatedAt: 'updated_at',
-        createdAt: 'created_at',
+        tableName: consts.TABLE_VIDEO,
         sequelize,
       },
     );
   }
 
   static associate(models) {
-    this.channel = this.belongsTo(models.Channel);
-    this.comments = this.hasMany(models.VideoComment);
+    this.channel = this.belongsTo(models.Channel, { as: 'channel', foreignKey: 'channel_id' });
+    this.comments = this.hasMany(models.VideoComment, { as: 'comments', foreignKey: 'video_id' });
   }
 }
 
