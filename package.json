@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Platform to serve Hololive information to community tools",
   "scripts": {
-    "migrate": "knex migrate:latest --knexfile database/knexfile.js",
-    "seed": "knex seed --knexfile database/knexfile.js",
-    "rollback": "knex migrate:rollback --knexfile database/knexfile.js"
+    "start": "nodemon apps/client-api",
+    "migrate": "sequelize db:migrate",
+    "rollback": "sequelize db:migrate:undo"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -15,19 +15,22 @@
     "express": "^4.17.1",
     "googleapis": "^51.0.0",
     "helmet": "^3.22.0",
-    "knex": "^0.21.1",
     "memcached": "^2.2.2",
     "moment-timezone": "^0.5.31",
     "node-schedule-tz": "^1.2.1-4",
-    "pg": "^8.0.2",
+    "pg": "^8.2.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.21.10",
     "url": "^0.11.0",
-    "uuid": "^8.0.0",
+    "uuid": "^8.1.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.2"
+    "eslint-plugin-import": "^2.20.2",
+    "nodemon": "^2.0.4",
+    "sequelize-cli": "^5.5.1"
   },
   "repository": {
     "type": "git",

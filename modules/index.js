@@ -1,9 +1,9 @@
-const database = require('./database');
+const db = require('./db');
 const log = require('./logger');
 const youtube = require('./youtube');
 
 module.exports = {
-  database,
+  db,
   log,
   youtube,
 };
