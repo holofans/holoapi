@@ -1,6 +1,6 @@
 /**
  * UPDATE CHANNEL INFOS
- * Update information on all channels and get today's stats
+ * Update information daily
  */
 
 require('dotenv').config();
@@ -20,9 +20,7 @@ module.exports = async () => {
   const fetchChannels = await db.Channel.findAll({
     where: {
       [Op.and]: [
-        {
-          yt_channel_link: { [Op.not]: null },
-        },
+        { yt_channel_id: { [Op.not]: null } },
         {
           [Op.or]: [
             { updated_at: { [Op.is]: null } },
@@ -38,7 +36,7 @@ module.exports = async () => {
   if (!fetchChannels || !fetchChannels.length) return Promise.resolve({ skip: true });
 
   // Get only channel keys
-  const channelKeys = fetchChannels.map((v) => v.yt_channel_link);
+  const channelKeys = fetchChannels.map((v) => v.yt_channel_id);
 
   // Results
   const updateResults = [];
@@ -62,12 +60,12 @@ module.exports = async () => {
     for (let i = 0; i < channelInfos.length; i += 1) {
       const channelInfo = channelInfos[i];
       const upsertResult = await db.Channel.upsert({ // eslint-disable-line no-await-in-loop
-        yt_channel_link: channelInfo.id,
-        yt_videos_link: channelInfo.contentDetails.relatedPlaylists.uploads,
+        yt_channel_id: channelInfo.id,
+        yt_uploads_id: channelInfo.contentDetails.relatedPlaylists.uploads,
         name: channelInfo.snippet.title,
-        description: channelInfo.snippet.description.substring(0, 255),
+        description: channelInfo.snippet.description,
         thumbnail: channelInfo.snippet.thumbnails.high.url,
-        published_at: moment(channelInfo.snippet.publishedAt).tz('UTC').format('YYYY-MM-DD HH:mm:ss'),
+        published_at: moment(channelInfo.snippet.publishedAt).tz('UTC').toDate(),
         updated_at: tokyoMoment.toDate(),
       });
       updateResults.push(upsertResult);

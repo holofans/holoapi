@@ -3,7 +3,7 @@ const moment = require('moment-timezone');
 const schedule = require('node-schedule-tz');
 
 const { log } = require('../../modules');
-const channels = require('./tasks/channels');
+const channelInfo = require('./tasks/channel-info');
 // const videoListAPI = require('./tasks/video-list-api')
 // const videoListFeed = require('./tasks/video-list-feed')
 // const videoListScrape = require('./tasks/video-list-scrape')
@@ -16,9 +16,11 @@ const { env } = process;
 
 log.info('YOUTUBE CRAWLER | %s | %s', env.NODE_ENV, moment().format('YYYY-MM-DD HH:mm:ss ZZ'));
 
+channelInfo();
+
 // Update channel information and get today's stats
-schedule.scheduleJob('channels', env.SCHEDULE_CHANNEL, 'Asia/Tokyo', () => {
-  channels();
+schedule.scheduleJob('channelInfo', env.SCHEDULE_CHANNEL_INFO, 'Asia/Tokyo', () => {
+  channelInfo();
 });
 
 // Run only at the beginning to get all past videos
