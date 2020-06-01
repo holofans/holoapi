@@ -4,7 +4,7 @@ const schedule = require('node-schedule-tz');
 
 const { log } = require('../../modules');
 const channelInfo = require('./tasks/channel-info');
-// const videoListAPI = require('./tasks/video-list-api')
+const videoListAPI = require('./tasks/video-list-api');
 // const videoListFeed = require('./tasks/video-list-feed')
 // const videoListScrape = require('./tasks/video-list-scrape')
 // const videoInfoAPI = require('./tasks/video-info-api')
@@ -18,15 +18,15 @@ log.info('YOUTUBE CRAWLER | %s | %s', env.NODE_ENV, moment().format('YYYY-MM-DD 
 
 channelInfo();
 
-// Update channel information and get today's stats
+// Update channel information
 schedule.scheduleJob('channelInfo', env.SCHEDULE_CHANNEL_INFO, 'Asia/Tokyo', () => {
   channelInfo();
 });
 
 // Run only at the beginning to get all past videos
-// schedule.scheduleJob('video-list-api', config.timings['video-list-api'], 'Asia/Tokyo', function(){
-//   videoListAPI()
-// })
+schedule.scheduleJob('videoListAPI', env.SCHEDULE_VIDEO_LIST_API, 'Asia/Tokyo', () => {
+  videoListAPI();
+});
 
 // Gets latest videos from each channel through YouTube XML feed
 // schedule.scheduleJob('video-list-feed', config.timings['video-list-feed'], 'Asia/Tokyo', function(){
