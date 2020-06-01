@@ -8,51 +8,31 @@ const moment = require('moment-timezone');
 const { Op } = require('sequelize');
 const { db, youtube, log } = require('../../../modules');
 
-// Fetch single page of videos
-const fetchVideoPage = async (playlistId, nextPageToken, fetchAll) => {
-  log.debug('videoListAPI() fetchVideoPage() | playlistId:%s | pageToken:%s', playlistId, nextPageToken);
-  return new Promise((done, fail) => {
-    youtube.playlistItems.list({
-      part: 'id,snippet',
-      playlistId,
-      maxResults: fetchAll ? 50 : 5,
-      pageToken: nextPageToken || undefined,
-    }, (err, res) => {
-      // Handle YouTube API Error
-      if (err) {
-        log.error('videoListAPI() youtube.playlistItems.list', { playlistId, err: err.message });
-        fail(err);
-        return;
-      }
-      // Return data
-      done(res.data);
-    });
-  });
-};
+/* eslint-disable */ // Video fetcher
+const fetchVideo = async (playlistId, fetchAll) => {
+  log.debug(`videoListAPI() fetchVideoPage() | playlistId: ${playlistId} | fetchAll ? ${!!fetchAll}`);
 
-// Fetch all videos for specific channel
-const fetchVideoList = async (playlistId, fetchAll) => {
-  log.debug('videoListAPI() fetchVideoList() | playlistId:%s | fetchAll:%s', playlistId, fetchAll);
-  let videoList = [];
-  let lastPageToken = null;
-  let nextPageToken = null;
-  do {
-    lastPageToken = nextPageToken;
-    // eslint-disable-next-line no-await-in-loop
-    const pageData = await fetchVideoPage(playlistId, nextPageToken, fetchAll)
-      .catch((err) => { // eslint-disable-line
-        log.error('Unable to fetch video page', { err: err.message, playlistId, nextPageToken, fetchAll });
-        return null;
-      });
-    if (pageData) {
-      videoList = videoList.concat(pageData.items);
-      nextPageToken = pageData.nextPageToken;
-    } else {
-      nextPageToken = null;
-    }
-  } while (nextPageToken && lastPageToken !== nextPageToken && fetchAll);
-  return videoList;
+  // Search function
+  const search = async (nextToken) => (await youtube.playlistItems.list({
+    part: 'id,snippet',
+    playlistId,
+    maxResults: fetchAll ? 50 : 5,
+    pageToken: nextToken,
+  }).catch(err => log.error('videoListAPI() youtube.playlistItems.list', { playlistId, err: err.message }))).data;
+
+  // Get initial search
+  let seed = await search();
+  if (!seed) return;
+
+  // Store results
+  const results = [seed.items];
+  
+  // Keep searching while token exists, and store the results
+  if (fetchAll) while (token = seed.nextPageToken) results.push((seed = await search(token)).items);
+
+  return results.flat();
 };
+/* eslint-enable */
 
 module.exports = async () => {
   log.debug('videoListAPI() START');
@@ -68,7 +48,7 @@ module.exports = async () => {
   });
 
   // Fetch from youtube API
-  const channelVideos = await fetchVideoList(uncrawledChannel.yt_uploads_id, true);
+  const channelVideos = await fetchVideo(uncrawledChannel.yt_uploads_id, true);
 
   // Mark channel as crawled
   uncrawledChannel.crawled_at = utcDate;
@@ -78,19 +58,17 @@ module.exports = async () => {
   const upsertedKeys = [];
 
   // Upsert the videos
-  for (let i = 0; i < channelVideos.length; i += 1) {
-    const videoInfo = channelVideos[i];
-    const videoRecord = {
+  await Promise.all(channelVideos.map((videoInfo) => {
+    upsertedKeys.push(videoInfo.snippet.resourceId.videoId);
+    return db.Video.upsert({
       channel_id: uncrawledChannel.id,
       yt_video_key: videoInfo.snippet.resourceId.videoId,
       title: videoInfo.snippet.title,
       description: videoInfo.snippet.description,
       publishedAt: moment(videoInfo.snippet.publishedAt).tz('UTC').format('YYYY-MM-DD HH:mm:ss'),
       updated_at: utcDate,
-    };
-    await db.Video.upsert(videoRecord); // eslint-disable-line no-await-in-loop
-    upsertedKeys.push(videoInfo.snippet.resourceId.videoId);
-  }
+    });
+  }));
 
   log.info('videoListAPI() Saved video list', { keys: upsertedKeys });
   return Promise.resolve();
