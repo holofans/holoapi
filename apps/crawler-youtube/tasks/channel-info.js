@@ -16,8 +16,8 @@ module.exports = async () => {
   const tokyoToday = tokyoMoment.clone().hour(0).minute(0).second(0);
   const todayString = tokyoToday.tz('UTC').format('YYYY-MM-DD HH:mm:ss');
 
-  // Get channels that needs to be updated
-  const fetchChannels = await db.Channel.findAll({
+  // Fetch channels that needs to be updated, and get their keys
+  const channelKeys = (await db.Channel.findAll({
     where: {
       [Op.and]: [
         { yt_channel_id: { [Op.not]: null } },
@@ -29,47 +29,42 @@ module.exports = async () => {
         },
       ],
     },
-  });
+  })).map((v) => v.yt_channel_id);
 
   // Check if there's any channel to be updated
-  if (!fetchChannels || !fetchChannels.length) return Promise.resolve({ skip: true });
-
-  // Get only channel keys
-  const channelKeys = fetchChannels.map((v) => v.yt_channel_id);
+  if (!channelKeys || !channelKeys.length) return Promise.resolve({ skip: true });
 
   // Results
   const updateResults = [];
 
   // Get channels by page
-  let batch;
-  while ((batch = channelKeys.splice(0, 50)).length > 0) { // eslint-disable-line no-cond-assign
-    // Fetch channel infos from YouTube API
-    const ytResults = await youtube.channels.list({ // eslint-disable-line no-await-in-loop
-      part: 'snippet,contentDetails',
-      id: batch.join(','),
-      maxResults: 50,
-    }).catch((err) => {
-      log.error('channels() Unable to fetch channels.list', { details: err, errMessage: err.message });
-      return null;
-    });
+  const batch = [];
 
-    if (!ytResults || !ytResults.data || !ytResults.data.items) continue; // eslint-disable-line no-continue
+  // For each 50 keys, split, then join into string
+  while (channelKeys.length) batch.push(channelKeys.splice(0, 50).join(','));
 
-    const channelInfos = Object.values(ytResults.data.items);
-    for (let i = 0; i < channelInfos.length; i += 1) {
-      const channelInfo = channelInfos[i];
-      const upsertResult = await db.Channel.upsert({ // eslint-disable-line no-await-in-loop
-        yt_channel_id: channelInfo.id,
-        yt_uploads_id: channelInfo.contentDetails.relatedPlaylists.uploads,
-        name: channelInfo.snippet.title,
-        description: channelInfo.snippet.description,
-        thumbnail: channelInfo.snippet.thumbnails.high.url,
-        published_at: moment(channelInfo.snippet.publishedAt).tz('UTC').toDate(),
-        updated_at: tokyoMoment.toDate(),
-      });
-      updateResults.push(upsertResult);
-    }
-  }
+  // Function to transform each keys into youtube results
+  const search = async (items) => (await youtube.channels.list({
+    part: 'snippet,contentDetails',
+    id: items,
+    maxResults: 50,
+  })).data.items;
+
+  // Apply function
+  batch.map(search);
+
+  // Process each result from function
+  batch.map(async (channelInfo) => updateResults.push(
+    await db.Channel.upsert({
+      yt_channel_id: channelInfo.id,
+      yt_uploads_id: channelInfo.contentDetails.relatedPlaylists.uploads,
+      name: channelInfo.snippet.title,
+      description: channelInfo.snippet.description,
+      thumbnail: channelInfo.snippet.thumbnails.high.url,
+      published_at: moment(channelInfo.snippet.publishedAt).tz('UTC').toDate(),
+      updated_at: tokyoMoment.toDate(),
+    }),
+  ));
 
   log.info('[channels] Saved channel information', { results: updateResults });
   return Promise.resolve();
