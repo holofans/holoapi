@@ -34,9 +34,6 @@ module.exports = async () => {
   // Check if there's any channel to be updated
   if (!channelKeys || !channelKeys.length) return Promise.resolve({ skip: true });
 
-  // Results
-  const updateResults = [];
-
   // Get channels by page
   const batch = [];
 
@@ -51,20 +48,18 @@ module.exports = async () => {
   })).data.items;
 
   // Apply function
-  batch.map(search);
+  const results = await Promise.all(batch.map(search));
 
   // Process each result from function
-  batch.map(async (channelInfo) => updateResults.push(
-    await db.Channel.upsert({
-      yt_channel_id: channelInfo.id,
-      yt_uploads_id: channelInfo.contentDetails.relatedPlaylists.uploads,
-      name: channelInfo.snippet.title,
-      description: channelInfo.snippet.description,
-      thumbnail: channelInfo.snippet.thumbnails.high.url,
-      published_at: moment(channelInfo.snippet.publishedAt).tz('UTC').toDate(),
-      updated_at: tokyoMoment.toDate(),
-    }),
-  ));
+  const updateResults = await Promise.all(results.map((channelInfo) => db.Channel.upsert({
+    yt_channel_id: channelInfo.id,
+    yt_uploads_id: channelInfo.contentDetails.relatedPlaylists.uploads,
+    name: channelInfo.snippet.title,
+    description: channelInfo.snippet.description,
+    thumbnail: channelInfo.snippet.thumbnails.high.url,
+    published_at: moment(channelInfo.snippet.publishedAt).tz('UTC').toDate(),
+    updated_at: tokyoMoment.toDate(),
+  })));
 
   log.info('[channels] Saved channel information', { results: updateResults });
   return Promise.resolve();
