@@ -10,31 +10,31 @@ class Channel extends Model {
           autoIncrement: true,
           primaryKey: true,
         },
-        yt_channel_link: {
+        yt_channel_id: {
           type: DataTypes.STRING,
           unique: true,
         },
-        yt_videos_link: {
+        yt_uploads_id: {
           type: DataTypes.STRING,
           unique: true,
         },
-        bb_space_link: {
+        bb_space_id: {
           type: DataTypes.INTEGER,
           unique: true,
         },
-        bb_room_link: {
+        bb_room_id: {
           type: DataTypes.INTEGER,
           unique: true,
         },
         name: {
           type: DataTypes.STRING,
-          allowNull: false,
+          allowNull: true,
         },
         description: {
-          type: DataTypes.STRING,
+          type: DataTypes.TEXT,
         },
         thumbnail: {
-          type: DataTypes.STRING,
+          type: DataTypes.TEXT,
         },
         published_at: {
           type: DataTypes.DATE,

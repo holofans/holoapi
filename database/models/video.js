@@ -14,8 +14,8 @@ class Video extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        yt_video_id: {
-          type: DataTypes.INTEGER,
+        yt_video_key: {
+          type: DataTypes.STRING(11),
           unique: true,
         },
         bb_video_id: {
@@ -23,8 +23,8 @@ class Video extends Model {
           unique: true,
         },
         title: DataTypes.STRING,
-        description: DataTypes.STRING,
-        thumbnail: DataTypes.STRING,
+        description: DataTypes.TEXT,
+        thumbnail: DataTypes.TEXT,
         published_at: DataTypes.DATE,
         status: {
           type: DataTypes.STRING,
@@ -37,11 +37,11 @@ class Video extends Model {
         live_viewers: DataTypes.INTEGER,
         is_uploaded: DataTypes.BOOLEAN,
         late_secs: DataTypes.INTEGER,
-        duration: DataTypes.INTEGER,
+        duration_secs: DataTypes.INTEGER,
         is_captioned: DataTypes.BOOLEAN,
         is_licensed: DataTypes.BOOLEAN,
         is_embeddable: DataTypes.BOOLEAN,
-        crawled_at: DataTypes.DATE,
+        comments_crawled_at: DataTypes.DATE,
         created_at: DataTypes.DATE,
         updated_at: DataTypes.DATE,
       },
