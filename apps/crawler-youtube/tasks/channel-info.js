@@ -30,7 +30,6 @@ module.exports = async () => {
       ],
     },
   });
-  log.debug('Channels to be updated', { fetchChannels });
 
   // Check if there's any channel to be updated
   if (!fetchChannels || !fetchChannels.length) return Promise.resolve({ skip: true });
