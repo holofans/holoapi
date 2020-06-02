@@ -18,11 +18,10 @@ const fetchVideo = async (playlistId, fetchAll) => {
     playlistId,
     maxResults: fetchAll ? 50 : 5,
     pageToken: nextToken,
-  }).catch(err => log.error('videoListAPI() youtube.playlistItems.list', { playlistId, err: err.message }))).data;
+  })).data;
 
   // Get initial search
   let seed = await search();
-  if (!seed) return;
 
   // Store results
   const results = [seed.items];
@@ -48,7 +47,8 @@ module.exports = async () => {
   });
 
   // Fetch from youtube API
-  const channelVideos = await fetchVideo(uncrawledChannel.yt_uploads_id, true);
+  const channelVideos = await fetchVideo(uncrawledChannel.yt_uploads_id, true).catch(err => log.error('videoListAPI() youtube.playlistItems.list', { playlistId, err: err.message }));
+  if (!channelVideos) return;
 
   // Mark channel as crawled
   uncrawledChannel.crawled_at = utcDate;
