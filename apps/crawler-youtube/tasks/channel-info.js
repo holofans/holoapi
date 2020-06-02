@@ -9,12 +9,7 @@ const { Op } = require('sequelize');
 const { db, youtube, log } = require('../../../modules');
 
 module.exports = async () => {
-  log.debug('channels() START');
-
-  // Get times
-  const tokyoMoment = moment.tz('Asia/Tokyo');
-  const tokyoToday = tokyoMoment.clone().hour(0).minute(0).second(0);
-  const todayString = tokyoToday.tz('UTC').format('YYYY-MM-DD HH:mm:ss');
+  log.debug('channelInfo() START');
 
   // Fetch channels that needs to be updated, and get their keys
   const channelKeys = (await db.Channel.findAll({
@@ -24,7 +19,7 @@ module.exports = async () => {
         {
           [Op.or]: [
             { updated_at: { [Op.is]: null } },
-            { updated_at: { [Op.lt]: todayString } },
+            { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').hour(0).minute(0).second(0) } },
           ],
         },
       ],
@@ -48,7 +43,7 @@ module.exports = async () => {
   })).data.items;
 
   // Apply function
-  const results = await Promise.all(batch.map(search));
+  const results = (await Promise.all(batch.map(search))).reduce((c, v) => c.concat(v), []);
 
   // Process each result from function
   const updateResults = await Promise.all(results.map((channelInfo) => db.Channel.upsert({
@@ -57,10 +52,10 @@ module.exports = async () => {
     name: channelInfo.snippet.title,
     description: channelInfo.snippet.description,
     thumbnail: channelInfo.snippet.thumbnails.high.url,
-    published_at: moment(channelInfo.snippet.publishedAt).tz('UTC').toDate(),
-    updated_at: tokyoMoment.toDate(),
+    published_at: moment(channelInfo.snippet.publishedAt).tz('UTC'),
+    updated_at: moment.utc(),
   })));
 
-  log.info('[channels] Saved channel information', { results: updateResults });
+  log.info('channelInfo() Saved channel information', { results: updateResults });
   return Promise.resolve();
 };

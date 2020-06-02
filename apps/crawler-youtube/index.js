@@ -16,8 +16,6 @@ const { env } = process;
 
 log.info('YOUTUBE CRAWLER | %s | %s', env.NODE_ENV, moment().format('YYYY-MM-DD HH:mm:ss ZZ'));
 
-channelInfo();
-
 // Update channel information
 schedule.scheduleJob('channelInfo', env.SCHEDULE_CHANNEL_INFO, 'Asia/Tokyo', () => {
   channelInfo();
