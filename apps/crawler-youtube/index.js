@@ -21,7 +21,7 @@ schedule.scheduleJob('channelInfo', env.SCHEDULE_CHANNEL_INFO, 'Asia/Tokyo', () 
   channelInfo();
 });
 
-// Run only at the beginning to get all past videos
+// If there's any new channel that's uncrawled yet, get all its videos and save them
 schedule.scheduleJob('videoListAPI', env.SCHEDULE_VIDEO_LIST_API, 'Asia/Tokyo', () => {
   videoListAPI();
 });

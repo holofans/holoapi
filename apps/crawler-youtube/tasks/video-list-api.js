@@ -1,75 +1,145 @@
 /**
- * CRAWL VIDEOS
- * Gets all videos from all channels since the beginning
+ * VIDEO LIST API
+ * Gets all videos for a channel since the beginning, via API
  */
 
 require('dotenv').config();
 const moment = require('moment-timezone');
 const { Op } = require('sequelize');
-const { db, youtube, log } = require('../../../modules');
+// eslint-disable-next-line object-curly-newline
+const { db, youtube, log, GenericError } = require('../../../modules');
 
-/* eslint-disable */ // Video fetcher
-const fetchVideo = async (playlistId, fetchAll) => {
-  log.debug(`videoListAPI() fetchVideoPage() | playlistId: ${playlistId} | fetchAll ? ${!!fetchAll}`);
 
-  // Search function
-  const search = async (nextToken) => (await youtube.playlistItems.list({
+const fetchAllChannelVideos = async (playlistId, pageToken, list = []) => {
+  log.debug('videoListAPI() fetchVideoPage()', { playlistId, pageToken });
+
+  // Fetch data from YouTube
+  const ytData = await youtube.playlistItems.list({
     part: 'id,snippet',
     playlistId,
-    maxResults: fetchAll ? 50 : 5,
-    pageToken: nextToken,
-  })).data;
+    maxResults: 50,
+    pageToken,
+  })
+    .then((ytResult) => {
+      // Sanity check for YouTube respons contents
+      if (!ytResult.data || !ytResult.data.items) {
+        return Promise.reject(new GenericError('YouTube response error', ytResult));
+      }
+      // Return the full object result: video items and nextPageToken
+      return ytResult.data;
+    })
+    .catch((err) => {
+      // Log error information, playlistId, and pageToken being fetched
+      log.error('videoListAPI() YouTube fetch error', {
+        error: err.toString(),
+        playlistId,
+        pageToken,
+      });
+      // Return so that loop will not continue, and this call has no items returned
+      return {
+        nextPageToken: null,
+        items: [],
+      };
+    });
 
-  // Get initial search
-  let seed = await search();
+  // Add new results to the cumulative list
+  list = list.concat(ytData.items); // eslint-disable-line no-param-reassign
 
-  // Store results
-  const results = [seed.items];
-  
-  // Keep searching while token exists, and store the results
-  if (fetchAll) while (token = seed.nextPageToken) results.push((seed = await search(token)).items);
-
-  return results.flat();
+  // If has next page, fetch again
+  if (ytData.items.length === 50 && ytData.nextPageToken && pageToken !== ytData.nextPageToken) {
+    return fetchAllChannelVideos(playlistId, ytData.nextPageToken, list);
+  }
+  return list;
 };
-/* eslint-enable */
+
 
 module.exports = async () => {
   log.debug('videoListAPI() START');
 
   // Get times
-  const utcDate = moment.tz('UTC').toDate();
+  const utcDate = moment.tz('UTC');
 
-  // Get channel that isn't crawled yet
+  // Get channel that isn't crawled today yet
   const uncrawledChannel = await db.Channel.findOne({
     where: {
-      crawled_at: { [Op.is]: null },
+      [Op.and]: [
+        { yt_channel_id: { [Op.not]: null } },
+        {
+          [Op.or]: [
+            { crawled_at: { [Op.is]: null } },
+            { crawled_at: { [Op.lt]: moment.tz('Asia/Tokyo').hour(0).minute(0).second(0) } },
+          ],
+        },
+      ],
     },
   });
 
-  // Fetch from youtube API
-  const channelVideos = await fetchVideo(uncrawledChannel.yt_uploads_id, true).catch(err => log.error('videoListAPI() youtube.playlistItems.list', { playlistId, err: err.message }));
-  if (!channelVideos) return;
+  // Check if there's any channel to be crawled
+  if (!uncrawledChannel) {
+    log.debug('videoListAPI() No channels to be crawled');
+    return Promise.resolve({ skip: true });
+  }
 
   // Mark channel as crawled
   uncrawledChannel.crawled_at = utcDate;
-  await uncrawledChannel.save();
+  await uncrawledChannel.save()
+    .catch((err) => {
+      // Catch and log error, do not return reject to continue the rest of the module
+      log.error('videoListAPI() Unable to mark channel as crawled', {
+        channel: uncrawledChannel.yt_channel_id,
+        error: err.tostring(),
+      });
+    });
 
-  // Results
-  const upsertedKeys = [];
+  // Fetch video list from youtube API
+  const channelVideos = await fetchAllChannelVideos(uncrawledChannel.yt_uploads_id)
+    .catch((err) => {
+      // Catch and log error, return null to skip rest of module
+      log.error('videoListAPI() Error fetching video list', {
+        channel: uncrawledChannel.yt_channel_id,
+        err: err.tostring(),
+      });
+      return null;
+    });
 
-  // Upsert the videos
-  await Promise.all(channelVideos.map((videoInfo) => {
-    upsertedKeys.push(videoInfo.snippet.resourceId.videoId);
-    return db.Video.upsert({
+  // If there was an error (null), or there's just no videos to save ([]), skip the rest
+  if (!channelVideos || !channelVideos.length) {
+    log.debug('videoListAPI() No videos to be saved');
+    return Promise.resolve({ skip: true });
+  }
+
+  // Record results for all video saves
+  const logResults = {};
+
+  // Convert video list into promises that save into database
+  const dbSaves = channelVideos.map((videoInfo) => (
+    // Update databse record, insert if any unique key does not exist yet
+    db.Video.upsert({
       channel_id: uncrawledChannel.id,
       yt_video_key: videoInfo.snippet.resourceId.videoId,
       title: videoInfo.snippet.title,
       description: videoInfo.snippet.description,
-      publishedAt: moment(videoInfo.snippet.publishedAt).tz('UTC').format('YYYY-MM-DD HH:mm:ss'),
+      publishedAt: moment(videoInfo.snippet.publishedAt).tz('UTC'),
       updated_at: utcDate,
-    });
-  }));
+    })
+      .then((dbResult) => {
+        // Add to result list
+        logResults[videoInfo.snippet.resourceId.videoId] = dbResult;
+      })
+      .catch((err) => {
+        // Log error
+        log.error('videoListAPI() Cannot save to database', {
+          videoInfo: { ...videoInfo, description: '' },
+          error: err.toString(),
+        });
+        // Add to result list
+        logResults[videoInfo.snippet.resourceId.videoId] = null;
+      })
+  ));
 
-  log.info('videoListAPI() Saved video list', { keys: upsertedKeys });
-  return Promise.resolve();
+  // Wait for all database saves
+  await Promise.all(dbSaves);
+
+  log.info('videoListAPI() Saved video list', { results: logResults });
+  return Promise.resolve({ done: true });
 };
