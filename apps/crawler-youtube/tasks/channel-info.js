@@ -107,7 +107,7 @@ module.exports = async () => {
       .catch((err) => {
         // Log error
         log.error('channelInfo() Cannot save to database', {
-          channelInfo,
+          channelInfo: { ...channelInfo, description: '' },
           error: err.toString(),
         });
         // Add to result list
