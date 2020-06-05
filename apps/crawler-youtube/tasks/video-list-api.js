@@ -117,7 +117,7 @@ module.exports = async () => {
       yt_video_key: videoInfo.snippet.resourceId.videoId,
       title: videoInfo.snippet.title,
       description: videoInfo.snippet.description,
-      publishedAt: moment(videoInfo.snippet.publishedAt).tz('UTC'),
+      published_at: moment(videoInfo.snippet.publishedAt).tz('UTC'),
       updated_at: utcDate,
     })
       .then((dbResult) => {
