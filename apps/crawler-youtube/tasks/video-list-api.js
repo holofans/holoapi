@@ -19,6 +19,7 @@ const fetchAllChannelVideos = async (playlistId, pageToken, list = []) => {
     playlistId,
     maxResults: 50,
     pageToken,
+    hl: 'ja',
   })
     .then((ytResult) => {
       // Sanity check for YouTube respons contents
