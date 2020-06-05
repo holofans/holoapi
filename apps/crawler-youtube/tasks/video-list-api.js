@@ -1,6 +1,8 @@
 /**
  * VIDEO LIST API
  * Gets all videos for a channel since the beginning, via API
+ * - Each channel only crawled once using this
+ * - Keep running for newly added channels
  */
 
 require('dotenv').config();
@@ -65,12 +67,7 @@ module.exports = async () => {
     where: {
       [Op.and]: [
         { yt_channel_id: { [Op.not]: null } },
-        {
-          [Op.or]: [
-            { crawled_at: { [Op.is]: null } },
-            { crawled_at: { [Op.lt]: moment.tz('Asia/Tokyo').hour(0).minute(0).second(0) } },
-          ],
-        },
+        { crawled_at: { [Op.is]: null } },
       ],
     },
   });
