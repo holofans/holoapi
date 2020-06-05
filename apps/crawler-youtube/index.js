@@ -5,7 +5,7 @@ const schedule = require('node-schedule-tz');
 const { log } = require('../../modules');
 const channelInfo = require('./tasks/channel-info');
 const videoListAPI = require('./tasks/video-list-api');
-// const videoListFeed = require('./tasks/video-list-feed')
+const videoListFeed = require('./tasks/video-list-feed');
 // const videoListScrape = require('./tasks/video-list-scrape')
 // const videoInfoAPI = require('./tasks/video-info-api')
 // const videoStatusAPI = require('./tasks/video-status-api')
@@ -27,9 +27,9 @@ schedule.scheduleJob('videoListAPI', env.SCHEDULE_VIDEO_LIST_API, 'Asia/Tokyo', 
 });
 
 // Gets latest videos from each channel through YouTube XML feed
-// schedule.scheduleJob('video-list-feed', config.timings['video-list-feed'], 'Asia/Tokyo', function(){
-//   videoListFeed()
-// })
+schedule.scheduleJob('videoListFeed', env.SCHEDULE_VIDEO_LIST_FEED, 'Asia/Tokyo', () => {
+  videoListFeed();
+});
 
 // Gets latest videos from each channel through web scraping
 // schedule.scheduleJob('video-list-scrape', config.timings['video-list-scrape'], 'Asia/Tokyo', function(){
