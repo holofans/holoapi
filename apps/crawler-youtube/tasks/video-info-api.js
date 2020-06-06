@@ -167,8 +167,6 @@ module.exports = async () => {
         // Log error
         log.error('videoInfoAPI() Cannot save to database', {
           videoKey: targetVideo.yt_video_key,
-          ytInfo,
-          saveInfo,
           error: err.toString(),
         });
         // Add to result list
