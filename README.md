@@ -10,8 +10,7 @@ Platform to serve Hololive information to community tools
     * Create **JSON key file**. Rename it to `gcp-key.json`. Store it safely since it cannot be re-downloaded.
 * Copy `.env.example` into `.env`
   * Change values for your environment
-* Copy `ecosystem.config.sample.js` into `ecosystem.config.js`
-  * Change values for your environment
+* Change values in `ecosystem.config.js` for your environment
 * Execute `docker-compose up` or `npm start` on root
   * API is then accessible through `http://localhost:2434/`
 
