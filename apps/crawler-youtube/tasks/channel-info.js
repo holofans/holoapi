@@ -31,7 +31,7 @@ module.exports = async () => {
   }
 
   // Get YouTube channel keys/ids
-  const channelKeys = channelInstances.map((v) => v.yt_channel_id);
+  const channelKeys = channelInstances.map((channelInstance) => channelInstance.yt_channel_id);
 
   // Get channels by page
   const batch = [];
