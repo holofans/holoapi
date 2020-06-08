@@ -39,7 +39,7 @@ logger.configure({
 // Development environment, writes debug logs, and outputs to console
 if (process.env.NODE_ENV === 'development') {
   logger.add(new transports.Console({
-    level: 'debug',
+    level: 'verbose',
     colorize: true,
   }));
   logger.add(new transports.File({
