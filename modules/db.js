@@ -21,7 +21,7 @@ const db = new Sequelize(process.env.DATABASE_URL, {
   logging: (message) => logger.verbose(message),
 });
 
-db.options.logging = false;
+if (!parseInt(process.env.DATABASE_LOGGING, 10)) db.options.logging = false;
 
 const modelsPath = path.resolve('database', 'models');
 fs.readdirSync(modelsPath)
