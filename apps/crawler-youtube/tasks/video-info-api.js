@@ -23,12 +23,10 @@ module.exports = async () => {
 
   // Check if there are videos set as status [new]
   const newVideos = await db.Video.findAll({
-    where: {
-      [Op.and]: [
-        { yt_video_key: { [Op.not]: null } },
-        { status: { [Op.ne]: consts.STATUSES.NEW } },
-      ],
-    },
+    where: [
+      { yt_video_key: { [Op.not]: null } },
+      { status: { [Op.ne]: consts.STATUSES.NEW } },
+    ],
     limit: VIDEOS_MAX_QUERY,
   }).catch((err) => {
     // Catch and log db error
