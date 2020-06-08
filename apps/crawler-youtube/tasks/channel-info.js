@@ -13,17 +13,15 @@ module.exports = async () => {
 
   // Fetch channels that needs to be updated, and get their keys
   const channelInstances = await db.Channel.findAll({
-    where: {
-      [Op.and]: [
-        { yt_channel_id: { [Op.not]: null } },
-        {
-          [Op.or]: [
-            { updated_at: { [Op.is]: null } },
-            { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').startOf('day') } },
-          ],
-        },
-      ],
-    },
+    where: [
+      { yt_channel_id: { [Op.not]: null } },
+      {
+        [Op.or]: [
+          { updated_at: { [Op.is]: null } },
+          { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').startOf('day') } },
+        ],
+      },
+    ],
   });
 
   // Check if there's any channel to be updated
