@@ -140,8 +140,8 @@ module.exports = async () => {
           saveInfo.status = consts.STATUSES.PAST;
         }
         // Get derived values
-        saveInfo.late_secs = parseInt(moment.duration(startMoment.diff(scheduleMoment)).as('seconds'), 10);
-        saveInfo.duration_secs = parseInt(moment.duration(endMoment.diff(startMoment)).as('seconds'), 10);
+        saveInfo.late_secs = parseInt(startMoment.diff(scheduleMoment, 'seconds'), 10);
+        saveInfo.duration_secs = parseInt(endMoment.diff(startMoment, 'seconds'), 10);
       } else {
         // Not a live stream, an uploaded video
         saveInfo.is_uploaded = true;
