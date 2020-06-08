@@ -63,7 +63,7 @@ module.exports = async () => {
   // Check if there's any channel to be crawled
   if (!targetVideos || !targetVideos.length) {
     log.debug('videoInfoAPI() No videos to be updated');
-    return Promise.resolve({ skip: true });
+    return;
   }
 
   // Fetch data from YouTube
@@ -95,7 +95,7 @@ module.exports = async () => {
   // Check if we have videos to be updated in database
   if (!ytVideoItems) {
     log.warn('videoInfoAPI() No videos fetched');
-    return Promise.resolve({ skip: true });
+    return;
   }
 
   // Record results for all video saves
@@ -177,5 +177,4 @@ module.exports = async () => {
   await Promise.all(dbSaves);
 
   log.info('videoInfoAPI() Saved video list', { results: logResults });
-  return Promise.resolve({ done: true });
 };

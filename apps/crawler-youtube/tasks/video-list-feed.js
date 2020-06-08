@@ -81,7 +81,7 @@ module.exports = async () => {
   const videoList = (await Promise.all(xmlFetches)).flat();
   if (!videoList || !videoList.length) {
     log.debug('videoListFeed() No videos to be persisted');
-    return Promise.resolve({ skip: true });
+    return;
   }
 
   // Record results for all video saves
@@ -110,5 +110,4 @@ module.exports = async () => {
   await Promise.all(dbSaves);
 
   log.info('videoListFeed() Saved video list', { results: logResults });
-  return Promise.resolve({ done: true });
-}
+};

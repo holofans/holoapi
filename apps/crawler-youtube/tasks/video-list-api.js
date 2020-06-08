@@ -74,7 +74,7 @@ module.exports = async () => {
   // Check if there's any channel to be crawled
   if (!uncrawledChannel) {
     log.debug('videoListAPI() No channels to be crawled');
-    return Promise.resolve({ skip: true });
+    return;
   }
 
   // Mark channel as crawled
@@ -102,7 +102,7 @@ module.exports = async () => {
   // If there was an error (null), or there's just no videos to save ([]), skip the rest
   if (!channelVideos || !channelVideos.length) {
     log.debug('videoListAPI() No videos to be saved');
-    return Promise.resolve({ skip: true });
+    return;
   }
 
   // Record results for all video saves
@@ -138,5 +138,4 @@ module.exports = async () => {
   await Promise.all(dbSaves);
 
   log.info('videoListAPI() Saved video list', { results: logResults });
-  return Promise.resolve({ done: true });
 };
