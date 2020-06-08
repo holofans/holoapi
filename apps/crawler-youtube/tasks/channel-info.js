@@ -66,7 +66,7 @@ module.exports = async () => {
   ));
 
   // Wait for all YouTube responses
-  const channelInfos = (await Promise.all(ytFetches)).reduce((c, v) => c.concat(v), []);
+  const channelInfos = (await Promise.all(ytFetches)).flat();
 
   // Check if all channels were returned
   if (channelInfos.length !== channelInstances.length) {
