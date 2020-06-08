@@ -41,7 +41,7 @@ module.exports = async () => {
       [Op.and]: [
         { yt_video_key: { [Op.not]: null } },
         { status: consts.STATUSES.NEW },
-        { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').hour(0).minute(0).second(0) } },
+        { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').startOf('day') } },
       ],
     },
     order: [
