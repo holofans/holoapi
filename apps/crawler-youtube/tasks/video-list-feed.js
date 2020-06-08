@@ -17,7 +17,7 @@ const { db, log } = require('../../../modules');
 
 const findVideoRegex = /<yt:videoId>(.*?)<\/yt:videoId>\s+\S+\s+<title>(.*?)<\/title>/gim;
 
-const channelsPerRun = process.env.CHANNEL_FEED_PER_RUN;
+const channelsPerRun = process.env.CHANNEL_FEED_PER_RUN || 5;
 
 module.exports = async () => {
   log.debug('videoListFeed() START');
@@ -33,7 +33,7 @@ module.exports = async () => {
     order: [
       ['crawled_at', 'ASC'],
     ],
-    limit: channelsPerRun || 5,
+    limit: channelsPerRun,
   });
 
   // Mark channel as crawled
