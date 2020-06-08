@@ -19,7 +19,7 @@ module.exports = async () => {
         {
           [Op.or]: [
             { updated_at: { [Op.is]: null } },
-            { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').hour(0).minute(0).second(0) } },
+            { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').startOf('day') } },
           ],
         },
       ],
