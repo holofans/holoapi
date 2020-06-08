@@ -40,7 +40,7 @@ module.exports = async () => {
   while (channelKeys.length) batch.push(channelKeys.splice(0, 50).join(','));
 
   // Convert batch array into promises that fetch youTube data
-  const ytFetches = batch.map(async (batchItems) => (
+  const ytFetches = batch.map((batchItems) => (
     // Fetch data from YouTube
     youtube.channels.list({
       part: 'snippet,contentDetails',
