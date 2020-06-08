@@ -8,7 +8,6 @@
 require('dotenv').config();
 const moment = require('moment-timezone');
 const { Op } = require('sequelize');
-// eslint-disable-next-line object-curly-newline
 const { db, youtube, log, GenericError } = require('../../../modules');
 
 
