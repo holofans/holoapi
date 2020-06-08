@@ -12,7 +12,7 @@ module.exports = async () => {
   log.debug('channelInfo() START');
 
   // Fetch channels that needs to be updated, and get their keys
-  const channelInstances = (await db.Channel.findAll({
+  const channelInstances = await db.Channel.findAll({
     where: {
       [Op.and]: [
         { yt_channel_id: { [Op.not]: null } },
@@ -24,7 +24,7 @@ module.exports = async () => {
         },
       ],
     },
-  }));
+  });
 
   // Check if there's any channel to be updated
   if (!channelInstances || !channelInstances.length) {
