@@ -44,7 +44,7 @@ module.exports = async () => {
       // Catch and log error, do not return reject to continue the rest of the module
       log.error('videoListFeed() Unable to mark channel as crawled', {
         channel: crawlChannel.yt_channel_id,
-        error: err.tostring(),
+        error: err.toString(),
       });
     });
   });
