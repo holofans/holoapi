@@ -2,7 +2,7 @@
 
 set -o errexit
 
-cd /home/holoapi || { echo "No directory found"; exit 1; }
+cd /opt/holoapi || { echo "No directory found"; exit 1; }
 
 git pull
 
