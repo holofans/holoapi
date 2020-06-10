@@ -19,6 +19,8 @@ services:
   pgadmin:
     container_name: hf-pgadmin
     image: dpage/pgadmin4
+    logging:
+      driver: none
     volumes:
       - ./database/pgadmin:/root/.pgadmin
     environment:

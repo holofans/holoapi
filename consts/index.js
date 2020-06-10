@@ -6,5 +6,7 @@ module.exports = {
     NEW: 'new',
     LIVE: 'live',
     UPCOMING: 'upcoming',
+    PAST: 'past',
+    MISSING: 'missing',
   },
 };

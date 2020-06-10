@@ -5,11 +5,9 @@ const { createLogger, format, transports } = require('winston');
 // Ensure log directory exists
 const logDir = path.join(process.cwd(), 'logs');
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
-const appLogDir = path.join(logDir, 'crawler-youtube');
-if (!fs.existsSync(appLogDir)) fs.mkdirSync(appLogDir);
 
 // Log by date
-const logDirDate = path.join(appLogDir, new Date().toISOString().slice(0, 10));
+const logDirDate = path.join(logDir, new Date().toISOString().slice(0, 10));
 if (!fs.existsSync(logDirDate)) fs.mkdirSync(logDirDate);
 
 // New logger instance
@@ -22,7 +20,7 @@ logger.configure({
     format.colorize(),
     format.splat(),
     format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'label'] }),
-    format.printf((info) => `${info.timestamp} | [${info.level}] | ${info.message}`),
+    format.printf((info) => `${info.timestamp} | [${info.level}] ${info.message} | ${JSON.stringify(info.metadata)}`),
   ),
   transports: [
     new transports.File({

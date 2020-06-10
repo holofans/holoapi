@@ -21,6 +21,8 @@ const db = new Sequelize(process.env.DATABASE_URL, {
   logging: (message) => logger.verbose(message),
 });
 
+if (!parseInt(process.env.DATABASE_LOGGING, 10)) db.options.logging = false;
+
 const modelsPath = path.resolve('database', 'models');
 fs.readdirSync(modelsPath)
   .filter((file) => file.indexOf('.') !== 0 && file.slice(-3) === '.js')

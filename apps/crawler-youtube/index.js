@@ -1,12 +1,13 @@
+require('dotenv').config();
 const moment = require('moment-timezone');
 const schedule = require('node-schedule-tz');
 
 const { log } = require('../../modules');
-// const channels = require('./tasks/channels');
-// const videoListAPI = require('./tasks/video-list-api')
-// const videoListFeed = require('./tasks/video-list-feed')
+const channelInfo = require('./tasks/channel-info');
+const videoListAPI = require('./tasks/video-list-api');
+const videoListFeed = require('./tasks/video-list-feed');
 // const videoListScrape = require('./tasks/video-list-scrape')
-// const videoInfoAPI = require('./tasks/video-info-api')
+const videoInfoAPI = require('./tasks/video-info-api');
 // const videoStatusAPI = require('./tasks/video-status-api')
 // const videoStatusHeart = require('./tasks/video-status-heart')
 // const comments = require('./tasks/comments')
@@ -15,20 +16,14 @@ const { env } = process;
 
 log.info('YOUTUBE CRAWLER | %s | %s', env.NODE_ENV, moment().format('YYYY-MM-DD HH:mm:ss ZZ'));
 
-// Update channel information and get today's stats
-schedule.scheduleJob('channels', env.SCHEDULE_CHANNEL, 'Asia/Tokyo', () => {
-  // channels();
-});
+// Update channel information
+schedule.scheduleJob('channelInfo', env.SCHEDULE_CHANNEL_INFO, 'Asia/Tokyo', channelInfo);
 
-// Run only at the beginning to get all past videos
-// schedule.scheduleJob('video-list-api', config.timings['video-list-api'], 'Asia/Tokyo', function(){
-//   videoListAPI()
-// })
+// If there's any new channel that's uncrawled yet, get all its videos and save them
+schedule.scheduleJob('videoListAPI', env.SCHEDULE_VIDEO_LIST_API, 'Asia/Tokyo', videoListAPI);
 
 // Gets latest videos from each channel through YouTube XML feed
-// schedule.scheduleJob('video-list-feed', config.timings['video-list-feed'], 'Asia/Tokyo', function(){
-//   videoListFeed()
-// })
+schedule.scheduleJob('videoListFeed', env.SCHEDULE_VIDEO_LIST_FEED, 'Asia/Tokyo', videoListFeed);
 
 // Gets latest videos from each channel through web scraping
 // schedule.scheduleJob('video-list-scrape', config.timings['video-list-scrape'], 'Asia/Tokyo', function(){
@@ -36,9 +31,7 @@ schedule.scheduleJob('channels', env.SCHEDULE_CHANNEL, 'Asia/Tokyo', () => {
 // })
 
 // Checks the status of newly added videos if they're past, upcoming, or live
-// schedule.scheduleJob('video-info-api', config.timings['video-info-api'], 'Asia/Tokyo', function(){
-//   videoInfoAPI()
-// })
+schedule.scheduleJob('video-info-api', env.SCHEDULE_VIDEO_INFO_API, 'Asia/Tokyo', videoInfoAPI);
 
 // Checks status of known live videos using YouTube Data API
 // schedule.scheduleJob('video-status-api', config.timings['video-status-api'], 'Asia/Tokyo', function(){
