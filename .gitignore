@@ -104,7 +104,6 @@ dist
 .tern-port
 
 # Custom
-ecosystem.config.js
 gcp-key.json
 database/pgdata
 database/pgadmin
