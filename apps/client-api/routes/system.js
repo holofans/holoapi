@@ -1,10 +1,11 @@
 const Sequelize = require('sequelize');
 const { Router } = require('express');
 const { db } = require('../../../modules');
+const { asyncMiddleware } = require('../middleware/error');
 
 const router = new Router();
 
-router.get('/', async (req, res) => {
+router.get('/', asyncMiddleware(async (req, res) => {
   const channel = await db.Channel.findOne({
     include: [{
       as: 'stats',
@@ -27,6 +28,6 @@ router.get('/', async (req, res) => {
     time: Date.now(),
     channel,
   });
-});
+}));
 
 module.exports = router;
