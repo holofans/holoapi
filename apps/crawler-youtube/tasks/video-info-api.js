@@ -26,7 +26,7 @@ module.exports = async () => {
     const newVideos = await db.Video.findAll({
       where: [
         { yt_video_key: { [Op.not]: null } },
-        { status: { [Op.ne]: consts.STATUSES.NEW } },
+        { status: consts.STATUSES.NEW },
       ],
       limit: VIDEOS_MAX_QUERY,
     }).catch((err) => {
@@ -41,7 +41,7 @@ module.exports = async () => {
       where: {
         [Op.and]: [
           { yt_video_key: { [Op.not]: null } },
-          { status: consts.STATUSES.NEW },
+          { status: { [Op.ne]: consts.STATUSES.NEW } },
           { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').startOf('day') } },
         ],
       },
