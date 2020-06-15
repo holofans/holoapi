@@ -1,4 +1,3 @@
-
 class GenericError extends Error {
   constructor(message, data) {
     super(message);
