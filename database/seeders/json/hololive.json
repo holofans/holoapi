@@ -1,0 +1,648 @@
+{
+  "channels": [
+    {
+      "name_jp": "夜空メル",
+      "name_en": "Yozora Mel",
+      "twitter": "yozoramel",
+      "youtube": "UCD8HOxPs4Xvsm8H0ZxXGiBw",
+      "ytName": "Mel Channel 夜空メルチャンネル",
+      "bio": {
+        "debutDate": "2018-05-13",
+        "bday": "10-31",
+        "height": "154cm",
+        "fanName": "Kamubin",
+        "illust": "Ayami"
+      }
+    },
+    {
+      "name_jp": "姫森ルーナ",
+      "name_en": "Himemori Luna",
+      "twitter": "himemoriluna",
+      "youtube": "UCa9Y57gfeY0Zro_noHRVrnw",
+      "ytName": "Luna Ch. 姫森ルーナ",
+      "bio": {
+        "debutDate": "2020-01-04",
+        "bday": "10-10",
+        "height": "151cm (incl. shoes and crown)",
+        "fanName": "Lu Knights",
+        "illust": "Kanzaki Hiro"
+      }
+    },
+    {
+      "name_jp": "荒咬オウガ",
+      "name_en": "Aragami Oga",
+      "twitter": "aragamioga",
+      "youtube": "UCwL7dgTxKo8Y4RFIKWaf8gA",
+      "ytName": "Oga Ch.荒咬オウガ",
+      "bio": {
+        "debutDate": "",
+        "bday": "",
+        "height": "",
+        "fanName": "",
+        "illust": ""
+      }
+    },
+    {
+      "name_jp": "戌神ころね",
+      "name_en": "Inugami Korone",
+      "twitter": "inugamikorone",
+      "youtube": "UChAnqc_AY5_I3Px5dig3X1Q",
+      "ytName": "Korone Ch. 戌神ころね",
+      "bio": {
+        "debutDate": "2019-04-13",
+        "bday": "10-01",
+        "height": "156cm",
+        "fanName": "Koronesuki",
+        "illust": "Fukahire"
+      }
+    },
+    {
+      "name_jp": "AZKi",
+      "name_en": "AZKi",
+      "twitter": "AZKi_VDiVA",
+      "youtube": "UC0TXe_LYZ4scaW2XMyi5_kw",
+      "ytName": "AZKi Channel",
+      "bio": {
+        "debutDate": "",
+        "bday": "7-1",
+        "height": "168cm (with heels)",
+        "fanName": "Pioneer",
+        "illust": "kasoku Sato"
+      }
+    },
+    {
+      "name_jp": "赤井はあと",
+      "name_en": "Akai Haato",
+      "twitter": "akaihaato",
+      "youtube": "UC1CfXB_kRs3C-zaeTG3oGyg",
+      "ytName": "Haato Channel 赤井はあと",
+      "bio": {
+        "debutDate": "2018-06-02",
+        "bday": "08-10",
+        "height": "154cm",
+        "fanName": "Haaton",
+        "illust": "Haru Yuki"
+      }
+    },
+    {
+      "name_jp": "アルランディス",
+      "name_en": "Arurandeisu",
+      "twitter": "arurandeisu",
+      "youtube": "UCKeAhJvy8zgXWbh9duVjIaQ",
+      "ytName": "Aruran Ch. アルランディス",
+      "bio": {
+        "debutDate": "2019-09-08",
+        "bday": "11-11",
+        "height": "186cm",
+        "fanName": "",
+        "illust": "lack"
+      }
+    },
+    {
+      "name_jp": "月下カオル",
+      "name_en": "Tsukishita Kaoru",
+      "twitter": "tsukishitakaoru",
+      "youtube": "UCsehvfwaWF6nWuFnXI0AqZQ",
+      "ytName": "Kaoru Ch.月下カオル",
+      "bio": {
+        "debutDate": "",
+        "bday": "",
+        "height": "",
+        "fanName": "",
+        "illust": ""
+      }
+    },
+    {
+      "name_jp": "",
+      "name_en": "",
+      "twitter": "",
+      "youtube": "UCJFZiqLMntJufDCHc6bQixg",
+      "ytName": "hololive ホロライブ - VTuber Group",
+      "bio": {
+        "debutDate": "",
+        "bday": "",
+        "height": "",
+        "fanName": "",
+        "illust": ""
+      }
+    },
+    {
+      "name_jp": "紫咲シオン",
+      "name_en": "Murasaki Shion",
+      "twitter": "murasakishionch",
+      "youtube": "UCXTpFs_3PqI41qX2d9tL2Rw",
+      "ytName": "Shion Ch. 紫咲シオン",
+      "bio": {
+        "debutDate": "2018-08-17",
+        "bday": "12-08",
+        "height": "145cm",
+        "fanName": "Shiokko",
+        "illust": "Tam-U"
+      }
+    },
+    {
+      "name_jp": "大神ミオ",
+      "name_en": "Ookami Mio",
+      "twitter": "ookamimio",
+      "youtube": "UCp-5t9SrOQwXMU7iIjQfARg",
+      "ytName": "Mio Channel 大神ミオ",
+      "bio": {
+        "debutDate": "2018-12-07",
+        "bday": "08-20",
+        "height": "165cm (without ears, with heels)",
+        "fanName": "Mio-fa",
+        "illust": "Izumi Aya"
+      }
+    },
+    {
+      "name_jp": "さくらみこ",
+      "name_en": "2018-08-01",
+      "twitter": "sakuramiko35",
+      "youtube": "UC-hM6YJuNYVAmUWxeIr9FeA",
+      "ytName": "Miko Ch. さくらみこ",
+      "bio": {
+        "debutDate": "2018-08-01",
+        "bday": "03-05",
+        "height": "152cm",
+        "fanName": "35P",
+        "illust": "kuromaru9"
+      }
+    },
+    {
+      "name_jp": "白上フブキ",
+      "name_en": "Shirakami Fubuki",
+      "twitter": "shirakamifubuki",
+      "youtube": "UCdn5BQ06XqgXoAxIhbqw5Rg",
+      "ytName": "フブキCh。白上フブキ",
+      "bio": {
+        "debutDate": "2018-06-01",
+        "bday": "10-05",
+        "height": "155cm",
+        "fanName": "Sukon-bu",
+        "illust": "Nagishiro Mito"
+      }
+    },
+    {
+      "name_jp": "桐生ココ",
+      "name_en": "Kiryu Coco",
+      "twitter": "kiryucoco",
+      "youtube": "UCS9uQI-jC3DE0L4IpXyvr6w",
+      "ytName": "Coco Ch. 桐生ココ",
+      "bio": {
+        "debutDate": "2019-12-28",
+        "bday": "06-17",
+        "height": "180cm (7m in dragon form)",
+        "fanName": "Tatsunoko",
+        "illust": "yaman**"
+      }
+    },
+    {
+      "name_jp": "",
+      "name_en": "",
+      "twitter": "",
+      "youtube": "UCHj_mh57PVMXhAUDphUQDFA",
+      "ytName": "Akai Haato Sub 赤井はあと",
+      "bio": {
+        "debutDate": "",
+        "bday": "",
+        "height": "",
+        "fanName": "",
+        "illust": ""
+      }
+    },
+    {
+      "name_jp": "岸堂天真",
+      "name_en": "Kishido Temma",
+      "twitter": "kishidotemma",
+      "youtube": "UCGNI4MENvnsymYjKiZwv9eg",
+      "ytName": "Temma Ch. 岸堂天真",
+      "bio": {
+        "debutDate": "2019-12-14",
+        "bday": "04-18",
+        "height": "179cm",
+        "fanName": "Kishi-men",
+        "illust": "Shirami"
+      }
+    },
+    {
+      "name_jp": "律可",
+      "name_en": "Rikka",
+      "twitter": "rikkaroid",
+      "youtube": "UC9mf_ZVpouoILRY9NUIaK-w",
+      "ytName": "Rikka ch.律可",
+      "bio": {
+        "debutDate": "2019-10-20",
+        "bday": "04-15",
+        "height": "179cm",
+        "fanName": "Tuner",
+        "illust": "Fuyuomi"
+      }
+    },
+    {
+      "name_jp": "鏡見キラ",
+      "name_en": "Kagami Kira",
+      "twitter": "kagamikirach",
+      "youtube": "UCEzsociuFqVwgZuMaZqaCsg",
+      "ytName": "Kira Ch. 鏡見キラ",
+      "bio": {
+        "debutDate": "2019-06-09",
+        "bday": "10-26",
+        "height": "156cm (160cm with heels)",
+        "fanName": "Kirarian",
+        "illust": "Nozaki Tsubata"
+      }
+    },
+    {
+      "name_jp": "アイラニ・イオフィフティーン",
+      "name_en": "Airani Iofifteen",
+      "twitter": "airaniiofifteen",
+      "youtube": "UCAoy6rzhSf4ydcYjJw3WoVg",
+      "ytName": "Airani Iofifteen Channel hololive-ID",
+      "bio": {
+        "debutDate": "2020-04-12",
+        "bday": "07-15",
+        "height": "150cm",
+        "fanName": "#ioarts",
+        "illust": "Yanomitsuki"
+      }
+    },
+    {
+      "name_jp": "夕刻ロベル",
+      "name_en": "Yukoku Roberu",
+      "twitter": "yukokuroberu",
+      "youtube": "UCANDOlYTJT7N5jlRC3zfzVA",
+      "ytName": "Roberu Ch. 夕刻ロベル",
+      "bio": {
+        "debutDate": "2019-12-24",
+        "bday": "09-26",
+        "height": "181cm",
+        "fanName": "Regulars",
+        "illust": "Mebaru"
+      }
+    },
+    {
+      "name_jp": "",
+      "name_en": "",
+      "twitter": "",
+      "youtube": "UCLbtM3JZfRTg8v2KGag-RMw",
+      "ytName": "AkiRose Ch.アキ・ローゼンタールSub",
+      "bio": {
+        "debutDate": "",
+        "bday": "",
+        "height": "",
+        "fanName": "",
+        "illust": ""
+      }
+    },
+    {
+      "name_jp": "ムーナ・ホシノヴァ",
+      "name_en": "Moona Hoshinova",
+      "twitter": "moonahoshinova",
+      "youtube": "UCP0BspO_AMEe3aQqqpo89Dg",
+      "ytName": "Moona Hoshinova hololive-ID",
+      "bio": {
+        "debutDate": "2020-04-11",
+        "bday": "02-15",
+        "height": "165cm",
+        "fanName": "Moonafic",
+        "illust": "Niyori"
+      }
+    },
+    {
+      "name_jp": "猫又おかゆ",
+      "name_en": "Nekomata Okayu",
+      "twitter": "nekomataokayu",
+      "youtube": "UCvaTdHTWBGv3MKj3KVqJVCw",
+      "ytName": "Okayu Ch. 猫又おかゆ",
+      "bio": {
+        "debutDate": "2019-04-06",
+        "bday": "02-22",
+        "height": "152cm (without ahoge)",
+        "fanName": "Onigiryaa",
+        "illust": "Kamioka Chihiro"
+      }
+    },
+    {
+      "name_jp": "夏色まつり",
+      "name_en": "Natsuiro Matsuri",
+      "twitter": "natsuiromatsuri",
+      "youtube": "UCQ0UDLQCjY0rmuxCDE38FGg",
+      "ytName": "Matsuri Channel 夏色まつり",
+      "bio": {
+        "debutDate": "2018-06-01",
+        "bday": "07-22",
+        "height": "152cm",
+        "fanName": "Matsurisu",
+        "illust": "Minamura Haruki"
+      }
+    },
+    {
+      "name_jp": "角巻わため",
+      "name_en": "Tsunomaki Watame",
+      "twitter": "tsunomakiwatame",
+      "youtube": "UCqm3BQLlJfvkTsX_hvm0UmA",
+      "ytName": "Watame Ch. 角巻わため",
+      "bio": {
+        "debutDate": "2019-12-29",
+        "bday": "06-06",
+        "height": "151cm",
+        "fanName": "Wata-mate",
+        "illust": "Fu-mi"
+      }
+    },
+    {
+      "name_jp": "白銀ノエル",
+      "name_en": "Shirogane Noel",
+      "twitter": "shiroganenoel",
+      "youtube": "UCdyqAaZDKHXg4Ahi7VENThQ",
+      "ytName": "Noel Ch. 白銀ノエル",
+      "bio": {
+        "debutDate": "2019-08-08",
+        "bday": "11-24",
+        "height": "158cm",
+        "fanName": "Order of Shirogane",
+        "illust": "Watao"
+      }
+    },
+    {
+      "name_jp": "潤羽るしあ",
+      "name_en": "Uruha Rushia",
+      "twitter": "uruharushia",
+      "youtube": "UCl_gCybOJRIgOXw6Qb4qJzQ",
+      "ytName": "Rushia Ch. 潤羽るしあ",
+      "bio": {
+        "debutDate": "2019-07-18",
+        "bday": "01-22",
+        "height": "143cm",
+        "fanName": "Fandead",
+        "illust": "Yasuyuki"
+      }
+    },
+    {
+      "name_jp": "花咲みやび",
+      "name_en": "Hanasaki Miyabi",
+      "twitter": "miyabihanasaki",
+      "youtube": "UC6t3-_N8A6ME1JShZHHqOMw",
+      "ytName": "Miyabi Ch. 花咲みやび",
+      "bio": {
+        "debutDate": "2019-06-08",
+        "bday": "03-03",
+        "height": "174cm (180cm with heels)",
+        "fanName": "Hanami gumi",
+        "illust": "hou"
+      }
+    },
+    {
+      "name_jp": "天音かなた",
+      "name_en": "Amane Kanata",
+      "twitter": "amanekanatach",
+      "youtube": "UCZlDXzGoo7d44bwdNObFacg",
+      "ytName": "Kanata Ch. 天音かなた",
+      "bio": {
+        "debutDate": "2019-12-27",
+        "bday": "04-22",
+        "height": "149cm",
+        "fanName": "Hey-min",
+        "illust": "oshioshio"
+      }
+    },
+    {
+      "name_jp": "湊あくあ",
+      "name_en": "Minato Aqua",
+      "twitter": "minatoaqua",
+      "youtube": "UC1opHUrw8rvnsadT-iGp7Cg",
+      "ytName": "Aqua Ch. 湊あくあ",
+      "bio": {
+        "debutDate": "2018-08-08",
+        "bday": "12-01",
+        "height": "148cm",
+        "fanName": "Aqua Crew",
+        "illust": "Gaou"
+      }
+    },
+    {
+      "name_jp": "アユンダ・リス",
+      "name_en": "Ayunda Risu",
+      "twitter": "ayunda_risu",
+      "youtube": "UCOyYb1c43VlX9rc_lT6NKQw",
+      "ytName": "Ayunda Risu Ch. hololive-ID",
+      "bio": {
+        "debutDate": "2020-04-10",
+        "bday": "01-15",
+        "height": "153cm",
+        "fanName": "Risuners",
+        "illust": "Yatomi"
+      }
+    },
+    {
+      "name_jp": "アキ・ローゼンタール",
+      "name_en": "Aki Rosenthal",
+      "twitter": "akirosenthal",
+      "youtube": "UCFTLzh12_nrtzqBPsTCqenA",
+      "ytName": "アキロゼCh。Vtuber/ホロライブ所属",
+      "bio": {
+        "debutDate": "2018-06-01",
+        "bday": "02-17",
+        "height": "162cm",
+        "fanName": "Squad Rose",
+        "illust": "Azumiu Akitake"
+      }
+    },
+    {
+      "name_jp": "百鬼あやめ",
+      "name_en": "Nakiri Ayame",
+      "twitter": "nakiriayame",
+      "youtube": "UC7fk0CB07ly8oSl0aqKkqFg",
+      "ytName": "Nakiri Ayame Ch. 百鬼あやめ",
+      "bio": {
+        "debutDate": "2018-09-03",
+        "bday": "12-13",
+        "height": "152cm",
+        "fanName": "Nakiri-gumi",
+        "illust": "NanaKagura"
+      }
+    },
+    {
+      "name_jp": "癒月ちょこ",
+      "name_en": "Yuzuki Choco",
+      "twitter": "yuzukichococh",
+      "youtube": "UC1suqwovbL1kzsoaZgFZLKg",
+      "ytName": "Choco Ch. 癒月ちょこ",
+      "bio": {
+        "debutDate": "2018-09-04",
+        "bday": "02-14",
+        "height": "165cm",
+        "fanName": "Choco Mate",
+        "illust": "Masuishi Kinoto"
+      }
+    },
+    {
+      "name_jp": "",
+      "name_en": "",
+      "twitter": "",
+      "youtube": "UCp3tgHXw_HI0QMk1K8qh3gQ",
+      "ytName": "Choco subCh. 癒月ちょこ",
+      "bio": {
+        "debutDate": "",
+        "bday": "",
+        "height": "",
+        "fanName": "",
+        "illust": ""
+      }
+    },
+    {
+      "name_jp": "兎田ぺこら",
+      "name_en": "Usada Pekora",
+      "twitter": "usadapekora",
+      "youtube": "UC1DCedRgGHBdm81E1llLhOQ",
+      "ytName": "Pekora Ch. 兎田ぺこら",
+      "bio": {
+        "debutDate": "2019-07-12",
+        "bday": "01-12",
+        "height": "153cm (without bunny ears)",
+        "fanName": "League of the Hare Alliance",
+        "illust": "Yuuki Hagure"
+      }
+    },
+    {
+      "name_jp": "アステル・レダ",
+      "name_en": "Astel Leda",
+      "twitter": "astelleda",
+      "youtube": "UCNVEsYbiZjH5QLmGeSgTSzg",
+      "ytName": "astel ch.アステル",
+      "bio": {
+        "debutDate": "2019-12-07",
+        "bday": "06-06",
+        "height": "158cm",
+        "fanName": "Astellas",
+        "illust": "Nakamura Eight"
+      }
+    },
+    {
+      "name_jp": "不知火フレア",
+      "name_en": "Shiranui Flare",
+      "twitter": "shiranuiflare",
+      "youtube": "UCvInZx9h3jC2JzsIzoOebWg",
+      "ytName": "Flare Ch. 不知火フレア",
+      "bio": {
+        "debutDate": "2019-08-07",
+        "bday": "04-02",
+        "height": "158cm",
+        "fanName": "Elfriend",
+        "illust": "lack"
+      }
+    },
+    {
+      "name_jp": "ロボ子さん",
+      "name_en": "Roboco-san",
+      "twitter": "robocosan",
+      "youtube": "UCDqI2jOz0weumE8s7paEk6g",
+      "ytName": "Roboco Ch. - ロボ子",
+      "bio": {
+        "debutDate": "2018-03-04",
+        "bday": "05-23",
+        "height": "154cm",
+        "fanName": "Robosa",
+        "illust": "kuromaru9"
+      }
+    },
+    {
+      "name_jp": "影山シエン",
+      "name_en": "Kageyama Shien",
+      "twitter": "kageyamashien",
+      "youtube": "UChSvpZYRPh0FvG4SJGSga3g",
+      "ytName": "Shien Ch.影山シエン",
+      "bio": {
+        "debutDate": "",
+        "bday": "",
+        "height": "",
+        "fanName": "",
+        "illust": ""
+      }
+    },
+    {
+      "name_jp": "ときのそら",
+      "name_en": "Tokino Sora",
+      "twitter": "tokino_sora",
+      "youtube": "UCp6993wxpyDPHUpavwDFqgg",
+      "ytName": "SoraCh. ときのそらチャンネル",
+      "bio": {
+        "debutDate": "2017-09-07",
+        "bday": "05-15",
+        "height": "160cm",
+        "fanName": "Sora-tomo",
+        "illust": "ordan"
+      }
+    },
+    {
+      "name_jp": "奏手イヅル",
+      "name_en": "Kanade Izuru",
+      "twitter": "kanadeizuru",
+      "youtube": "UCZgOv3YDEs-ZnZWDYVwJdmA",
+      "ytName": "Izuru Ch. 奏手イヅル",
+      "bio": {
+        "debutDate": "2019-06-22",
+        "bday": "08-12",
+        "height": "163cm (167cm with heels)",
+        "fanName": "",
+        "illust": "TCB"
+      }
+    },
+    {
+      "name_jp": "大空スバル",
+      "name_en": "Oozora Subaru",
+      "twitter": "oozorasubaru",
+      "youtube": "UCvzGlP9oQwU--Y0r9id_jnA",
+      "ytName": "Subaru Ch. 大空スバル",
+      "bio": {
+        "debutDate": "2018-09-16",
+        "bday": "07-02",
+        "height": "154cm",
+        "fanName": "Suba-tomo",
+        "illust": "Shigureui"
+      }
+    },
+    {
+      "name_jp": "宝鐘マリン",
+      "name_en": "Houshou Marine",
+      "twitter": "houshoumarine",
+      "youtube": "UCCzUftO8KOVkV4wQG1vkUvg",
+      "ytName": "Marine Ch. 宝鐘マリン",
+      "bio": {
+        "debutDate": "2019-08-11",
+        "bday": "07-30",
+        "height": "150cm",
+        "fanName": "Houshou no Ichimi",
+        "illust": "Akasa Ai"
+      }
+    },
+    {
+      "name_jp": "常闇トワ",
+      "name_en": "Tokoyami Towa",
+      "twitter": "tokoyamitowa",
+      "youtube": "UC1uv2Oq6kNxgATlCiez59hw",
+      "ytName": "Towa Ch. 常闇トワ",
+      "bio": {
+        "debutDate": "2020-01-03",
+        "bday": "08-08",
+        "height": "150cm",
+        "fanName": "Kin of Tokoyami",
+        "illust": "rurudo"
+      }
+    },
+    {
+      "name_jp": "星街すいせい",
+      "name_en": "Hoshimachi Suisei",
+      "twitter": "suisei_hosimati",
+      "youtube": "UC5CwaMl1eIgY8h02uZw7u8A",
+      "ytName": "Suisei Channel",
+      "bio": {
+        "debutDate": "2018-03-22",
+        "bday": "03-22",
+        "height": "160cm",
+        "fanName": "Stargazers",
+        "illust": "Teshima Nari"
+      }
+    }
+  ]
+}

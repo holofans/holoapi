@@ -102,3 +102,11 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Custom
+gcp-key.json
+database/pgdata
+database/pgadmin
+/dev
+.vscode/
+.idea/

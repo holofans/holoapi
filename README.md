@@ -1,10 +1,28 @@
-# holotools-api
-Monolith tools and services in consuming Hololive content
-
+# HoloFans API
+Platform to serve Hololive information to community tools
 
 ## Development
+* Requirements
+  * **Optional**, you can just run Postgres locally. `docker` and `docker-compose` to run Postgres and PGAdmin4.
+* Have a `gcp-key.json` on project root
+  * You may get this from your GCP Project, [under credentials](https://console.cloud.google.com/apis/credentials)
+    * Create **Service Account**
+    * Create **JSON key file**. Rename it to `gcp-key.json`. Store it safely since it cannot be re-downloaded.
+* Copy `.env.example` into `.env`
+  * Change values for your environment
+* Change values in `ecosystem.config.js` for your environment
+* Execute `docker-compose up` or `npm start` on root
+  * API is then accessible through `http://localhost:2434/`
 
-## Deployment
+## Applications
+### Client API
+
+### Cralwer: YouTube
+
+### Cralwer: BiliBili
+
+
+## Production Deployment
 
 Set up deployment of holotools-api by using the following deployment methods:
 
@@ -12,26 +30,28 @@ Set up deployment of holotools-api by using the following deployment methods:
 - [Digital Ocean Deployment](https://www.digitalocean.com/community/tutorials/how-to-set-up-automatic-deployment-with-git-with-a-vps)
   - or if you'd rather not deploy from local, and would like it semi-automated, use a webhook: https://github.com/adnanh/webhook
 
-
-## Deployment setup on Digital Ocean
+### Digital Ocean
 
 Setting up a dev user account
 ```
-    $  adduser holotools
-    $  usermod -aG sudo holotools
-    $  rsync --archive --chown=holotools:holotools ~/.ssh /home/holotools
+# Add user to run DB under
+$  adduser holotools
+$  usermod -aG sudo holotools
+
+# Have SSH keys synced
+$  rsync --archive --chown=holotools:holotools ~/.ssh /home/holotools
 ```
 
 Setting up postgresql
 ```
-    $  sudo apt update && sudo apt install postgresql postgresql-contrib
-    $  sudo -i -u postgres
+$  sudo apt update && sudo apt install postgresql postgresql-contrib
+$  sudo -i -u postgres
 
-    #  Create a new user in postgres with same username as the dev user (holotools):
-    $  createuser --interactive
+#  Create a new user in postgres with same username as the dev user (holotools):
+$  createuser --interactive
 
-    #  Set it up with the holotools user.
-    $  createdb holotools
+#  Set it up with the holotools user.
+$  createdb holotools
 ```
 
 Now you have `holotools` user which can modify `holotools` database without pg auth.
@@ -47,7 +67,6 @@ To connect to postgres from external: set up SSH tunnel `-L 9999:localhost:5432`
 
 Installing Memcached: [Detailed Guide](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-memcached-on-ubuntu-16-04)
 ```
-$ sudo apt-get install memcached
-$ sudo apt-get install libmemcached-tools
+$ sudo apt install memcached libmemcached-tools
 ```
 This sets up memcached service at localhost:11211, well, it's not daemonized.

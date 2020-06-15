@@ -1,28 +1,39 @@
 {
-  "name": "holotools-services",
+  "name": "holoapi",
   "version": "1.0.0",
-  "description": "Monolith tools and services in consuming Hololive content",
+  "description": "Platform to serve Hololive information to community tools",
+  "scripts": {
+    "start": "nodemon apps/client-api",
+    "migrate": "sequelize db:migrate",
+    "rollback": "sequelize db:migrate:undo"
+  },
   "dependencies": {
-    "knex": "^0.20.13",
-    "pg": "^8.0.2"
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "googleapis": "^51.0.0",
+    "helmet": "^3.22.0",
+    "memcached": "^2.2.2",
+    "moment-timezone": "^0.5.31",
+    "node-schedule-tz": "^1.2.1-4",
+    "pg": "^8.2.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.21.11",
+    "url": "^0.11.0",
+    "uuid": "^8.1.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
-  },
-  "scripts": {
-    "knex": "knex",
-    "migrate": "npm run knex migrate:latest",
-    "rollback": "npm run knex migrate:rollback",
-    "new-migration": "npm run knex migrate:make ",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "nodemon": "^2.0.4",
+    "sequelize-cli": "^5.5.1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/holotools/holotools-api.git"
-  },
-  "author": "",
-  "license": "GPL v3",
-  "bugs": {
-    "url": "https://github.com/holotools/holotools-api/issues"
-  },
-  "homepage": "https://github.com/holotools/holotools-api#readme"
+    "url": "git+https://github.com/holofans/holoapi.git"
+  }
 }
