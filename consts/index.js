@@ -9,4 +9,8 @@ module.exports = {
     PAST: 'past',
     MISSING: 'missing',
   },
+  CACHE_TTL: {
+    LIVE: 15,
+  },
+  VIDEOS_PAST_HOURS: 6,
 };

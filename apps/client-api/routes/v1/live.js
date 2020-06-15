@@ -1,54 +1,98 @@
+const { Op } = require('sequelize');
 const { Router } = require('express');
 const moment = require('moment-timezone');
-const { HoloVideo } = require('../../classes');
-const { consts, Firestore, Memcached, log } = require('../../library');
+const consts = require('../../../../consts');
+const { db, memcached } = require('../../../../modules');
+const { asyncMiddleware } = require('../../middleware/error');
 
-// Initialize Router
 const router = new Router();
 
-module.exports = router.get('/', async (req, res) => {
-  // Check cache, and return if it exists
-  const cache = await Memcached.get('live');
+// extended: If true, returns more fields
+// include: Comma-separated list of included entities (only 'channel' atm)
+module.exports = router.get('/', asyncMiddleware(async (req, res) => {
+  const { extended, include } = req.query;
+  const cacheKey = extended === 'true' ? `extendedLive+${include}` : `live+${include}`;
+  const cache = await memcached.get(cacheKey);
   const liveCache = cache ? JSON.parse(cache) : {};
   liveCache.cached = !!Object.keys(liveCache).length;
-  if (liveCache.cached) return liveCache;
+  if (liveCache.cached) {
+    return res.json(liveCache);
+  }
 
-  // Result structure
   const results = {
     live: [],
     upcoming: [],
     ended: [],
+    cached: false,
   };
 
-  // Look for videos that are live or upcoming
-  const videos = Firestore.collection('video');
-  const currentVideos = await videos.where('status', 'in', [consts.VIDEO_STATUSES.LIVE, consts.VIDEO_STATUSES.UPCOMING]).get();
+  const attributes = [
+    'yt_video_key',
+    'bb_video_id',
+    'title',
+    'thumbnail',
+    'status',
+    'live_schedule',
+    'live_start',
+    'live_end',
+    'live_viewers',
+    'is_uploaded',
+  ];
+  const includeModels = [];
 
-  // Get current timestamp
+  if (extended === 'true') {
+    attributes.push(
+      'description',
+      'published_at',
+      'late_secs',
+      'duration_secs',
+      'is_captioned',
+      'is_licensed',
+      'is_embeddable',
+    );
+  }
+
+  if (include) {
+    const includeMap = {
+      channel: {
+        association: 'channel',
+      },
+    };
+
+    include.split(',').forEach((model) => {
+      includeModels.push(includeMap[model]);
+    });
+  }
+
+  const videos = await db.Video.findAll({
+    attributes,
+    include: includeModels,
+    where: {
+      status: [consts.STATUSES.LIVE, consts.STATUSES.UPCOMING],
+    },
+  });
+
   const nowMoment = moment();
 
-  // Run through all results
-  currentVideos.map(video => {
-    const videoData = video.data();
-    const videoObj = new HoloVideo(videoData).toJSON();
-    if (videoData.status === consts.VIDEO_STATUSES.UPCOMING) return results.upcoming.push(videoObj);
-    if (videoData.status === consts.VIDEO_STATUSES.LIVE || nowMoment.isSameOrAfter(moment(videoData.liveSchedule))) return results.live.push(videoObj);
+  videos.forEach((video) => {
+    if (video.status === consts.STATUSES.UPCOMING) {
+      results.upcoming.push(video);
+      return;
+    }
+    if (video.status === consts.STATUSES.LIVE || nowMoment.isSameOrAfter(moment(video.live_schedule))) {
+      results.live.push(video);
+    }
   });
 
-  // Look for videos that have recently ended
-  const pastVideos = await videos.where('liveEnd', '>', nowMoment.clone().subtract(consts.VIDEOS_PAST_HOURS, 'hour').toISOString()).get();
-
-  // Add past videos into results
-  pastVideos.map(video => {
-    console.log('video', video);
-    const videoData = video.data();
-    const videoObj = new HoloVideo(videoData).toJSON();
-    results.ended.push(videoObj);
+  const pastVideos = await db.Video.findAll({
+    attributes,
+    where: {
+      live_end: { [Op.gte]: nowMoment.clone().subtract(consts.VIDEOS_PAST_HOURS, 'hour').toISOString() },
+    },
   });
+  results.ended = pastVideos;
 
-  // Save result to cache
-  Memcached.set('live', JSON.stringify(results), consts.CACHE_TTL.LIVE);
+  memcached.set(cacheKey, JSON.stringify(results), consts.CACHE_TTL.LIVE);
 
-  // Return results
   return res.json(results);
-});
+}));
