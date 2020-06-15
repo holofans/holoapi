@@ -16,4 +16,4 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
-        script: /home/holoapi/deploy.sh
+        script: /opt/holoapi/deploy.sh
