@@ -11,6 +11,7 @@ module.exports = {
   },
   CACHE_TTL: {
     LIVE: 15,
+    CHANNELS: 6 * 60 * 60,
   },
   VIDEOS_PAST_HOURS: 6,
 };

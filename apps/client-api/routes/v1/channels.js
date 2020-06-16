@@ -1,36 +1,44 @@
+const { Op } = require('sequelize');
 const { Router } = require('express');
-const { HoloChannel } = require('../../classes');
-const { consts, Firestore, Memcached, log } = require('../../library');
+const consts = require('../../../../consts');
+const { db } = require('../../../../modules');
+const { asyncMiddleware } = require('../../middleware/error');
+const cacheService = require('../../services/CacheService');
 
-// Initialize Router
 const router = new Router();
 
-module.exports = router.get('/', async (req, res) => {
-  // Check cache, and return if it exists
-  const cache = await Memcached.get('channels');
-  const liveCache = cache ? JSON.parse(cache) : {};
-  liveCache.cached = !!Object.keys(liveCache).length;
-  if (liveCache.cached) return liveCache;
+router.get('/', asyncMiddleware(async (req, res) => {
+  const { limit = 25, offset = 0, sort = 'id', order = 'asc', name } = req.query;
+  const cacheKey = `channels;${offset}-${limit};${sort}-${order};${name || ''}`;
 
-  // Result structure
+  const cache = await cacheService.getFromCache(cacheKey);
+  if (cache.cached) {
+    return res.json(cache);
+  }
+
   const results = {
     channels: [],
+    cached: false,
   };
 
-  // Look for videos that are live or upcoming
-  const videoCollection = Firestore.collection('channel');
-  const channels = await videoCollection.get();
+  const where = {};
 
-  // Run through all results
-  channels.map(video => {
-    const channelData = video.data();
-    const channelObj = new HoloChannel(channelData);
-    return results.channels.push(channelObj.toJSON());
+  if (name) {
+    where.name = { [Op.iLike]: `%${name}%` };
+  }
+
+  const channels = await db.Channel.findAll({
+    attributes: ['yt_channel_id', 'bb_space_id', 'name', 'description', 'photo', 'published_at', 'twitter_link'],
+    where,
+    order: [[sort, order]],
+    limit,
+    offset,
   });
+  results.channels = channels;
 
-  // Save result to cache
-  Memcached.set('channels', JSON.stringify(results), consts.CACHE_TTL.CHANNELS);
+  cacheService.saveToCache(cacheKey, JSON.stringify(results), consts.CACHE_TTL.CHANNELS);
 
-  // Return results
   return res.json(results);
-});
+}));
+
+module.exports = router;
