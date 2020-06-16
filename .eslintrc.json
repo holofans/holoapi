@@ -12,6 +12,7 @@
     "no-underscore-dangle": "off",
     "max-len": ["error", 120, 2],
     "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 4 }],
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "class-methods-use-this": "off"
   }
 }

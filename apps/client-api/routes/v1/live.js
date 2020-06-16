@@ -2,23 +2,19 @@ const { Op } = require('sequelize');
 const { Router } = require('express');
 const moment = require('moment-timezone');
 const consts = require('../../../../consts');
-const { db, log, memcached } = require('../../../../modules');
 const { asyncMiddleware } = require('../../middleware/error');
+const { db, log, memcached } = require('../../../../modules');
+const cacheService = require('../../services/CacheService');
 
 const router = new Router();
 
 router.get('/', asyncMiddleware(async (req, res) => {
   const cacheKey = 'live';
-  try {
-    const cache = await memcached.get(cacheKey);
-    const liveCache = cache ? JSON.parse(cache) : {};
-    liveCache.cached = !!Object.keys(liveCache).length;
-    if (liveCache.cached) {
-      return res.json(liveCache);
-    }
-  } catch (e) {
-    log.error('Error fetching cache');
+  const cache = await cacheService.getFromCache(cacheKey);
+  if (cache.cached) {
+    return res.json(cache);
   }
+
 
   const results = {
     live: [],
@@ -85,12 +81,7 @@ router.get('/', asyncMiddleware(async (req, res) => {
   });
   results.ended = pastVideos;
 
-  try {
-    // Side effect: Promise ignored
-    memcached.set(cacheKey, JSON.stringify(results), consts.CACHE_TTL.LIVE);
-  } catch (e) {
-    log.error(`Error saving to cache: ${e.message}`);
-  }
+  cacheService.saveToCache(cacheKey, JSON.stringify(results), consts.CACHE_TTL.LIVE);
 
   return res.json(results);
 }));
