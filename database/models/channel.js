@@ -33,7 +33,7 @@ class Channel extends Model {
         description: {
           type: DataTypes.TEXT,
         },
-        thumbnail: {
+        photo: {
           type: DataTypes.TEXT,
         },
         published_at: {
