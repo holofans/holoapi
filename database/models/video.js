@@ -46,7 +46,7 @@ class Video extends Model {
         updated_at: DataTypes.DATE,
       },
       {
-        tableName: consts.TABLE_VIDEO,
+        tableName: consts.TABLES.VIDEO,
         sequelize,
       },
     );

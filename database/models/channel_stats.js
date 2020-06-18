@@ -21,7 +21,7 @@ class ChannelStats extends Model {
         updated_at: DataTypes.DATE,
       },
       {
-        tableName: consts.TABLE_CHANNEL_STATS,
+        tableName: consts.TABLES.CHANNEL_STATS,
         sequelize,
       },
     );

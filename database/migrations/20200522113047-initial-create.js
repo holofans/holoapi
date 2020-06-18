@@ -2,7 +2,7 @@ const consts = require('../../consts');
 
 module.exports = {
   up: async (queryInterface, DataTypes) => {
-    await queryInterface.createTable(consts.TABLE_CHANNEL, {
+    await queryInterface.createTable(consts.TABLES.CHANNEL, {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -65,7 +65,7 @@ module.exports = {
       },
     });
 
-    await queryInterface.createTable(consts.TABLE_CHANNEL_STATS, {
+    await queryInterface.createTable(consts.TABLES.CHANNEL_STATS, {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -75,7 +75,7 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: consts.TABLE_CHANNEL,
+          model: consts.TABLES.CHANNEL,
           key: 'id',
         },
         onDelete: 'cascade',
@@ -87,7 +87,7 @@ module.exports = {
       updated_at: DataTypes.DATE,
     });
 
-    await queryInterface.createTable(consts.TABLE_VIDEO, {
+    await queryInterface.createTable(consts.TABLES.VIDEO, {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -97,7 +97,7 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: consts.TABLE_CHANNEL,
+          model: consts.TABLES.CHANNEL,
           key: 'id',
         },
         onDelete: 'cascade',
@@ -134,7 +134,7 @@ module.exports = {
       updated_at: DataTypes.DATE,
     });
 
-    await queryInterface.createTable(consts.TABLE_VIDEO_COMMENT, {
+    await queryInterface.createTable(consts.TABLES.VIDEO_COMMENT, {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -144,7 +144,7 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: consts.TABLE_VIDEO,
+          model: consts.TABLES.VIDEO,
           key: 'id',
         },
         onDelete: 'cascade',
@@ -161,15 +161,15 @@ module.exports = {
       updated_at: DataTypes.DATE,
     });
 
-    await queryInterface.addIndex(consts.TABLE_CHANNEL, ['name']);
-    await queryInterface.addIndex(consts.TABLE_VIDEO, ['title']);
-    await queryInterface.addIndex(consts.TABLE_VIDEO_COMMENT, ['message']);
+    await queryInterface.addIndex(consts.TABLES.CHANNEL, ['name']);
+    await queryInterface.addIndex(consts.TABLES.VIDEO, ['title']);
+    await queryInterface.addIndex(consts.TABLES.VIDEO_COMMENT, ['message']);
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable(consts.TABLE_VIDEO_COMMENT);
-    await queryInterface.dropTable(consts.TABLE_VIDEO);
-    await queryInterface.dropTable(consts.TABLE_CHANNEL_STATS);
-    await queryInterface.dropTable(consts.TABLE_CHANNEL);
+    await queryInterface.dropTable(consts.TABLES.VIDEO_COMMENT);
+    await queryInterface.dropTable(consts.TABLES.VIDEO);
+    await queryInterface.dropTable(consts.TABLES.CHANNEL_STATS);
+    await queryInterface.dropTable(consts.TABLES.CHANNEL);
   },
 };

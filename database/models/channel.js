@@ -67,7 +67,7 @@ class Channel extends Model {
         },
       },
       {
-        tableName: consts.TABLE_CHANNEL,
+        tableName: consts.TABLES.CHANNEL,
         sequelize,
       },
     );

@@ -26,7 +26,7 @@ class VideoComment extends Model {
         updated_at: DataTypes.DATE,
       },
       {
-        tableName: consts.TABLE_VIDEO_COMMENT,
+        tableName: consts.TABLES.VIDEO_COMMENT,
         sequelize,
       },
     );
