@@ -1,9 +1,9 @@
 const { Op } = require('sequelize');
 const { Router } = require('express');
 const moment = require('moment-timezone');
-const consts = require('../../../../consts');
+const { STATUSES, VIDEOS_PAST_HOURS, CACHE_TTL } = require('../../../../consts');
 const { asyncMiddleware } = require('../../middleware/error');
-const { db, log, memcached } = require('../../../../modules');
+const { db } = require('../../../../modules');
 const cacheService = require('../../services/CacheService');
 
 const router = new Router();
@@ -51,18 +51,18 @@ router.get('/', asyncMiddleware(async (req, res) => {
       },
     ],
     where: {
-      status: [consts.STATUSES.LIVE, consts.STATUSES.UPCOMING],
+      status: [STATUSES.LIVE, STATUSES.UPCOMING],
     },
   });
 
   const nowMoment = moment();
 
   videos.forEach((video) => {
-    if (video.status === consts.STATUSES.UPCOMING) {
+    if (video.status === STATUSES.UPCOMING) {
       results.upcoming.push(video);
       return;
     }
-    if (video.status === consts.STATUSES.LIVE || nowMoment.isSameOrAfter(moment(video.live_schedule))) {
+    if (video.status === STATUSES.LIVE || nowMoment.isSameOrAfter(moment(video.live_schedule))) {
       results.live.push(video);
     }
   });
@@ -76,12 +76,12 @@ router.get('/', asyncMiddleware(async (req, res) => {
       },
     ],
     where: {
-      live_end: { [Op.gte]: nowMoment.clone().subtract(consts.VIDEOS_PAST_HOURS, 'hour').toISOString() },
+      live_end: { [Op.gte]: nowMoment.clone().subtract(VIDEOS_PAST_HOURS, 'hour').toISOString() },
     },
   });
   results.ended = pastVideos;
 
-  cacheService.saveToCache(cacheKey, JSON.stringify(results), consts.CACHE_TTL.LIVE);
+  cacheService.saveToCache(cacheKey, JSON.stringify(results), CACHE_TTL.LIVE);
 
   return res.json(results);
 }));
