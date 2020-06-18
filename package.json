@@ -4,6 +4,7 @@
   "description": "Platform to serve Hololive information to community tools",
   "scripts": {
     "start": "nodemon apps/client-api",
+    "crawl": "nodemon apps/crawler-youtube",
     "migrate": "sequelize db:migrate",
     "rollback": "sequelize db:migrate:undo"
   },
