@@ -5,53 +5,102 @@
  * - Keep running for newly added channels
  */
 
-require('dotenv').config();
 const moment = require('moment-timezone');
-const { Op } = require('sequelize');
+const { Op, DataTypes } = require('sequelize');
 const { db, youtube, log, GenericError } = require('../../../modules');
+const { data } = require('../../../modules/logger');
 
 
-const fetchAllChannelVideos = async (playlistId, pageToken, list = []) => {
-  log.debug('videoListAPI() fetchVideoPage()', { playlistId, pageToken });
+const videoFetcher = async (playlistId, pageToken) => {
+  log.debug('videolistAPI() videoFethcer()', { playlistId, pageToken });
 
-  // Fetch data from YouTube
-  const ytData = await youtube.playlistItems.list({
-    part: 'id,snippet',
-    playlistId,
-    maxResults: 50,
-    pageToken,
-    hl: 'ja',
-  })
-    .then((ytResult) => {
-      // Sanity check for YouTube respons contents
-      if (!ytResult.data || !ytResult.data.items) {
-        return Promise.reject(new GenericError('YouTube response error', ytResult));
-      }
-      // Return the full object result: video items and nextPageToken
-      return ytResult.data;
+  // fetch data from YouTube
+  const { data: { nextPageToken, items } } =
+
+    await youtube.playlistItems.list({
+
+      part: 'id,snippet',
+      playlistId,
+      maxResults: 50,
+      pageToken,
+      hl: 'ja',
+
     })
-    .catch((err) => {
-      // Log error information, playlistId, and pageToken being fetched
-      log.error('videoListAPI() YouTube fetch error', {
-        error: err.toString(),
-        playlistId,
-        pageToken,
+
+      .catch(({ message: error }) => {
+
+        // log error
+        log.error('videoListAPI() YouTube fetch error', {
+
+          error,
+          playlistId,
+          pageToken,
+
+        });
+
+        // return blank object
+        return {
+
+          nextPageToken: null,
+          items: [],
+
+        };
       });
-      // Return so that loop will not continue, and this call has no items returned
-      return {
-        nextPageToken: null,
-        items: [],
-      };
-    });
 
-  // Add new results to the cumulative list
-  list = list.concat(ytData.items); // eslint-disable-line no-param-reassign
 
-  // If has next page, fetch again
-  if (ytData.items.length === 50 && ytData.nextPageToken && pageToken !== ytData.nextPageToken) {
-    return fetchAllChannelVideos(playlistId, ytData.nextPageToken, list);
+  return {
+
+    nextPageToken,
+    items
+
+  };
+};
+
+
+const fetchAllChannelVideos = async (playlistId) => {
+  log.debug('videoListAPI() fetchVideoPage()', { playlistId });
+
+  /** LOGIC:
+   *
+   *    videoFetcher() returns:
+   *      {
+   *        nextPageToken: String || null,
+   *        items: Array
+   *      }
+   *
+   *    while (videoFetcher() returns a nextPageToken) {
+   *
+   *      run videoFetcher() with the new token
+   *      and also store the new items
+   *
+   *    }
+   *
+   *    on error:
+   *
+   *      logs the message and stops by return a null token,
+   *      and also push an empty items field into the results
+   */
+
+
+  const results = [];
+
+  // set initial conditions
+  const search = async token => videoFetcher(playlistId, token);
+  let seed = await search();
+
+  results.push(seed.items);
+
+  // while search returns a token, keep searching
+  while (seed.nextPageToken) {
+
+    seed = await search(seed.nextPageToken);
+    results.push(seed.items);
+
   }
-  return list;
+
+
+  return results.flat();
+
 };
 
 
@@ -64,82 +113,118 @@ module.exports = async () => {
 
     // Get channel that isn't crawled today yet
     const uncrawledChannel = await db.Channel.findOne({
+
       where: {
+
         [Op.and]: [
+
           { yt_uploads_id: { [Op.not]: null } },
-          { crawled_at: { [Op.is]: null } },
-        ],
-      },
+          { crawled_at: { [Op.is]: null } }
+
+        ] }
+
     });
 
     // Check if there's any channel to be crawled
     if (!uncrawledChannel) {
-      log.debug('videoListAPI() No channels to be crawled');
-      return;
+      return log.debug('videoListAPI() No channels to be crawled');
     }
 
     // Mark channel as crawled
     uncrawledChannel.crawled_at = utcDate;
-    await uncrawledChannel.save()
-      .catch((err) => {
+    await uncrawledChannel
+
+      .save()
+      .catch(({ message: error }) => {
+
         // Catch and log error, do not return reject to continue the rest of the module
         log.error('videoListAPI() Unable to mark channel as crawled', {
+
           channel: uncrawledChannel.yt_channel_id,
-          error: err.tostring(),
+          error
+
         });
       });
+
 
     // Fetch video list from youtube API
     const channelVideos = await fetchAllChannelVideos(uncrawledChannel.yt_uploads_id)
-      .catch((err) => {
-        // Catch and log error, return null to skip rest of module
+
+      .catch(({ message: error }) => {
+
+        // Catch and log error, return empty array to skip rest of module
         log.error('videoListAPI() Error fetching video list', {
+
           channel: uncrawledChannel.yt_channel_id,
-          err: err.tostring(),
+          error
+
         });
-        return null;
+
+        return [];
+
       });
 
-    // If there was an error (null), or there's just no videos to save ([]), skip the rest
-    if (!channelVideos || !channelVideos.length) {
-      log.debug('videoListAPI() No videos to be saved');
-      return;
+
+    // If there was an error ([]), or there's just no videos to save ([]), skip the rest
+    if (!channelVideos.length) {
+
+      return log.debug('videoListAPI() No videos to be saved');
+
     }
 
-    // Record results for all video saves
-    const logResults = {};
 
-    // Convert video list into promises that save into database
-    const dbSaves = channelVideos.map((videoInfo) => (
+    // Convert video list into promises that save into database and record results
+    const logResults = (await Promise.all(channelVideos.map((videoInfo) => {
+
+      const { snippet: { resourceId, title, description, publishedAt } } = videoInfo;
+
       // Update databse record, insert if any unique key does not exist yet
-      db.Video.upsert({
+      return db.Video.upsert({
+
         channel_id: uncrawledChannel.id,
-        yt_video_key: videoInfo.snippet.resourceId.videoId,
-        title: videoInfo.snippet.title,
-        description: videoInfo.snippet.description,
-        published_at: moment(videoInfo.snippet.publishedAt).tz('UTC'),
+        yt_video_key: resourceId.videoId,
+        title,
+        description,
+        published_at: moment(publishedAt).tz('UTC'),
         updated_at: utcDate,
+
+
       })
-        .then((dbResult) => {
+
+        .then((dbResult) =>
+
           // Add to result list
-          logResults[videoInfo.snippet.resourceId.videoId] = dbResult;
-        })
-        .catch((err) => {
+          ({ [resourceId.videoId]: dbResult })
+
+        )
+
+        .catch(({ message: error }) => {
+
           // Log error
           log.error('videoListAPI() Cannot save to database', {
-            videoInfo: { ...videoInfo, description: '' },
-            error: err.toString(),
-          });
-          // Add to result list
-          logResults[videoInfo.snippet.resourceId.videoId] = null;
-        })
-    ));
 
-    // Wait for all database saves
-    await Promise.all(dbSaves);
+            videoInfo: { ...videoInfo, description: '' },
+            error
+
+          });
+
+
+          // Add to result list
+          return { [resourceId.videoId]: null };
+
+        });
+
+
+      // Filter empty objects and flatten
+    }))).filter(v => v).flat();
+
 
     log.info('videoListAPI() Saved video list', { results: logResults });
-  } catch (error) {
-    log.error('videoListAPI() Uncaught error', { error: error.toString() });
+
+
+  } catch ({ message: error }) {
+
+    log.error('videoListAPI() Uncaught error', { error });
+
   }
 };
