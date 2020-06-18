@@ -21,4 +21,6 @@ exports.CACHE_TTL = {
 exports.VIDEOS_PAST_HOURS = 6;
 exports.MAX_PAGE_SIZE = 50;
 
-exports.MODEL_FIELDS = {};
+exports.RESPONSE_FIELDS = {
+  CHANNEL: ['yt_channel_id', 'bb_space_id', 'name', 'description', 'photo', 'published_at', 'twitter_link'],
+};
