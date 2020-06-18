@@ -59,6 +59,9 @@ class Channel extends Model {
         crawled_at: {
           type: DataTypes.DATE,
         },
+        comments_crawled_at: {
+          type: DataTypes.DATE,
+        },
         created_at: {
           type: DataTypes.DATE,
         },
