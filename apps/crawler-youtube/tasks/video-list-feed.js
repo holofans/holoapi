@@ -26,6 +26,7 @@ module.exports = async () => {
     // Get times
     const utcDate = moment.tz('UTC');
 
+
     // Get channel that isn't crawled yet
     const crawlChannels = await db.Channel.findAll({
       where: {
@@ -37,81 +38,100 @@ module.exports = async () => {
       limit: channelsPerRun,
     });
 
+
     // Mark channel as crawled
+    await crawlChannels.map((crawlChannel) =>
 
-    await crawlChannels.map((crawlChannel) => {
-      crawlChannel.crawled_at = utcDate; // eslint-disable-line no-param-reassign
-      return crawlChannel.save().catch((err) => {
-        // Catch and log error, do not return reject to continue the rest of the module
-        log.error('videoListFeed() Unable to mark channel as crawled', {
-          channel: crawlChannel.yt_channel_id,
-          error: err.toString(),
-        });
-      });
-    });
+      (crawlChannel.crawled_at = utcDate) &&
+       crawlChannel.save()
 
-    // Convert channels into promises to fetch their feed XMLs
-    const xmlFetches = crawlChannels.map((crawlChannel) => (
-      axios.get('https://www.youtube.com/feeds/videos.xml', {
+         .catch(error => {
+
+           // Catch and log error, do not return reject to continue the rest of the module
+           log.error('videoListFeed() Unable to mark channel as crawled', {
+
+             channel: crawlChannel.yt_channel_id,
+             error
+
+           });
+
+         })
+    );
+
+
+    // Convert channels into their feed XMLs and record results
+    const logResults = (await Promise.all(crawlChannels.map(async (crawlChannel) => {
+
+      // Find videos from the XML...
+      const xmlResult = await axios.get('https://www.youtube.com/feeds/videos.xml', {
         params: {
           channel_id: crawlChannel.yt_channel_id,
           t: Date.now(),
         },
       })
-        .then((xmlResult) => (
-          // Find videos from the XML and convert to object that can be upserted later on
-          [...xmlResult.data.matchAll(findVideoRegex)]
-            .map((match) => ({
-              channel_id: crawlChannel.id,
-              yt_video_key: match[1],
-              title: match[2],
-            }))
-        ))
-        .catch((fetchErr) => {
+
+        .catch(fetchErr => {
+
           // Catch and log error, return null to skip rest of module
-          log.error('videoListFeed() Error fetching video list from XML feed', {
+          return log.error('videoListFeed() Error fetching video list from XML feed', {
+
             channel: crawlChannel.yt_channel_id,
-            err: fetchErr.toString(),
+            err: fetchErr,
+
           });
-          // Return an empty video list so it will not interfere succeeding processes
-          return [];
-        })
-    ));
 
-    // Wait for XML fetch results, and check if there's any video to save
-    const videoList = (await Promise.all(xmlFetches)).flat();
-    if (!videoList || !videoList.length) {
-      log.debug('videoListFeed() No videos to be persisted');
-      return;
-    }
+        });
 
-    // Record results for all video saves
-    const logResults = {};
 
-    // Convert video list into promises that save into database
-    const dbSaves = videoList.map((videoInfo) => (
-      // Update databse record, insert if any unique key does not exist yet
-      db.Video.upsert(videoInfo)
-        .then((dbResult) => {
-          // Add to result list
-          logResults[videoInfo.yt_video_key] = dbResult;
-        })
-        .catch((err) => {
-          // Log error
+      if (!xmlResult) return;
+
+      // ...and convert to object that can be upserted later on
+      const results = [...xmlResult.data.matchAll(findVideoRegex)]
+
+        .map(match => ({
+
+          channel_id: crawlChannel.id,
+          yt_video_key: match[1],
+          title: match[2]
+
+        }));
+
+
+      // Update database record, insert if any unique key does not exist yet
+      return results.map(result => db.Video.upsert(result)
+
+        // Add to result list
+        .then(dbResult => ({ [result.yt_video_key]: dbResult }))
+
+        // Log error
+        .catch(error => {
           log.error('videoListFeed() Cannot save to database', {
-            videoInfo,
-            error: err.toString(),
+
+            result,
+            error
+
           });
+
           // Add to result list
-          logResults[videoInfo.yt_video_key] = null;
-        })
-    ));
+          return ({ [result.yt_video_key]: null });
 
-    // Wait for all database saves
-    await Promise.all(dbSaves);
+        }));
 
-    log.info('videoListFeed() Saved video list', { results: logResults });
+      // Filter empty elements and flatten
+    }))).filter(v => v).flat();
+
+
+    // Check if any videos were saved
+
+    return !logResults.length
+
+      ? log.debug('videoListFeed() No videos to be persisted')
+      : log.info('videoListFeed() Saved video list', { results: logResults });
+
+
   } catch (error) {
-    log.error('videoListFeed() Uncaught error', { error: error.toString() });
+
+    log.error('videoListFeed() Uncaught error', error);
+
   }
 };
