@@ -13,6 +13,7 @@
     "max-len": ["error", 120, 2],
     "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 4 }],
     "object-curly-newline": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "camelcase": "off"
   }
 }
