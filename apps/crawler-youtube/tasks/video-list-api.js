@@ -66,7 +66,7 @@ module.exports = async () => {
     const uncrawledChannel = await db.Channel.findOne({
       where: {
         [Op.and]: [
-          { yt_channel_id: { [Op.not]: null } },
+          { yt_uploads_id: { [Op.not]: null } },
           { crawled_at: { [Op.is]: null } },
         ],
       },

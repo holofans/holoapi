@@ -37,24 +37,25 @@ module.exports = async () => {
     });
 
     // Find non-new videos that are most outdated
-    const outdatedVideos = await db.Video.findAll({
-      where: {
-        [Op.and]: [
-          { yt_video_key: { [Op.not]: null } },
-          { status: { [Op.ne]: STATUSES.NEW } },
-          { updated_at: { [Op.lt]: moment().tz('Asia/Tokyo').startOf('day') } },
-        ],
-      },
-      order: [
-        ['updated_at', 'ASC'],
-      ],
-      limit: VIDEOS_MAX_QUERY - newVideos.length,
-    }).catch((err) => {
-      // Catch and log db error
-      log.error('videoInfoAPI() Unable to fetch outdated videos', { error: err.toString() });
-      // Return empty list, so the new videos from the preceding process can still be updated
-      return [];
-    });
+    // const outdatedVideos = await db.Video.findAll({
+    //   where: {
+    //     [Op.and]: [
+    //       { yt_video_key: { [Op.not]: null } },
+    //       { status: { [Op.ne]: consts.STATUSES.NEW } },
+    //       { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').startOf('day') } },
+    //     ],
+    //   },
+    //   order: [
+    //     ['updated_at', 'ASC'],
+    //   ],
+    //   limit: VIDEOS_MAX_QUERY - newVideos.length,
+    // }).catch((err) => {
+    //   // Catch and log db error
+    //   log.error('videoInfoAPI() Unable to fetch outdated videos', { error: err.toString() });
+    //   // Return empty list, so the new videos from the preceeding process can still be updated
+    //   return [];
+    // });
+    const outdatedVideos = [];
 
     // Final list of videos to be updated
     const targetVideos = newVideos.concat(outdatedVideos);
