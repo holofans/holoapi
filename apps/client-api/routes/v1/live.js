@@ -5,6 +5,7 @@ const { STATUSES, VIDEOS_PAST_HOURS, CACHE_TTL } = require('../../../../consts')
 const { asyncMiddleware } = require('../../middleware/error');
 const { db } = require('../../../../modules');
 const cacheService = require('../../services/CacheService');
+const { RESPONSE_FIELDS } = require('../../../../consts');
 
 const router = new Router();
 
@@ -23,31 +24,12 @@ router.get('/', asyncMiddleware(async (req, res) => {
     cached: false,
   };
 
-  const videoFields = [
-    'yt_video_key',
-    'bb_video_id',
-    'title',
-    'thumbnail',
-    'status',
-    'live_schedule',
-    'live_start',
-    'live_end',
-    'live_viewers',
-  ];
-  const channelFields = [
-    'yt_channel_id',
-    'bb_space_id',
-    'name',
-    'photo',
-    'twitter_link',
-  ];
-
   const videos = await db.Video.findAll({
-    attributes: videoFields,
+    attributes: RESPONSE_FIELDS.LIVE_VIDEO,
     include: [
       {
         association: 'channel',
-        attributes: channelFields,
+        attributes: RESPONSE_FIELDS.CHANNEL,
       },
     ],
     where: {
@@ -68,11 +50,11 @@ router.get('/', asyncMiddleware(async (req, res) => {
   });
 
   const pastVideos = await db.Video.findAll({
-    attributes: videoFields,
+    attributes: RESPONSE_FIELDS.LIVE_VIDEO,
     include: [
       {
         association: 'channel',
-        attributes: channelFields,
+        attributes: RESPONSE_FIELDS.CHANNEL,
       },
     ],
     where: {

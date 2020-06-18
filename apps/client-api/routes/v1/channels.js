@@ -10,15 +10,11 @@ const router = new Router();
 router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
   const { limit = 25, offset = 0, sort = 'id', order = 'asc', name } = req.query;
 
-  const where = {};
-
-  if (name) {
-    where.name = { [Op.iLike]: `%${name}%` };
-  }
-
   const { rows, count } = await db.Channel.findAndCountAll({
     attributes: RESPONSE_FIELDS.CHANNEL,
-    where,
+    where: {
+      ...name && { name: { [Op.iLike]: `%${name}%` } },
+    },
     order: [[sort, order]],
     limit,
     offset,

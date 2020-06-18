@@ -2,6 +2,7 @@ const moment = require('moment-timezone');
 const { Op } = require('sequelize');
 const { Router } = require('express');
 const { db } = require('../../../../modules');
+const { RESPONSE_FIELDS } = require('../../../../consts');
 const { asyncMiddleware } = require('../../middleware/error');
 const { limitChecker } = require('../../middleware/filters');
 
@@ -20,38 +21,23 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
     is_captioned,
   } = req.query;
 
-  const where = {};
-
-  if (title) {
-    where.title = { [Op.iLike]: `%${title}%` };
-  }
-  if (published_at) {
-    where.published_at = { [Op.gte]: moment(published_at).startOf('day') };
-  }
-  if (status) {
-    where.status = status;
-  }
-  if (is_uploaded) {
-    where.is_uploaded = !!is_uploaded;
-  }
-  if (is_captioned) {
-    where.is_captioned = !!is_captioned;
-  }
+  const where = {
+    ...title && { title: { [Op.iLike]: `%${title}%` } },
+    // TODO: Figure out and fix timezones
+    ...published_at && { published_at: { [Op.gte]: moment(published_at).startOf('day') } },
+    ...status && { status },
+    // Hacky way to convert string booleans into real booleans
+    ...is_uploaded && { is_uploaded: JSON.parse(is_uploaded.toLowerCase()) },
+    ...is_captioned && { is_captioned: JSON.parse(is_captioned.toLowerCase()) },
+  };
 
   const { rows, count } = await db.Video.findAndCountAll({
-    attributes: [
-      'yt_video_key',
-      'bb_video_id',
-      'title',
-      'thumbnail',
-      'published_at',
-      'status',
-      'live_schedule',
-      'live_start',
-      'live_end',
-      'is_uploaded',
-      'duration_secs',
-      'is_captioned',
+    attributes: RESPONSE_FIELDS.VIDEO,
+    include: [
+      {
+        association: 'channel',
+        attributes: RESPONSE_FIELDS.CHANNEL,
+      },
     ],
     where,
     order: [[sort, order]],
@@ -66,6 +52,29 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
   };
 
   res.json(results);
+}));
+
+router.get('/:video_id', asyncMiddleware(async (req, res) => {
+  const { video_id } = req.params;
+
+  const video = await db.Video.findOne({
+    attributes: RESPONSE_FIELDS.VIDEO,
+    include: [
+      {
+        association: 'channel',
+        attributes: RESPONSE_FIELDS.CHANNEL,
+      },
+    ],
+    where: {
+      [Op.or]: {
+        yt_video_key: video_id,
+        bb_video_id: video_id,
+      },
+    },
+    rejectOnEmpty: true, // Handled into 404
+  });
+
+  res.json(video);
 }));
 
 module.exports = router;

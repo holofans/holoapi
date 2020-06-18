@@ -1,15 +1,19 @@
 const { EmptyResultError } = require('sequelize');
 const { GenericError, log } = require('../../../modules');
 
+const sendNotFound = (res, message = 'Not found.') => {
+  res.status(404).json({ message });
+};
+
 module.exports = {
   notFoundHandler(req, res) {
-    res.status(404).json({ message: 'Not found.' });
+    sendNotFound(res);
   },
 
   // eslint-disable-next-line no-unused-vars
   errorHandler(err, req, res, next) {
     if (err instanceof EmptyResultError) {
-      return res.status(404).json({ message: 'Not found.' });
+      return sendNotFound(res);
     }
 
     const statusCode = err instanceof GenericError ? 400 : 500;
