@@ -1,11 +1,8 @@
-const db = require('./db');
-const log = require('./logger');
-const youtube = require('./youtube');
-const error = require('./error');
-
 module.exports = {
-  ...error,
-  db,
-  log,
-  youtube,
+
+  error: require('./error'),
+  db: require('./db'),
+  log: require('./logger'),
+  youtube: require('./youtube'),
+
 };

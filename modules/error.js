@@ -9,6 +9,4 @@ class GenericError extends Error {
   }
 }
 
-module.exports = {
-  GenericError,
-};
+module.exports = { GenericError };
