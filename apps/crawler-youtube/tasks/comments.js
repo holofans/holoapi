@@ -11,23 +11,25 @@ const logger = require('../../../modules/logger');
  * Async Generator described here:
  * https://dev.to/exacs/es2018-real-life-simple-usage-of-async-iteration-get-paginated-data-from-rest-apis-3i2e
  *
- * @param {string=} channelId
+ * @param {string} channelId
+ * @param {Moment} stopAtDate
  */
-async function* fetchPagesOfComments(channelId, stopAtDate) {
+async function* fetchCommentPages(channelId, stopAtDate) {
   let hasNextPage = true;
   let nextPageToken = null;
   while (hasNextPage) {
     // eslint-disable-next-line no-await-in-loop
     const ytData = await youtube.commentThreads.list(
-      { allThreadsRelatedToChannelId: channelId,
+      {
+        allThreadsRelatedToChannelId: channelId,
         part: 'snippet',
         maxResults: 100,
-        ...(nextPageToken && { pageToken: nextPageToken }),
+        ...nextPageToken && { pageToken: nextPageToken },
       },
     ).then((ytResult) => ytResult.data).catch((err) => {
-      log.error('comment crawler Error fetching commentThreads list error', {
+      log.error('[Comments] Crawler error in commentThreads.list', {
         channelId,
-        err: err.tostring(),
+        err: err.toString(),
       });
     });
 
@@ -48,7 +50,7 @@ async function* fetchPagesOfComments(channelId, stopAtDate) {
   }
 }
 
-const commentThreadToComment = (ytCommentThread) => ({
+const mapCommentThreadToComment = (ytCommentThread) => ({
   video_key: ytCommentThread.snippet.videoId,
   message: fixchar(ytCommentThread.snippet.topLevelComment.snippet.textOriginal),
   comment_key: ytCommentThread.id,
@@ -65,7 +67,7 @@ const COMMENT_ANNOT_REGEX = /[^\d\s:]{2,}/;
 const fetchTimestampedYoutubeComments = async (channelId, lastCrawlTime) => {
   let comments = [];
   let commentCount = 0;
-  const iterator = fetchPagesOfComments(channelId, lastCrawlTime);
+  const iterator = fetchCommentPages(channelId, lastCrawlTime);
   // eslint-disable-next-line no-restricted-syntax
   for await (const page of iterator) {
     commentCount += page.length;
@@ -77,7 +79,7 @@ const fetchTimestampedYoutubeComments = async (channelId, lastCrawlTime) => {
           && COMMENT_ANNOT_REGEX.test(ytCommentThread.snippet.topLevelComment.snippet.textOriginal)
           && !!ytCommentThread.snippet.videoId),
         )
-        .map(commentThreadToComment),
+        .map(mapCommentThreadToComment),
     );
   }
 
