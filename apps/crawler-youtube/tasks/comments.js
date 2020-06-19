@@ -1,6 +1,7 @@
 require('dotenv').config();
 const moment = require('moment-timezone');
 const { Op } = require('sequelize');
+const { fixchar } = require('fixchar');
 const { db, youtube, log, GenericError } = require('../../../modules');
 const logger = require('../../../modules/logger');
 
@@ -49,7 +50,7 @@ async function* fetchPagesOfComments(channelId, stopAtDate) {
 
 const commentThreadToComment = (ytCommentThread) => ({
   video_key: ytCommentThread.snippet.videoId,
-  message: ytCommentThread.snippet.topLevelComment.snippet.textOriginal,
+  message: fixchar(ytCommentThread.snippet.topLevelComment.snippet.textOriginal),
   comment_key: ytCommentThread.id,
   created_at: ytCommentThread.snippet.topLevelComment.snippet.publishedAt,
   updated_at: ytCommentThread.snippet.topLevelComment.snippet.updatedAt,
@@ -70,14 +71,17 @@ const fetchTimestampedYoutubeComments = async (channelId, lastCrawlTime) => {
     commentCount += page.length;
     comments = comments.concat(
       page
-        .map(commentThreadToComment)
         .filter(
-          ({ message }) => COMMENT_TIMESTAMP_REGEX.test(message) && COMMENT_ANNOT_REGEX.test(message),
-        ),
+          (ytCommentThread) => (
+            COMMENT_TIMESTAMP_REGEX.test(ytCommentThread.snippet.topLevelComment.snippet.textOriginal)
+          && COMMENT_ANNOT_REGEX.test(ytCommentThread.snippet.topLevelComment.snippet.textOriginal)
+          && !!ytCommentThread.snippet.videoId),
+        )
+        .map(commentThreadToComment),
     );
   }
 
-  logger.info(`${commentCount} comments were scanned.`);
+  logger.info(`${commentCount} comments were scanned for channel ${channelId}.`);
   return comments;
 };
 
@@ -97,6 +101,7 @@ module.exports = async () => {
   );
 
   if (comments.length > 0) {
+    // generating a map of video hash -> video id to populate our foreign key.
     const videoKeys = [...new Set(comments.map(({ video_key }) => video_key))];
 
     const videoIdForKeys = await db.Video.findAll({
@@ -110,6 +115,7 @@ module.exports = async () => {
       videoIdForKeys.map((m) => [m.yt_video_key, m.id]),
     );
 
+    // populate the foreign key video_id --FK--> video.id
     const commentsToUpsert = comments.map((comment) => ({
       video_id: videoKeyToIdMap[comment.video_key],
       ...comment,
@@ -121,12 +127,14 @@ module.exports = async () => {
 
     log.info(`Comments Crawler saved: ${commentsToUpsert.length} number of comments.`);
 
-    await db.Channel.update({ comments_crawled_at: comments[0].updated_at },
+    // updating the last crawled time since we crawled successfully, we're updating it
+    // to 2 hours ago to prevent any data availability delays from Youtube from impacting us.
+    await db.Channel.update({ comments_crawled_at: moment().subtract(2, 'h').tz('utc') },
       {
         where: { id: uncrawledChannel.id },
       });
   } else {
-    await db.Channel.update({ comments_crawled_at: moment().tz() },
+    await db.Channel.update({ comments_crawled_at: moment().subtract(2, 'h').tz('utc') },
       {
         where: { id: uncrawledChannel.id },
       });
