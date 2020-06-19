@@ -14,16 +14,13 @@ class VideoComment extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        timecode: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-        },
         message: {
           type: DataTypes.STRING,
           allowNull: false,
         },
         created_at: DataTypes.DATE,
         updated_at: DataTypes.DATE,
+        comment_key: DataTypes.STRING,
       },
       {
         tableName: consts.TABLE_VIDEO_COMMENT,
