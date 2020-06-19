@@ -26,11 +26,12 @@ async function* fetchCommentPages(channelId, stopAtDate) {
         maxResults: 100,
         ...nextPageToken && { pageToken: nextPageToken },
       },
-    ).then((ytResult) => ytResult.data).catch((err) => {
+    ).then((ytResult) => ytResult.data).catch((error) => {
       log.error('[Comments] Crawler error in commentThreads.list', {
         channelId,
-        err: err.toString(),
+        error,
       });
+      throw error;
     });
 
     // Check if we need to continue paginating
