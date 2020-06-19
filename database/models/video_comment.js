@@ -15,7 +15,7 @@ class VideoComment extends Model {
           allowNull: false,
         },
         message: {
-          type: DataTypes.STRING,
+          type: DataTypes.TEXT,
           allowNull: false,
         },
         created_at: DataTypes.DATE,
