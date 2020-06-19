@@ -15,7 +15,8 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
     sort = 'published_at',
     order = 'desc',
     title,
-    published_at,
+    start_date,
+    end_date,
     status,
     is_uploaded,
     is_captioned,
@@ -24,7 +25,8 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
   const where = {
     ...title && { title: { [Op.iLike]: `%${title}%` } },
     // TODO: Figure out and fix timezones
-    ...published_at && { published_at: { [Op.gte]: moment(published_at).startOf('day') } },
+    ...start_date && { published_at: { [Op.gte]: moment(start_date).startOf('day') } },
+    ...end_date && { published_at: { [Op.lte]: moment(end_date).endOf('day') } },
     ...status && { status },
     // Hacky way to convert string booleans into real booleans
     ...is_uploaded && { is_uploaded: JSON.parse(is_uploaded.toLowerCase()) },
@@ -54,8 +56,8 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
   res.json(results);
 }));
 
-router.get('/:video_id', asyncMiddleware(async (req, res) => {
-  const { video_id } = req.params;
+router.get('/:id', asyncMiddleware(async (req, res) => {
+  const { id } = req.params;
 
   const video = await db.Video.findOne({
     attributes: RESPONSE_FIELDS.VIDEO,
@@ -65,13 +67,44 @@ router.get('/:video_id', asyncMiddleware(async (req, res) => {
         attributes: RESPONSE_FIELDS.CHANNEL,
       },
     ],
-    where: {
-      [Op.or]: {
-        yt_video_key: video_id,
-        bb_video_id: video_id,
+    where: { id },
+    rejectOnEmpty: true,
+  });
+
+  res.json(video);
+}));
+
+router.get('/youtube/:yt_video_key', asyncMiddleware(async (req, res) => {
+  const { yt_video_key } = req.params;
+
+  const video = await db.Video.findOne({
+    attributes: RESPONSE_FIELDS.VIDEO,
+    include: [
+      {
+        association: 'channel',
+        attributes: RESPONSE_FIELDS.CHANNEL,
       },
-    },
-    rejectOnEmpty: true, // Handled into 404
+    ],
+    where: { yt_video_key },
+    rejectOnEmpty: true,
+  });
+
+  res.json(video);
+}));
+
+router.get('/bilibili/:bb_video_id', asyncMiddleware(async (req, res) => {
+  const { bb_video_id } = req.params;
+
+  const video = await db.Video.findOne({
+    attributes: RESPONSE_FIELDS.VIDEO,
+    include: [
+      {
+        association: 'channel',
+        attributes: RESPONSE_FIELDS.CHANNEL,
+      },
+    ],
+    where: { bb_video_id },
+    rejectOnEmpty: true,
   });
 
   res.json(video);

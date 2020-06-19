@@ -28,14 +28,37 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
   res.json(results);
 }));
 
-router.get('/:channel_id', asyncMiddleware(async (req, res) => {
-  const { channel_id } = req.params;
+router.get('/:id', asyncMiddleware(async (req, res) => {
+  const { id } = req.params;
 
-  const key = parseInt(channel_id, 10) ? 'bb_space_id' : 'yt_channel_id';
   const channel = await db.Channel.findOne({
     attributes: RESPONSE_FIELDS.CHANNEL,
-    where: { [key]: channel_id },
-    rejectOnEmpty: true, // Handled into 404
+    where: { id },
+    rejectOnEmpty: true,
+  });
+
+  res.json(channel);
+}));
+
+router.get('/youtube/:yt_channel_id', asyncMiddleware(async (req, res) => {
+  const { yt_channel_id } = req.params;
+
+  const channel = await db.Channel.findOne({
+    attributes: RESPONSE_FIELDS.CHANNEL,
+    where: { yt_channel_id },
+    rejectOnEmpty: true,
+  });
+
+  res.json(channel);
+}));
+
+router.get('/bilibili/:bb_space_id', asyncMiddleware(async (req, res) => {
+  const { bb_space_id } = req.params;
+
+  const channel = await db.Channel.findOne({
+    attributes: RESPONSE_FIELDS.CHANNEL,
+    where: { bb_space_id },
+    rejectOnEmpty: true,
   });
 
   res.json(channel);
