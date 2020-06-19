@@ -8,7 +8,7 @@ const videoListAPI = require('./tasks/video-list-api');
 const videoListFeed = require('./tasks/video-list-feed');
 // const videoListScrape = require('./tasks/video-list-scrape')
 const videoInfoAPI = require('./tasks/video-info-api');
-// const videoStatusAPI = require('./tasks/video-status-api')
+const videoStatusAPI = require('./tasks/video-status-api');
 // const videoStatusHeart = require('./tasks/video-status-heart')
 // const comments = require('./tasks/comments')
 
@@ -34,9 +34,7 @@ schedule.scheduleJob('videoListFeed', env.SCHEDULE_VIDEO_LIST_FEED, 'Asia/Tokyo'
 schedule.scheduleJob('video-info-api', env.SCHEDULE_VIDEO_INFO_API, 'Asia/Tokyo', videoInfoAPI);
 
 // Checks status of known live videos using YouTube Data API
-// schedule.scheduleJob('video-status-api', config.timings['video-status-api'], 'Asia/Tokyo', function(){
-//   videoStatusAPI()
-// })
+schedule.scheduleJob('video-status-api', env.SCHEDULE_VIDEO_STAT_API, 'Asia/Tokyo', videoStatusAPI);
 
 // Checks status of known live videos using heartbeat
 // schedule.scheduleJob('video-status-heart', config.timings['video-status-heart'], 'Asia/Tokyo', function(){
