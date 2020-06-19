@@ -22,10 +22,10 @@ module.exports = async () => {
 
     // Check if there are live videos
     const targetVideos = await db.Video.findAll({
-      where: [
-        { yt_video_key: { [Op.not]: null } },
-        { status: [STATUSES.LIVE, STATUSES.UPCOMING] },
-      ],
+      where: {
+        yt_video_key: { [Op.not]: null },
+        status: [STATUSES.LIVE, STATUSES.UPCOMING],
+      },
       order: [
         ['status', 'ASC'],
         ['updated_at', 'ASC'],
