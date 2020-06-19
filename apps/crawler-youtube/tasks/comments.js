@@ -93,7 +93,7 @@ module.exports = async () => {
     where: {
       yt_channel_id: { [Op.not]: null }, // must be a youtube video
     },
-    order: [['comments_crawled_at', 'NULLS FIRST']], // in ascending order by last crawled time.
+    order: [['comments_crawled_at', 'ASC', 'NULLS FIRST']], // in ascending order by last crawled time.
   });
 
   const comments = await fetchTimestampedYoutubeComments(
