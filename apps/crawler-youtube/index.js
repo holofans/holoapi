@@ -10,7 +10,7 @@ const videoListFeed = require('./tasks/video-list-feed');
 const videoInfoAPI = require('./tasks/video-info-api');
 const videoStatusAPI = require('./tasks/video-status-api');
 // const videoStatusHeart = require('./tasks/video-status-heart')
-// const comments = require('./tasks/comments')
+const comments = require('./tasks/comments');
 
 const { env } = process;
 
@@ -42,6 +42,4 @@ schedule.scheduleJob('video-status-api', env.SCHEDULE_VIDEO_STAT_API, 'Asia/Toky
 // })
 
 // Gets comments from videos to check for timestamps
-// schedule.scheduleJob(config.timings['crawl-comments'], function(){
-//   comments()
-// })
+schedule.scheduleJob('video-comments', env.SCHEDULE_COMMENTS, 'Asia/Tokyo', comments);
