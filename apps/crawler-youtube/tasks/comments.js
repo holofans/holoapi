@@ -90,9 +90,7 @@ const fetchTimestampedYoutubeComments = async (channelId, lastCrawlTime) => {
 module.exports = async () => {
   const uncrawledChannel = await db.Channel.findOne({
     where: {
-      [Op.and]: [
-        { yt_channel_id: { [Op.not]: null } }, // must be a youtube video
-      ],
+      yt_channel_id: { [Op.not]: null }, // must be a youtube video
     },
     order: [['comments_crawled_at', 'NULLS FIRST']], // in ascending order by last crawled time.
   });
@@ -123,11 +121,11 @@ module.exports = async () => {
       ...comment,
     }));
 
-    const dbSaving = await db.VideoComment.bulkCreate(commentsToUpsert, {
+    await db.VideoComment.bulkCreate(commentsToUpsert, {
       updateOnDuplicate: ['updated_at', 'message'],
     });
 
-    log.info(`Comments Crawler saved: ${commentsToUpsert.length} number of comments.`);
+    log.info(`Comments Crawler saved: ${commentsToUpsert.length} comments.`);
 
     // updating the last crawled time since we crawled successfully, we're updating it
     // to 2 hours ago to prevent any data availability delays from Youtube from impacting us.
