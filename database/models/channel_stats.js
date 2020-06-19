@@ -1,5 +1,5 @@
 const { Model } = require('sequelize');
-const consts = require('../../consts');
+const { TABLES } = require('../../consts');
 
 class ChannelStats extends Model {
   static init(sequelize, DataTypes) {
@@ -21,7 +21,7 @@ class ChannelStats extends Model {
         updated_at: DataTypes.DATE,
       },
       {
-        tableName: consts.TABLE_CHANNEL_STATS,
+        tableName: TABLES.CHANNEL_STATS,
         sequelize,
       },
     );

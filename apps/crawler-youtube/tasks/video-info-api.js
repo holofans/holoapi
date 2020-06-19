@@ -11,7 +11,7 @@ require('dotenv').config();
 const moment = require('moment-timezone');
 const { Op } = require('sequelize');
 const { db, youtube, log, GenericError } = require('../../../modules');
-const consts = require('../../../consts');
+const { STATUSES } = require('../../../consts');
 
 const VIDEOS_MAX_QUERY = 50;
 
@@ -20,13 +20,13 @@ module.exports = async () => {
     log.debug('videoInfoAPI() START');
 
     // Get times
-    const utcDate = moment.tz('UTC');
+    const utcDate = moment().tz('UTC');
 
     // Check if there are videos set as status [new]
     const newVideos = await db.Video.findAll({
       where: [
         { yt_video_key: { [Op.not]: null } },
-        { status: consts.STATUSES.NEW },
+        { status: STATUSES.NEW },
       ],
       limit: VIDEOS_MAX_QUERY,
     }).catch((err) => {
@@ -129,35 +129,35 @@ module.exports = async () => {
           const endMoment = moment(saveInfo.live_end);
           // Determine live status
           if (saveInfo.live_end) {
-            saveInfo.status = consts.STATUSES.PAST;
+            saveInfo.status = STATUSES.PAST;
           } else if (saveInfo.live_start) {
-            saveInfo.status = consts.STATUSES.LIVE;
+            saveInfo.status = STATUSES.LIVE;
           } else if (saveInfo.live_schedule) {
             if (moment().isSameOrAfter(scheduleMoment)) {
-              saveInfo.status = consts.STATUSES.LIVE;
+              saveInfo.status = STATUSES.LIVE;
             } else {
-              saveInfo.status = consts.STATUSES.UPCOMING;
+              saveInfo.status = STATUSES.UPCOMING;
             }
           } else {
-            saveInfo.status = consts.STATUSES.PAST;
+            saveInfo.status = STATUSES.PAST;
           }
           // Get derived values
           if (saveInfo.live_schedule && saveInfo.live_start) {
-            saveInfo.late_secs = parseInt(startMoment.diff(scheduleMoment, 'seconds'), 10);
+            saveInfo.late_secs = startMoment.diff(scheduleMoment, 'seconds');
           }
           if (saveInfo.live_end && saveInfo.live_start) {
-            saveInfo.duration_secs = parseInt(endMoment.diff(startMoment, 'seconds'), 10);
+            saveInfo.duration_secs = endMoment.diff(startMoment, 'seconds');
           }
         } else {
           // Not a live stream, an uploaded video
           saveInfo.is_uploaded = true;
-          saveInfo.status = consts.STATUSES.PAST;
-          saveInfo.duration_secs = parseInt(moment.duration(ytInfo.contentDetails.duration).as('seconds'), 10);
+          saveInfo.status = STATUSES.PAST;
+          saveInfo.duration_secs = moment.duration(ytInfo.contentDetails.duration).as('seconds');
         }
       } else {
         // Video not returned by YouTube, mark as missing
         saveInfo = {
-          status: consts.STATUSES.MISSING,
+          status: STATUSES.MISSING,
           updated_at: utcDate,
         };
       }

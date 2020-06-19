@@ -16,6 +16,7 @@
     "googleapis": "^51.0.0",
     "helmet": "^3.22.0",
     "memcached": "^2.2.2",
+    "memcached-promise": "^1.0.1",
     "moment-timezone": "^0.5.31",
     "node-schedule-tz": "^1.2.1-4",
     "pg": "^8.2.1",
@@ -35,5 +36,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/holofans/holoapi.git"
-  }
+  },
+  "license": "GPL-3.0-or-later"
 }

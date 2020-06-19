@@ -1,54 +1,71 @@
+const { Op } = require('sequelize');
 const { Router } = require('express');
 const moment = require('moment-timezone');
-const { HoloVideo } = require('../../classes');
-const { consts, Firestore, Memcached, log } = require('../../library');
+const { STATUSES, VIDEOS_PAST_HOURS, CACHE_TTL } = require('../../../../consts');
+const { asyncMiddleware } = require('../../middleware/error');
+const { db } = require('../../../../modules');
+const cacheService = require('../../services/CacheService');
+const { RESPONSE_FIELDS } = require('../../../../consts');
 
-// Initialize Router
 const router = new Router();
 
-module.exports = router.get('/', async (req, res) => {
-  // Check cache, and return if it exists
-  const cache = await Memcached.get('live');
-  const liveCache = cache ? JSON.parse(cache) : {};
-  liveCache.cached = !!Object.keys(liveCache).length;
-  if (liveCache.cached) return liveCache;
+router.get('/', asyncMiddleware(async (req, res) => {
+  const cacheKey = 'live';
+  const cache = await cacheService.getFromCache(cacheKey);
+  if (cache.cached) {
+    return res.json(cache);
+  }
 
-  // Result structure
+
   const results = {
     live: [],
     upcoming: [],
     ended: [],
+    cached: false,
   };
 
-  // Look for videos that are live or upcoming
-  const videos = Firestore.collection('video');
-  const currentVideos = await videos.where('status', 'in', [consts.VIDEO_STATUSES.LIVE, consts.VIDEO_STATUSES.UPCOMING]).get();
+  const videos = await db.Video.findAll({
+    attributes: RESPONSE_FIELDS.LIVE_VIDEO,
+    include: [
+      {
+        association: 'channel',
+        attributes: RESPONSE_FIELDS.CHANNEL,
+      },
+    ],
+    where: {
+      status: [STATUSES.LIVE, STATUSES.UPCOMING],
+    },
+  });
 
-  // Get current timestamp
   const nowMoment = moment();
 
-  // Run through all results
-  currentVideos.map(video => {
-    const videoData = video.data();
-    const videoObj = new HoloVideo(videoData).toJSON();
-    if (videoData.status === consts.VIDEO_STATUSES.UPCOMING) return results.upcoming.push(videoObj);
-    if (videoData.status === consts.VIDEO_STATUSES.LIVE || nowMoment.isSameOrAfter(moment(videoData.liveSchedule))) return results.live.push(videoObj);
+  videos.forEach((video) => {
+    if (video.status === STATUSES.UPCOMING) {
+      results.upcoming.push(video);
+      return;
+    }
+    if (video.status === STATUSES.LIVE || nowMoment.isSameOrAfter(moment(video.live_schedule))) {
+      results.live.push(video);
+    }
   });
 
-  // Look for videos that have recently ended
-  const pastVideos = await videos.where('liveEnd', '>', nowMoment.clone().subtract(consts.VIDEOS_PAST_HOURS, 'hour').toISOString()).get();
-
-  // Add past videos into results
-  pastVideos.map(video => {
-    console.log('video', video);
-    const videoData = video.data();
-    const videoObj = new HoloVideo(videoData).toJSON();
-    results.ended.push(videoObj);
+  const pastVideos = await db.Video.findAll({
+    attributes: RESPONSE_FIELDS.LIVE_VIDEO,
+    include: [
+      {
+        association: 'channel',
+        attributes: RESPONSE_FIELDS.CHANNEL,
+      },
+    ],
+    where: {
+      live_end: { [Op.gte]: nowMoment.clone().subtract(VIDEOS_PAST_HOURS, 'hour').toISOString() },
+    },
   });
+  results.ended = pastVideos;
 
-  // Save result to cache
-  Memcached.set('live', JSON.stringify(results), consts.CACHE_TTL.LIVE);
+  cacheService.saveToCache(cacheKey, JSON.stringify(results), CACHE_TTL.LIVE);
 
-  // Return results
   return res.json(results);
-});
+}));
+
+module.exports = router;

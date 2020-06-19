@@ -6,7 +6,7 @@ const { asyncMiddleware } = require('../middleware/error');
 const router = new Router();
 
 router.get('/', asyncMiddleware(async (req, res) => {
-  const channel = await db.Channel.findOne({
+  const randomChannel = await db.Channel.findOne({
     include: [{
       as: 'stats',
       model: db.ChannelStats,
@@ -23,10 +23,11 @@ router.get('/', asyncMiddleware(async (req, res) => {
     order: Sequelize.literal('RANDOM()'),
   });
 
-
+  // Might be a good idea redirect to docs site from here
+  // or serve a static page
   res.json({
     time: Date.now(),
-    channel,
+    random_channel: randomChannel,
   });
 }));
 

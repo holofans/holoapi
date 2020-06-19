@@ -1,36 +1,67 @@
+const { Op } = require('sequelize');
 const { Router } = require('express');
-const { HoloChannel } = require('../../classes');
-const { consts, Firestore, Memcached, log } = require('../../library');
+const { db } = require('../../../../modules');
+const { RESPONSE_FIELDS } = require('../../../../consts');
+const { asyncMiddleware } = require('../../middleware/error');
+const { limitChecker } = require('../../middleware/filters');
 
-// Initialize Router
 const router = new Router();
 
-module.exports = router.get('/', async (req, res) => {
-  // Check cache, and return if it exists
-  const cache = await Memcached.get('channels');
-  const liveCache = cache ? JSON.parse(cache) : {};
-  liveCache.cached = !!Object.keys(liveCache).length;
-  if (liveCache.cached) return liveCache;
+router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
+  const { limit = 25, offset = 0, sort = 'id', order = 'asc', name } = req.query;
 
-  // Result structure
+  const { rows, count } = await db.Channel.findAndCountAll({
+    attributes: RESPONSE_FIELDS.CHANNEL,
+    where: {
+      ...name && { name: { [Op.iLike]: `%${name}%` } },
+    },
+    order: [[sort, order]],
+    limit,
+    offset,
+  });
   const results = {
-    channels: [],
+    count: rows.length,
+    total: count,
+    channels: rows,
   };
 
-  // Look for videos that are live or upcoming
-  const videoCollection = Firestore.collection('channel');
-  const channels = await videoCollection.get();
+  res.json(results);
+}));
 
-  // Run through all results
-  channels.map(video => {
-    const channelData = video.data();
-    const channelObj = new HoloChannel(channelData);
-    return results.channels.push(channelObj.toJSON());
+router.get('/:id', asyncMiddleware(async (req, res) => {
+  const { id } = req.params;
+
+  const channel = await db.Channel.findOne({
+    attributes: RESPONSE_FIELDS.CHANNEL,
+    where: { id },
+    rejectOnEmpty: true,
   });
 
-  // Save result to cache
-  Memcached.set('channels', JSON.stringify(results), consts.CACHE_TTL.CHANNELS);
+  res.json(channel);
+}));
 
-  // Return results
-  return res.json(results);
-});
+router.get('/youtube/:yt_channel_id', asyncMiddleware(async (req, res) => {
+  const { yt_channel_id } = req.params;
+
+  const channel = await db.Channel.findOne({
+    attributes: RESPONSE_FIELDS.CHANNEL,
+    where: { yt_channel_id },
+    rejectOnEmpty: true,
+  });
+
+  res.json(channel);
+}));
+
+router.get('/bilibili/:bb_space_id', asyncMiddleware(async (req, res) => {
+  const { bb_space_id } = req.params;
+
+  const channel = await db.Channel.findOne({
+    attributes: RESPONSE_FIELDS.CHANNEL,
+    where: { bb_space_id },
+    rejectOnEmpty: true,
+  });
+
+  res.json(channel);
+}));
+
+module.exports = router;
