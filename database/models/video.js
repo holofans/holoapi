@@ -41,7 +41,6 @@ class Video extends Model {
         is_captioned: DataTypes.BOOLEAN,
         is_licensed: DataTypes.BOOLEAN,
         is_embeddable: DataTypes.BOOLEAN,
-        comments_crawled_at: DataTypes.DATE,
         created_at: DataTypes.DATE,
         updated_at: DataTypes.DATE,
       },
