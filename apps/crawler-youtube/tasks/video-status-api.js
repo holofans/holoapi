@@ -21,43 +21,22 @@ module.exports = async () => {
     const utcDate = moment.tz('UTC');
 
     // Check if there are live videos
-    const liveVideos = await db.Video.findAll({
+    const targetVideos = await db.Video.findAll({
       where: [
         { yt_video_key: { [Op.not]: null } },
-        { status: consts.STATUSES.LIVE },
+        { status: [consts.STATUSES.LIVE, consts.STATUSES.UPCOMING] },
       ],
       order: [
+        ['status', 'ASC'],
         ['updated_at', 'ASC'],
       ],
       limit: 50,
     }).catch((err) => {
       // Catch and log db error
-      log.error('videoStatusAPI() Unable to fetch videos with status [live]', { error: err.toString() });
+      log.error('videoStatusAPI() Unable to fetch videos for tracking', { error: err.toString() });
       // Return empty list, so the succeeding process for upcoming videos wil continue
       return [];
     });
-
-    // Find upcoming that are most outdated
-    const upcomingVideos = await db.Video.findAll({
-      where: {
-        [Op.and]: [
-          { yt_video_key: { [Op.not]: null } },
-          { status: consts.STATUSES.UPCOMING },
-        ],
-      },
-      order: [
-        ['updated_at', 'ASC'],
-      ],
-      limit: 50 - liveVideos.length,
-    }).catch((err) => {
-      // Catch and log db error
-      log.error('videoStatusAPI() Unable to fetch videos with status [upcoming]', { error: err.toString() });
-      // Return empty list, so the new videos from the preceeding process can still be updated
-      return [];
-    });
-
-    // Final list of videos to be updated
-    const targetVideos = liveVideos.concat(upcomingVideos);
 
     // Check if there's any channel to be crawled
     if (!targetVideos || !targetVideos.length) {
