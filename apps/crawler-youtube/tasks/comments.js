@@ -1,7 +1,6 @@
 require('dotenv').config();
 const moment = require('moment-timezone');
 const { Op } = require('sequelize');
-// const { ne } = require('sequelize/types/lib/operators');
 const { db, youtube, log, GenericError } = require('../../../modules');
 const logger = require('../../../modules/logger');
 
@@ -33,13 +32,19 @@ async function* fetchPagesOfComments(channelId, stopAtDate) {
     });
 
     // Check if we need to continue paginating
-    const earliestDateInPage = ytData.items[ytData.items.length - 1].snippet.topLevelComment.snippet.updatedAt;
+    if (ytData.items.length > 0) {
+      const earliestDateInPage = ytData.items[ytData.items.length - 1].snippet.topLevelComment.snippet.updatedAt;
+      yield ytData.items;
 
-    hasNextPage = !!ytData.nextPageToken && (!stopAtDate || earliestDateInPage < stopAtDate);
-    nextPageToken = ytData.nextPageToken;
+      hasNextPage = !!ytData.nextPageToken && (!stopAtDate || moment(earliestDateInPage) > stopAtDate);
+      nextPageToken = ytData.nextPageToken;
 
-    debugger;
-    yield ytData.items;
+      log.info(`new page: ${earliestDateInPage} ... going until ${stopAtDate}`);
+    } else {
+      // for some reason it's possible to have a fully empty page but not have it be the last page ?!
+      hasNextPage = !!ytData.nextPageToken;
+      nextPageToken = ytData.nextPageToken;
+    }
   }
 }
 
@@ -57,14 +62,12 @@ const COMMENT_TIMESTAMP_REGEX = /\d+:\d+/;
 // here we ask for two or more non numerical, non space, and not ":" characters.
 const COMMENT_ANNOT_REGEX = /[^\d\s:]{2,}/;
 
-const fetchTimestampedYoutubeComments = async (channelId) => {
-  debugger; // lol i'm using VSCode Debugging so kepeing this here so it doesn't always reload and search...
+const fetchTimestampedYoutubeComments = async (channelId, lastCrawlTime) => {
   let comments = [];
   let commentCount = 0;
-  const iterator = fetchPagesOfComments(channelId);
+  const iterator = fetchPagesOfComments(channelId, lastCrawlTime);
   // eslint-disable-next-line no-restricted-syntax
   for await (const page of iterator) {
-    debugger;
     commentCount += page.length;
     comments = comments.concat(
       page
@@ -86,11 +89,49 @@ module.exports = async () => {
         { yt_channel_id: { [Op.not]: null } }, // must be a youtube video
       ],
     },
-    order: ['comments_crawled_at'], // in ascending order by last crawled time.
+    order: [['comments_crawled_at', 'NULLS FIRST']], // in ascending order by last crawled time.
   });
 
-  const comments = fetchTimestampedYoutubeComments(uncrawledChannel.yt_channel_id);
+  const comments = await fetchTimestampedYoutubeComments(
+    uncrawledChannel.yt_channel_id,
+    uncrawledChannel.comments_crawled_at && moment(uncrawledChannel.comments_crawled_at).tz('UTC'),
+  );
 
+  if (comments.length > 0) {
+    const videoKeys = [...new Set(comments.map(({ video_key }) => video_key))];
+
+    const videoIdForKeys = await db.Video.findAll({
+      attributes: ['id', 'yt_video_key'],
+      where: {
+        yt_video_key: videoKeys,
+      },
+    });
+
+    const videoKeyToIdMap = Object.fromEntries(
+      videoIdForKeys.map((m) => [m.yt_video_key, m.id]),
+    );
+
+    const commentsToUpsert = comments.map((comment) => ({
+      video_id: videoKeyToIdMap[comment.video_key],
+      ...comment,
+    }));
+
+    const dbSaving = await db.VideoComment.bulkCreate(commentsToUpsert, {
+      updateOnDuplicate: ['updated_at', 'message'],
+    });
+
+    log.info(`Comments Crawler saved: ${commentsToUpsert.length} number of comments.`);
+
+    await db.Channel.update({ comments_crawled_at: comments[0].updated_at },
+      {
+        where: { id: uncrawledChannel.id },
+      });
+  } else {
+    await db.Channel.update({ comments_crawled_at: moment().tz() },
+      {
+        where: { id: uncrawledChannel.id },
+      });
+  }
 };
 
 /*

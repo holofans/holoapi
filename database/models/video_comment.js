@@ -20,7 +20,11 @@ class VideoComment extends Model {
         },
         created_at: DataTypes.DATE,
         updated_at: DataTypes.DATE,
-        comment_key: DataTypes.STRING,
+        comment_key: {
+          type: DataTypes.STRING,
+          unique: true,
+          allowNull: false,
+        },
       },
       {
         tableName: consts.TABLE_VIDEO_COMMENT,
