@@ -1,5 +1,5 @@
 const { Model } = require('sequelize');
-const consts = require('../../consts');
+const { TABLES, STATUSES } = require('../../consts');
 
 class Channel extends Model {
   static init(sequelize, DataTypes) {
@@ -33,7 +33,7 @@ class Channel extends Model {
         description: {
           type: DataTypes.TEXT,
         },
-        thumbnail: {
+        photo: {
           type: DataTypes.TEXT,
         },
         published_at: {
@@ -42,7 +42,7 @@ class Channel extends Model {
         status: {
           type: DataTypes.STRING,
           allowNull: false,
-          defaultValue: consts.STATUSES.NEW,
+          defaultValue: STATUSES.NEW,
         },
         twitter_link: {
           type: DataTypes.STRING,
@@ -70,7 +70,7 @@ class Channel extends Model {
         },
       },
       {
-        tableName: consts.TABLE_CHANNEL,
+        tableName: TABLES.CHANNEL,
         sequelize,
       },
     );

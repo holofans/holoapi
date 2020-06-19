@@ -14,6 +14,9 @@ module.exports = {
       script: './apps/crawler-youtube/index.js',
       exec_mode: 'cluster',
       instances: 1,
+      env: {
+        NODE_ENV: 'production',
+      },
     },
   ],
 };
