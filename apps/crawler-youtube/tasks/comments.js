@@ -5,87 +5,70 @@ const { fixchar } = require('fixchar');
 const { db, youtube, log, GenericError } = require('../../../modules');
 const logger = require('../../../modules/logger');
 
-/**
- * Fetches Comments from Youtube and yields once per page.
- *
- * Async Generator described here:
- * https://dev.to/exacs/es2018-real-life-simple-usage-of-async-iteration-get-paginated-data-from-rest-apis-3i2e
- *
- * @param {string} channelId
- * @param {Moment} stopAtDate
- */
-async function* fetchCommentPages(channelId, stopAtDate) {
-  let hasNextPage = true;
-  let nextPageToken = null;
-  while (hasNextPage) {
-    // eslint-disable-next-line no-await-in-loop
-    const ytData = await youtube.commentThreads.list(
-      {
-        allThreadsRelatedToChannelId: channelId,
-        part: 'snippet',
-        maxResults: 100,
-        ...nextPageToken && { pageToken: nextPageToken },
-      },
-    ).then((ytResult) => ytResult.data).catch((error) => {
-      log.error('[Comments] Crawler error in commentThreads.list', {
-        channelId,
-        error,
-      });
-      throw error;
+const RegExes = [
+
+  /* the comment must contain a timestamp of 00:00 format
+   * COMMENT_TIMESTAMP_REGEX: */ /\d+:\d+/,
+
+  /* the comment must also contain some annotation for the timestamp
+   * here we ask for two or more non numerical, non space, and not ":" characters.
+   * COMMENT_ANNOT_REGEX: */ /[^\d\s:]{2,}/,
+];
+
+
+const commentFetcher = (channelId, pageToken) => youtube.commentThreads.list({
+  allThreadsRelatedToChannelId: channelId,
+  part: 'snippet',
+  maxResults: 100,
+  pageToken,
+})
+  .then(({ data }) => data)
+  // return undefined that stops the loop and throws existing fetched data
+  .catch(({ message: error }) => log.error('comment crawler Error fetching commentThreads list error', {
+    channelId,
+    error,
+  }));
+
+const fetchTimestampedYoutubeComments = async (channelId, stopAtDate) => {
+  let commentCount = 0;
+  const results = [];
+
+  const resultsPush = ({ items }) => items
+    // filter comments if they pass regex tests
+    .filter(({ snippet }) => RegExes.every((regex) => regex.test(snippet.topLevelComment.snippet.textOriginal)))
+    .map(({ id, snippet }) => {
+      const { textOriginal, publishedAt, updatedAt } = snippet.topLevelComment.snippet;
+      // return null if date is old, otherwise return parsed data
+      return results.push(
+        +new Date(updatedAt) > stopAtDate ? {
+          video_key: snippet.videoId,
+          message: fixchar(textOriginal),
+          comment_key: id,
+          created_at: publishedAt,
+          updated_at: updatedAt,
+        } : null,
+      );
     });
 
-    // Check if we need to continue paginating
-    if (ytData.items.length > 0) {
-      const earliestDateInPage = ytData.items[ytData.items.length - 1].snippet.topLevelComment.snippet.updatedAt;
-      yield ytData.items;
+  let seed = await commentFetcher(channelId);
 
-      hasNextPage = !!ytData.nextPageToken && (!stopAtDate || moment(earliestDateInPage) > stopAtDate);
-      nextPageToken = ytData.nextPageToken;
-
-      log.info(`new page: ${earliestDateInPage} ... going until ${stopAtDate}`);
-    } else {
-      // for some reason it's possible to have a fully empty page but not have it be the last page ?!
-      hasNextPage = !!ytData.nextPageToken;
-      nextPageToken = ytData.nextPageToken;
-    }
-  }
-}
-
-const mapCommentThreadToComment = (ytCommentThread) => ({
-  video_key: ytCommentThread.snippet.videoId,
-  message: fixchar(ytCommentThread.snippet.topLevelComment.snippet.textOriginal),
-  comment_key: ytCommentThread.id,
-  created_at: ytCommentThread.snippet.topLevelComment.snippet.publishedAt,
-  updated_at: ytCommentThread.snippet.topLevelComment.snippet.updatedAt,
-});
-
-// the comment must contain a timestamp of 00:00 format
-const COMMENT_TIMESTAMP_REGEX = /\d+:\d+/;
-// the comment must also contain some annotation for the timestamp
-// here we ask for two or more non numerical, non space, and not ":" characters.
-const COMMENT_ANNOT_REGEX = /[^\d\s:]{2,}/;
-
-const fetchTimestampedYoutubeComments = async (channelId, lastCrawlTime) => {
-  let comments = [];
-  let commentCount = 0;
-  const iterator = fetchCommentPages(channelId, lastCrawlTime);
-  // eslint-disable-next-line no-restricted-syntax
-  for await (const page of iterator) {
-    commentCount += page.length;
-    comments = comments.concat(
-      page
-        .filter(
-          (ytCommentThread) => (
-            COMMENT_TIMESTAMP_REGEX.test(ytCommentThread.snippet.topLevelComment.snippet.textOriginal)
-          && COMMENT_ANNOT_REGEX.test(ytCommentThread.snippet.topLevelComment.snippet.textOriginal)
-          && !!ytCommentThread.snippet.videoId),
-        )
-        .map(mapCommentThreadToComment),
-    );
+  // store results if success
+  if (seed) {
+    commentCount += seed.items.length;
+    resultsPush(seed);
   }
 
+  // search while token exists and push doesn't return a null object
+  while (seed && !results.filter((v) => !v).length && seed.nextPageToken) {
+    /* eslint-disable-next-line no-await-in-loop */
+    seed = await commentFetcher(channelId, seed.nextPageToken);
+    commentCount += seed.items.length;
+    resultsPush(seed);
+  }
+
+  // log comment count and filter empty objects
   logger.info(`${commentCount} comments were scanned for channel ${channelId}.`);
-  return comments;
+  return seed ? results.filter((v) => v) : [];
 };
 
 module.exports = async () => {
