@@ -28,9 +28,8 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
     ...start_date && { published_at: { [Op.gte]: moment(start_date).startOf('day') } },
     ...end_date && { published_at: { [Op.lte]: moment(end_date).endOf('day') } },
     ...status && { status },
-    // Hacky way to convert string booleans into real booleans
-    ...is_uploaded && { is_uploaded: JSON.parse(is_uploaded.toLowerCase()) },
-    ...is_captioned && { is_captioned: JSON.parse(is_captioned.toLowerCase()) },
+    ...is_uploaded && { is_uploaded: is_uploaded === '1' },
+    ...is_captioned && { is_captioned: is_captioned === '1' },
   };
 
   const { rows, count } = await db.Video.findAndCountAll({
