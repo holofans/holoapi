@@ -1,4 +1,6 @@
 # HoloFans API
+![Deploy to production](https://github.com/holofans/holoapi/workflows/Deploy%20to%20production/badge.svg)
+
 Platform to serve Hololive information to community tools
 
 ## Development
@@ -17,7 +19,7 @@ Platform to serve Hololive information to community tools
 ## Applications
 ### Client API
 
-### Cralwer: YouTube
+### Crawler: YouTube
 
 Note that cron format used here is:
 
@@ -33,7 +35,7 @@ Note that cron format used here is:
  └───────────────────────── second (0 - 59, OPTIONAL)
 ```
 
-### Cralwer: BiliBili
+### Crawler: BiliBili
 
 
 ## Production Deployment
