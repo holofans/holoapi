@@ -11,7 +11,7 @@ require('dotenv').config();
 const moment = require('moment-timezone');
 const { Op } = require('sequelize');
 const { db, youtube, log, GenericError } = require('../../../modules');
-const consts = require('../../../consts');
+const { STATUSES } = require('../../../consts');
 
 module.exports = async () => {
   try {
@@ -24,7 +24,7 @@ module.exports = async () => {
     const targetVideos = await db.Video.findAll({
       where: [
         { yt_video_key: { [Op.not]: null } },
-        { status: [consts.STATUSES.LIVE, consts.STATUSES.UPCOMING] },
+        { status: [STATUSES.LIVE, STATUSES.UPCOMING] },
       ],
       order: [
         ['status', 'ASC'],
@@ -100,36 +100,36 @@ module.exports = async () => {
           const endMoment = moment(saveInfo.live_end);
           // Determine live status
           if (saveInfo.live_end) {
-            saveInfo.status = consts.STATUSES.PAST;
+            saveInfo.status = STATUSES.PAST;
           } else if (saveInfo.live_start) {
-            saveInfo.status = consts.STATUSES.LIVE;
+            saveInfo.status = STATUSES.LIVE;
           } else if (saveInfo.live_schedule) {
             if (moment().isSameOrAfter(scheduleMoment)) {
-              saveInfo.status = consts.STATUSES.LIVE;
+              saveInfo.status = STATUSES.LIVE;
             } else {
-              saveInfo.status = consts.STATUSES.UPCOMING;
+              saveInfo.status = STATUSES.UPCOMING;
             }
           } else {
-            saveInfo.status = consts.STATUSES.PAST;
+            saveInfo.status = STATUSES.PAST;
           }
           // Get derived values
           if (saveInfo.live_schedule && saveInfo.live_start) {
-            saveInfo.late_secs = parseInt(startMoment.diff(scheduleMoment, 'seconds'), 10);
+            saveInfo.late_secs = startMoment.diff(scheduleMoment, 'seconds');
           }
           if (saveInfo.live_end && saveInfo.live_start) {
-            saveInfo.duration_secs = parseInt(endMoment.diff(startMoment, 'seconds'), 10);
+            saveInfo.duration_secs = endMoment.diff(startMoment, 'seconds');
           }
         } else {
           // Stream Offline
           // Do not change status. We still need actualEndTime to calculate duration
           // Keep as live or upcoming until `liveStreamingDetails` is returned again
-          // If it gets annoying, use another solution like consts.STATUSES.OFFLINE
-          // saveInfo.status = consts.STATUSES.PAST;
+          // If it gets annoying, use another solution like STATUSES.OFFLINE
+          // saveInfo.status = STATUSES.PAST;
         }
       } else {
         // Video not returned by YouTube, mark as missing
         saveInfo = {
-          status: consts.STATUSES.MISSING,
+          status: STATUSES.MISSING,
           updated_at: utcDate,
         };
       }
