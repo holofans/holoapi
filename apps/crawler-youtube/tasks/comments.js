@@ -24,7 +24,6 @@ async function* fetchPagesOfComments(channelId, stopAtDate) {
         ...(nextPageToken && { pageToken: nextPageToken }),
       },
     ).then((ytResult) => ytResult.data).catch((err) => {
-      debugger;
       log.error('comment crawler Error fetching commentThreads list error', {
         channelId,
         err: err.tostring(),
