@@ -2,7 +2,7 @@ const sequelize = require('sequelize');
 const { Router } = require('express');
 const { fixchar } = require('fixchar');
 const { db } = require('../../../../modules');
-const { RESPONSE_FIELDS, CACHE_TTL, TABLES } = require('../../../../consts');
+const { RESPONSE_FIELDS, CACHE_TTL } = require('../../../../consts');
 const { asyncMiddleware } = require('../../middleware/error');
 const { limitChecker } = require('../../middleware/filters');
 const cacheService = require('../../services/CacheService');
@@ -19,11 +19,11 @@ const getVideoWithComments = (whereCondition) => db.Video.findOne({
   attributes: RESPONSE_FIELDS.VIDEO,
   include: [
     {
-      association: TABLES.VIDEO_COMMENT,
+      association: 'comments',
       attributes: RESPONSE_FIELDS.VIDEO_COMMENT_SIMPLE,
     },
     {
-      association: TABLES.CHANNEL,
+      association: 'channel',
       attributes: RESPONSE_FIELDS.CHANNEL,
     },
   ],
@@ -61,29 +61,31 @@ const searchFromDBOrCache = async (q, channelId = null) => {
     return cache;
   }
 
+  const dbResp = await db.Video.findAll({
+    attributes: RESPONSE_FIELDS.VIDEO,
+    include: [
+      {
+        association: 'comments',
+        attributes: RESPONSE_FIELDS.VIDEO_COMMENT_SIMPLE,
+        where: sequelize.where(
+          sequelize.fn('lower', sequelize.col('message')),
+          {
+            [Op.like]: `%${q}%`,
+          },
+        ),
+      },
+      {
+        association: 'channel',
+        attributes: RESPONSE_FIELDS.CHANNEL,
+      },
+    ],
+    order: [['published_at', 'desc']],
+    rejectOnEmpty: true,
+    ...channelId && { where: { channel_id: channelId } },
+  });
+
   const results = {
-    data: await db.Video.findAll({
-      attributes: RESPONSE_FIELDS.VIDEO,
-      include: [
-        {
-          association: TABLES.VIDEO_COMMENT,
-          attributes: RESPONSE_FIELDS.VIDEO_COMMENT_SIMPLE,
-          where: sequelize.where(
-            sequelize.fn('lower', sequelize.col('message')),
-            {
-              [Op.like]: `%${q}%`,
-            },
-          ),
-        },
-        {
-          association: TABLES.CHANNEL,
-          attributes: RESPONSE_FIELDS.CHANNEL,
-        },
-      ],
-      order: [['published_at', 'desc']],
-      rejectOnEmpty: true,
-      ...channelId && { where: { channel_id: channelId } },
-    }),
+    data: dbResp,
     cached: false,
   };
 
@@ -105,7 +107,7 @@ router.get('/search', limitChecker, asyncMiddleware(async (req, res) => {
   // sanitizing query to remove full width alphanumeric and half-width kana.
   const sanitizedQuery = fixchar(q).trim().toLowerCase();
 
-  const { data, cached } = searchFromDBOrCache(sanitizedQuery, sanitizedChannelId);
+  const { data, cached } = await searchFromDBOrCache(sanitizedQuery, sanitizedChannelId);
 
   // Check cache, and return if it exists
   const subslice = data.slice(nOffset, nOffset + nLimit);
