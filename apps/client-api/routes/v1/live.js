@@ -63,7 +63,7 @@ router.get('/', asyncMiddleware(async (req, res) => {
   });
   results.ended = pastVideos;
 
-  cacheService.saveToCache(cacheKey, JSON.stringify(results), CACHE_TTL.LIVE);
+  cacheService.saveToCache(cacheKey, results, CACHE_TTL.LIVE);
 
   return res.json(results);
 }));
