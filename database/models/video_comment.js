@@ -1,5 +1,5 @@
 const { Model } = require('sequelize');
-const consts = require('../../consts');
+const { TABLES } = require('../../consts');
 
 class VideoComment extends Model {
   static init(sequelize, DataTypes) {
@@ -14,19 +14,20 @@ class VideoComment extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        timecode: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-        },
         message: {
-          type: DataTypes.STRING,
+          type: DataTypes.TEXT,
           allowNull: false,
         },
         created_at: DataTypes.DATE,
         updated_at: DataTypes.DATE,
+        comment_key: {
+          type: DataTypes.STRING,
+          unique: true,
+          allowNull: false,
+        },
       },
       {
-        tableName: consts.TABLE_VIDEO_COMMENT,
+        tableName: TABLES.VIDEO_COMMENT,
         sequelize,
       },
     );

@@ -36,4 +36,4 @@ Object.values(db.models)
   .filter((model) => typeof model.associate === 'function')
   .forEach((model) => model.associate(db.models));
 
-module.exports = { db, ...db.models };
+module.exports = { client: db, ...db.models };

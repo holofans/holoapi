@@ -4,6 +4,7 @@
   "description": "Platform to serve Hololive information to community tools",
   "scripts": {
     "start": "nodemon apps/client-api",
+    "crawl": "nodemon apps/crawler-youtube",
     "migrate": "sequelize db:migrate",
     "rollback": "sequelize db:migrate:undo"
   },
@@ -13,9 +14,11 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "fixchar": "^0.3.0",
     "googleapis": "^51.0.0",
     "helmet": "^3.22.0",
     "memcached": "^2.2.2",
+    "memcached-promise": "^1.0.1",
     "moment-timezone": "^0.5.31",
     "node-schedule-tz": "^1.2.1-4",
     "pg": "^8.2.1",
@@ -35,5 +38,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/holofans/holoapi.git"
-  }
+  },
+  "license": "GPL-3.0-or-later"
 }

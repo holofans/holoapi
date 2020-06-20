@@ -1,4 +1,6 @@
 # HoloFans API
+![Deploy to production](https://github.com/holofans/holoapi/workflows/Deploy%20to%20production/badge.svg)
+
 Platform to serve Hololive information to community tools
 
 ## Development
@@ -17,9 +19,23 @@ Platform to serve Hololive information to community tools
 ## Applications
 ### Client API
 
-### Cralwer: YouTube
+### Crawler: YouTube
 
-### Cralwer: BiliBili
+Note that cron format used here is:
+
+```
+ *    *    *    *    *    *
+ ┬    ┬    ┬    ┬    ┬    ┬
+ │    │    │    │    │    │
+ │    │    │    │    │    └ day of week (0 - 7) (0 or 7 is Sun)
+ │    │    │    │    └───── month (1 - 12)
+ │    │    │    └────────── day of month (1 - 31)
+ │    │    └─────────────── hour (0 - 23)
+ │    └──────────────────── minute (0 - 59)
+ └───────────────────────── second (0 - 59, OPTIONAL)
+```
+
+### Crawler: BiliBili
 
 
 ## Production Deployment
@@ -59,7 +75,7 @@ Now you have `holotools` user which can modify `holotools` database without pg a
 For testing connections from outside, modify the pg_hba.conf for your postgres install:
 ```
 host    all             all             127.0.0.1/32            trust
-``` 
+```
 change the pg_hba.conf for localhost (127.0.0.1/32) from `md5` to `trust` to give pg permissions. This allows SSH tunneling to log in to postgres.
 
 To connect to postgres from external: set up SSH tunnel `-L 9999:localhost:5432` or, use SSH-tunnel connection option bundled with any db administration tools (tableplus, pgAdmin4). Then use `holotools` user to log in. No db password is needed in this setup, but don't open up the db to external or security issues may arise.

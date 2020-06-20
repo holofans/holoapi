@@ -1,10 +1,10 @@
 /**
- * VIDEO INFO API
- * Fetches information of 50 most outdated videos and updates database
- * - Priority fetch status: new videos because they have empty fields
- * - Next priority are videos that have oldest updated_at
- * - Update only once per day. Watch your quota.
- * - Up to 72k videos/day if ran per minute. Make per 30sec if db has more
+ * VIDEO STATUS API
+ * Fetches information of up to 50 live or upcoming videos and updates database
+ * - Priority fetch status: live videos
+ * - Next priority are upcoming videos that have oldest updated_at
+ * - Update only once per minute. Watch your quota.
+ * - 1440 mins per day x 3 units per run = 4,320 units per day
  */
 
 require('dotenv').config();
@@ -13,66 +13,44 @@ const { Op } = require('sequelize');
 const { db, youtube, log, GenericError } = require('../../../modules');
 const { STATUSES } = require('../../../consts');
 
-const VIDEOS_MAX_QUERY = 50;
-
 module.exports = async () => {
   try {
-    log.debug('videoInfoAPI() START');
+    log.debug('videoStatusAPI() START');
 
     // Get times
-    const utcDate = moment().tz('UTC');
+    const utcDate = moment.tz('UTC');
 
-    // Check if there are videos set as status [new]
-    const newVideos = await db.Video.findAll({
-      where: [
-        { yt_video_key: { [Op.not]: null } },
-        { status: STATUSES.NEW },
+    // Check if there are live videos
+    const targetVideos = await db.Video.findAll({
+      where: {
+        yt_video_key: { [Op.not]: null },
+        status: [STATUSES.LIVE, STATUSES.UPCOMING],
+      },
+      order: [
+        ['status', 'ASC'],
+        ['updated_at', 'ASC'],
       ],
-      limit: VIDEOS_MAX_QUERY,
+      limit: 50,
     }).catch((err) => {
       // Catch and log db error
-      log.error('videoInfoAPI() Unable to fetch videos with status[new]', { error: err.toString() });
-      // Return empty list, so the succeeding process for outdated videos wil continue
+      log.error('videoStatusAPI() Unable to fetch videos for tracking', { error: err.toString() });
+      // Return empty list, so the succeeding process for upcoming videos wil continue
       return [];
     });
 
-    // Find non-new videos that are most outdated
-    // const outdatedVideos = await db.Video.findAll({
-    //   where: {
-    //     [Op.and]: [
-    //       { yt_video_key: { [Op.not]: null } },
-    //       { status: { [Op.ne]: consts.STATUSES.NEW } },
-    //       { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').startOf('day') } },
-    //     ],
-    //   },
-    //   order: [
-    //     ['updated_at', 'ASC'],
-    //   ],
-    //   limit: VIDEOS_MAX_QUERY - newVideos.length,
-    // }).catch((err) => {
-    //   // Catch and log db error
-    //   log.error('videoInfoAPI() Unable to fetch outdated videos', { error: err.toString() });
-    //   // Return empty list, so the new videos from the preceeding process can still be updated
-    //   return [];
-    // });
-    const outdatedVideos = [];
-
-    // Final list of videos to be updated
-    const targetVideos = newVideos.concat(outdatedVideos);
-
     // Check if there's any channel to be crawled
     if (!targetVideos || !targetVideos.length) {
-      log.debug('videoInfoAPI() No videos to be updated');
+      log.debug('videoStatusAPI() No videos to be updated');
       return;
     }
 
     // Fetch data from YouTube
     const ytVideoItems = await youtube.videos.list({
-      part: 'snippet,status,contentDetails,liveStreamingDetails',
-      id: targetVideos.map((targetVideo) => targetVideo.yt_video_key),
+      part: 'liveStreamingDetails',
+      id: targetVideos.map((targetVideo) => targetVideo.yt_video_key).join(','),
       hl: 'ja',
-      fields: 'items(id,snippet,contentDetails,status/embeddable,liveStreamingDetails)',
-      maxResults: 50, // keep at 50, not VIDEOS_MAX_QUERY
+      fields: 'items(id,liveStreamingDetails)',
+      maxResults: 50,
     })
       .then((ytResult) => {
         // Sanity check for YouTube respons contents
@@ -84,7 +62,7 @@ module.exports = async () => {
       })
       .catch((err) => {
         // Log error information
-        log.error('videoInfoAPI() YouTube fetch error', {
+        log.error('videoStatusAPI() YouTube fetch error', {
           error: err.toString(),
           videoKeys: targetVideos.map((targetVideo) => targetVideo.yt_video_key),
         });
@@ -94,7 +72,7 @@ module.exports = async () => {
 
     // Check if we have videos to be updated in database
     if (!ytVideoItems) {
-      log.warn('videoInfoAPI() No videos fetched');
+      log.warn('videoStatusAPI() No videos fetched');
       return;
     }
 
@@ -108,14 +86,7 @@ module.exports = async () => {
       let saveInfo;
       if (ytInfo) {
         // Video still exists, update its information
-        saveInfo = {
-          title: ytInfo.snippet.title,
-          description: ytInfo.snippet.description,
-          published_at: moment(ytInfo.snippet.publishedAt),
-          is_captioned: String(ytInfo.contentDetails.caption) !== 'false',
-          is_licensed: ytInfo.contentDetails.licensedContent,
-          is_embeddable: ytInfo.status.embeddable || null,
-        };
+        saveInfo = {};
         // Video livestream status
         if (ytInfo.liveStreamingDetails) {
           saveInfo.is_uploaded = false;
@@ -149,10 +120,11 @@ module.exports = async () => {
             saveInfo.duration_secs = endMoment.diff(startMoment, 'seconds');
           }
         } else {
-          // Not a live stream, an uploaded video
-          saveInfo.is_uploaded = true;
-          saveInfo.status = STATUSES.PAST;
-          saveInfo.duration_secs = moment.duration(ytInfo.contentDetails.duration).as('seconds');
+          // Stream Offline
+          // Do not change status. We still need actualEndTime to calculate duration
+          // Keep as live or upcoming until `liveStreamingDetails` is returned again
+          // If it gets annoying, use another solution like STATUSES.OFFLINE
+          // saveInfo.status = STATUSES.PAST;
         }
       } else {
         // Video not returned by YouTube, mark as missing
@@ -168,7 +140,7 @@ module.exports = async () => {
         })
         .catch((err) => {
           // Log error
-          log.error('videoInfoAPI() Cannot save to database', {
+          log.error('videoStatusAPI() Cannot save to database', {
             videoKey: targetVideo.yt_video_key,
             error: err.toString(),
           });
@@ -180,8 +152,8 @@ module.exports = async () => {
     // Wait for all database saves
     await Promise.all(dbSaves);
 
-    log.info('videoInfoAPI() Saved video list', { results: logResults });
+    log.info('videoStatusAPI() Saved video list', { results: logResults });
   } catch (error) {
-    log.error('videoInfoAPI() Uncaught error', { error: error.toString() });
+    log.error('videoStatusAPI() Uncaught error', { error: error.toString() });
   }
 };
