@@ -94,7 +94,7 @@ module.exports = async () => {
         yt_uploads_id: channelInfo.contentDetails.relatedPlaylists.uploads,
         name: channelInfo.snippet.title,
         description: channelInfo.snippet.description,
-        thumbnail: channelInfo.snippet.thumbnails.high.url,
+        photo: channelInfo.snippet.thumbnails.high.url,
         published_at: moment(channelInfo.snippet.publishedAt).tz('UTC'),
         updated_at: moment.utc(),
       })
