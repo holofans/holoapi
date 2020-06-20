@@ -9,7 +9,7 @@ class CacheService {
 
       return channelCache;
     } catch (e) {
-      log.error('Error fetching cache');
+      log.error(`Error fetching cache: ${e.message}`);
     }
     return {};
   }
