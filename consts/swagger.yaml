@@ -143,12 +143,14 @@ paths:
                       published_at: '2019-11-25T10:44:27.000Z'
                       twitter_link: yukokuroberu
                 cached: false
-  /search:
+  /comments/search:
     get:
       description: Search for videos containing timestamped comment that has the query keyword
       parameters:
         - name: q
-          description: Query to search.
+          description: >-
+            Query to search. This Query will be sanitized and returned back to you, since all the comment strings in the db have been sanitized.
+            There are no full width alphanumerics or half width kana characters.
           in: query
           schema:
             type: string
@@ -170,7 +172,7 @@ paths:
             type: integer
             default: 0
         - name: channel_id
-          description: 'a channel_id, this is a numerical id obtained from the /channels endpoint that uniquely identifies the channel on our platform. Does not support youtube/other channel hash.'
+          description: a channel_id, this is a numerical id obtained from the /channels endpoint that uniquely identifies the channel on our platform. Does not support youtube/other channel hash.
           in: query
           required: false
           schema:
@@ -178,4 +180,246 @@ paths:
             default: null
       responses:
         '200':
-          description: login
+          description: returns search result
+          content:
+            application/json:
+              example:
+                data:
+                  - id: 649
+                    channel_id: 30
+                    yt_video_key: KI90lVm_vHA
+                    bb_video_id: null
+                    title: 【歌枠】懐 か し の ニ コ ニ コ ソ ン グ メ ド レ ー 改【老人会/アーカイブ残らないかも！】
+                    description: >-
+                      サムネイル：
+
+                      笹井さじせんせえ！@saji_s
+
+
+                      ▷◁－－－－－－－－－－－－－－－－－－－－－－－－－▷◁
+
+
+                      ⚓あくたんとの約束⚓
+
+                      ▷◁－－－－－－－－－－－－－－－－－－－－－－－－－▷◁
+                    thumbnail: null
+                    published_at: 2020-05-24T14:35:01.000Z
+                    status: new
+                    live_schedule: null
+                    live_start: null
+                    live_end: null
+                    live_viewers: null
+                    is_uploaded: null
+                    late_secs: null
+                    duration_secs: null
+                    is_captioned: null
+                    is_licensed: null
+                    is_embeddable: null
+                    created_at: 2020-06-19T01:31:07.124Z
+                    updated_at: 2020-06-19T06:51:30.553Z
+                    comments:
+                      - - UgxGrh9L56qWO-7P91R4AaABAg
+                        - |-
+                          3:10 こんあくあ
+
+
+                          8:15
+                          おちゃめ機能/  Mischievous Function
+
+                          15:25
+                          冒険でしょでしょ/  Bouken Desho Desho
+
+                          21:55
+                          ルカルカ★ナイトフィーバー/  Luka Luka★Night Fever
+
+                          29:40
+                          Help me, ERINNNNNN!!
+
+                          36:05
+                          Lost my music
+
+                          42:41
+                          白金ディスコ/  Platinum disco
+
+                          48:45
+                          Daydream cafe
+
+                          55:15
+                          君の知らない物語/  Kimi no Shiranai Monogatari
+
+                          1:03:25
+                          バラライカ/  Balalaika
+
+                          1:09:55
+                          Bad Apple!!
+
+                          1:18:00
+                          初音ミクの消失/  The Disappearance of Hatsune Miku -DEAD END-
+
+                          1:25:55
+                          だんご大家族/  Dango Daikazoku
+
+                          1:37:05
+                          ニコニコ動画流星群
+                      - - UgzeuO-THd6ExwtPoZp4AaABAg
+                        - |-
+                          (アーカイブ対応済み)
+                          0:00 OP
+                          3:07 開始
+                          8:16 01.おちゃめ機能(2010)
+                          15:24 02.冒険でしょでしょ?(2008)
+                          21:54 03.ルカルカ☆ナイトフィーバー(2009)
+                          29:40 04 Help me，ERINNNNNN!!(2004)
+                          36:09 05.Lost my music(2006)
+                          42:39 06.白金ディスコ(2012)
+                          48:49 07.Daydream Cafe(2014)
+                          55:22 08.君の知らない物語(2009)
+                          1:03:29 09.バラライカ(2010)
+                          1:09:55 10.Bad Apple!!(2007)
+                          1:18:00 11.初音ミクの消失(2011)
+                          1:26:00 12.だんご大家族(2007)
+                          1:37:18 13.ニコニコ動画流星群(2008)
+                          1:51:48 ED
+                      - - UgzWraT7fuBfK7dnX8Z4AaABAg
+                        - |-
+                          8:09 1曲目 おちゃめ機能
+                          15:15 2曲目 冒険でしょでしょ？
+                          21:49 3曲目 ルカルカナイトフィーバー
+                          28:30 4曲目 Helpme,ERINNNNNN!! ( ﾟ∀ﾟ)o彡°えーりん！えーりん！
+                          35:57 5曲目 Lost my music (ハルヒ)
+                          42:04 6曲目 白金ディスコ
+                          48:18 7曲目 Daydream Cafe(ああ^～こころがぴょんぴょんするんじゃ^～)
+                          54:58 8曲目 君の知らない物語
+                          1:03:08 9曲目 バラライカ (ま た お ま え か)
+                          1:09:30 10曲目 Bad Apple!!
+                          1:17:35 11曲目 初音ミクの消失
+                          1:25:07 12曲目 だんご大家族
+                          1:35:52 13曲目 ラスボス ニコニコ動画流星群
+                          配信お疲れ様でした！
+                      - - Ugx-nc9MX9llzmvk5k94AaABAg
+                        - "おつあくあ〜⚓️
+
+                          最高に若返りました(・∀・)+
+
+                          流星群まことにお見事！ぐっじょぶ！
+
+                          03:07 開始\r
+
+                          08:12 １曲目おちゃめ機能\r
+
+                          12:39 １０年前（最近）\r
+
+                          15:19 ２曲目冒険でしょでしょ？\r
+
+                          20:50  新しい（2009年）\r
+
+                          21:47 ３曲目ルカルカナイトフィーバー\r
+
+                          26:09 アニキに釣られる\r
+
+                          29:33 ４曲目Helpme,ERINNNNNN!!\r
+
+                          36:00 ５曲目Lostmymusic\r
+
+                          42:32 ６曲目白金ディスコ\r
+
+                          48:44 ７曲目DaydreamCafe\r
+
+                          55:15 ８曲目君の知らない物語\r
+
+                          1:03:25 ９曲目バラライカ\r
+
+                          1:09:50 １０曲目BadApple\r
+
+                          1:17:54 １１曲目初音ミクの消失\r
+
+                          1:25:57 １２曲目だんご大家族\r
+
+                          1:36:57 １３曲目ニコニコ動画流星群
+
+                          みんなニコニコできてマジ最高でした！
+
+                          これからもみんなであくあさん応援するよ☺️"
+                    channel:
+                      id: 30
+                      yt_channel_id: UC1opHUrw8rvnsadT-iGp7Cg
+                      bb_space_id: null
+                      name: Aqua Ch. 湊あくあ
+                      description: >-
+                        バーチャルメイド⚓️湊あくあ(みなとあくあ)です！ど、ドジとか言わないでください！
+
+                        放送で色んな変わったゲームや雑談をしています…！！
+
+                        【生放送】#湊あくあ生放送【関連ツイート】#湊あくあ 【ファン】 #あくあクルー【絵文字】⚓️【ﾌｧﾝｱｰﾄ】 #あくあーと ※動画やﾂｲｰﾄで使用させて頂くことがあります。担当絵師：がおう先生【@umaiyo_puyoman】
+                      photo: https://yt3.ggpht.com/a/AATXAJwHPp_TkvcWJyblt9XVYDjNSjrj6KdpQSCQNQ=s800-c-k-c0xffffffff-no-rj-mo
+                      published_at: 2018-08-01T06:38:45.000Z
+                      twitter_link: minatoaqua
+                  - id: 166
+                    channel_id: 24
+                    yt_video_key: TdVzrWISD-8
+                    bb_video_id: null
+                    title: 【緊急事態】私たち、入れ替わってる！？愛の力で元に戻れ！！【白上フブキ/夏色まつり】
+                    description: >-
+                      まつりの身体の中に入っている超絶かわいい狐
+                      ■白上フブキ
+                      https://www.youtube.com/channel/UCdn5BQ06XqgXoAxIhbqw5Rg
+                      ▶ホロライブ公式サイト▷ https://www.hololive.tv/
+                    thumbnail: null
+                    published_at: 2020-02-05T13:41:14.000Z
+                    status: past
+                    live_schedule: 2020-02-05T12:00:00.000Z
+                    live_start: 2020-02-05T11:58:58.719Z
+                    live_end: 2020-02-05T12:59:44.000Z
+                    live_viewers: null
+                    is_uploaded: false
+                    late_secs: -61
+                    duration_secs: 3645
+                    is_captioned: false
+                    is_licensed: true
+                    is_embeddable: true
+                    created_at: 2020-06-19T01:30:31.455Z
+                    updated_at: 2020-06-19T01:33:53.149Z
+                    comments:
+                      - - Ugy-8X80zZ9fmJqxSDd4AaABAg
+                        - |-
+                          21:39 OH MY GOD
+                          I LOST
+                    channel:
+                      id: 24
+                      yt_channel_id: UCQ0UDLQCjY0rmuxCDE38FGg
+                      bb_space_id: null
+                      name: Matsuri Channel 夏色まつり
+                      description: |-
+                        ホロライブ所属のバーチャルyoutuber、夏色まつりだよっ！！
+                        チア部に所属してる美少女JK！！
+                        歌歌ったりみんなと話しながら元気に楽しく配信していくから、みんな見てねー！！！
+
+                        Twitterアカウント🏮：https://twitter.com/natsuiromatsuri
+
+                        お問い合わせ
+                        カバー株式会社：http://cover-corp.com/
+                        ホロライブ：https://twitter.com/hololivetv
+                      photo: https://yt3.ggpht.com/a/AATXAJzcbPP43MVs2mlTg4a-u2W1D5g1OBYeJO6pHQ=s800-c-k-c0xffffffff-no-rj-mo
+                      published_at: 2018-05-25T06:58:58.000Z
+                      twitter_link: natsuiromatsuri
+                count: 4
+                cached: false
+                query: Lost
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: list of videos
+                  count:
+                    type: integer
+                    description: count of total number of videos
+                  cached:
+                    description: whether it's returning you a cached result.
+                  query:
+                    type: string
+                    description: A sanitized string of the query used for lookup.
+
+
+
+
