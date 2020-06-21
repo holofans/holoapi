@@ -1,0 +1,181 @@
+openapi: 3.0.0
+info:
+  title: Holoapi
+  version: v1
+tags: []
+paths:
+  /live:
+    get:
+      description: Fetches videos that are currently live.
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              example:
+                live:
+                  - id: 255542
+                    yt_video_key: Y-0PKT3YMhI
+                    bb_video_id: null
+                    title: 【Getting Over It】へなちょこ悪魔が壺おじ初体験！初壺ハマるのか・・・？【ホロライブ/癒月ちょこ】
+                    thumbnail: null
+                    status: live
+                    live_schedule: '2020-06-21T03:00:00.000Z'
+                    live_start: '2020-06-21T02:59:36.327Z'
+                    live_end: null
+                    live_viewers: 917
+                    channel:
+                      id: 34
+                      yt_channel_id: UC1suqwovbL1kzsoaZgFZLKg
+                      bb_space_id: null
+                      name: Choco Ch. 癒月ちょこ
+                      description: |-
+                        新人Vtuberの魔界学校のバーチャル保健医癒月ちょこ（ゆづきちょこ）と申します！ チョコのような甘くとろけるような癒しのひとときをあなたに
+                        ファンアート【 #しょこらーと】※描いて頂いた絵は活動に使用させて頂くことがあります。
+                        母上様：@shima_je
+                      photo: 'https://yt3.ggpht.com/a/AATXAJw7R8J8buhX7Cw1m63vK2jlKFv-9YhFf-TQaA=s800-c-k-c0xffffffff-no-rj-mo'
+                      published_at: '2018-08-20T05:41:58.000Z'
+                      twitter_link: yuzukichococh
+                  - id: 236054
+                    yt_video_key: AdyTUvrpMuk
+                    bb_video_id: null
+                    title: 【初見実況】アサシンクリード4！！！やる！！！！！！！！！！【ホロライブ/大空スバル】
+                    thumbnail: null
+                    status: live
+                    live_schedule: '2020-06-21T04:05:00.000Z'
+                    live_start: '2020-06-21T04:04:19.595Z'
+                    live_end: null
+                    live_viewers: 6602
+                    channel:
+                      id: 43
+                      yt_channel_id: UCvzGlP9oQwU--Y0r9id_jnA
+                      bb_space_id: null
+                      name: Subaru Ch. 大空スバル
+                      description: "総合格闘技部とe-sports部のマネージャーっす！みんなのファイトのお手伝いするッス!!\U0001F31F\n【関連ツイート】#大空スバル 【絵文字】\U0001F691【生放送タグ】#生スバル【アート】#プロテインザスバル 【ﾌｧﾝﾈｰﾑ】スタンド ※このタグのイラストは使わせてもらう事があるっす！ \n大好きな母ちゃん!→@ui_shig"
+                      photo: 'https://yt3.ggpht.com/a/AATXAJw9_oqF22fvOEqGj2rHC12PadwHN-NlFL4DeA=s800-c-k-c0xffffffff-no-rj-mo'
+                      published_at: '2018-08-22T07:29:15.000Z'
+                      twitter_link: oozorasubaru
+                upcoming:
+                  - id: 244174
+                    yt_video_key: 4APnKUx7yMU
+                    bb_video_id: null
+                    title: '【行方不明】怖くないよ【#常闇トワ/ホロライブ】'
+                    thumbnail: null
+                    status: upcoming
+                    live_schedule: '2020-06-21T08:00:00.000Z'
+                    live_start: null
+                    live_end: null
+                    live_viewers: null
+                    channel:
+                      id: 45
+                      yt_channel_id: UC1uv2Oq6kNxgATlCiez59hw
+                      bb_space_id: null
+                      name: Towa Ch. 常闇トワ
+                      description: |-
+                        ホロライブ所属。
+                         1人前の悪魔になる為の社会勉強として人間界にやってきた小悪魔。本来勉強をしなきゃいけないところ、ゲームに出会ってしまい、夢中になる。配信という人間達とのコミュニケーションツールを見つけそこで勉強を試みる。
+                      photo: 'https://yt3.ggpht.com/a/AATXAJxqyp7DhLSSrSYRc5HaLcq5QvJvRp3jDnxTeA=s800-c-k-c0xffffffff-no-rj-mo'
+                      published_at: '2019-12-04T09:06:17.000Z'
+                      twitter_link: tokoyamitowa
+                  - id: 255873
+                    yt_video_key: 9zDrzDF4nFU
+                    bb_video_id: null
+                    title: '【Ark: Survival Evolved】へなちょこ悪魔の素材王の道！テイム素材大量生産編【ホロライブ/癒月ちょこ】'
+                    thumbnail: null
+                    status: upcoming
+                    live_schedule: '2020-06-21T06:00:00.000Z'
+                    live_start: null
+                    live_end: null
+                    live_viewers: null
+                    channel:
+                      id: 35
+                      yt_channel_id: UCp3tgHXw_HI0QMk1K8qh3gQ
+                      bb_space_id: null
+                      name: Choco subCh. 癒月ちょこ
+                      description: ''
+                      photo: 'https://yt3.ggpht.com/a/AATXAJxWHd24AUeLGOugOghgJQEEDiLzsbVZ_Q5Vag=s800-c-k-c0xffffffff-no-rj-mo'
+                      published_at: '2019-12-02T06:10:06.000Z'
+                      twitter_link: ''
+                  - id: 252261
+                    yt_video_key: xroq-LzDLcY
+                    bb_video_id: null
+                    title: '【感謝枠】プレゼントやスパチャ、ありがとう！#桐生ココ'
+                    thumbnail: null
+                    status: upcoming
+                    live_schedule: '2020-06-21T07:00:00.000Z'
+                    live_start: null
+                    live_end: null
+                    live_viewers: null
+                    channel:
+                      id: 14
+                      yt_channel_id: UCS9uQI-jC3DE0L4IpXyvr6w
+                      bb_space_id: null
+                      name: Coco Ch. 桐生ココ
+                      description: |-
+                        ホロライブ所属。
+                        人間の文化に興味を持ち、異世界から日本に語学留学中の子どものドラゴン。
+                        仁義と任侠を重んじる正義感あふれるドラゴンで、気合で人間の姿を保っている。
+
+                        お問い合わせ
+                        カバー株式会社：http://cover-corp.com/
+                        公式Twitter:https://twitter.com/hololivetv
+                      photo: 'https://yt3.ggpht.com/a/AATXAJzsH6iY-VYGVTKqpabDGtK1IO7N7eIDJV-4DQ=s800-c-k-c0xffffffff-no-rj-mo'
+                      published_at: '2019-12-04T09:54:01.000Z'
+                      twitter_link: kiryucoco
+                ended:
+                  - id: 246422
+                    yt_video_key: gnQ16sqgq64
+                    bb_video_id: null
+                    title: 【朝活】生活習慣改善WEEK放送－DAY5－【ホロスターズ/夕刻ロベル】
+                    thumbnail: null
+                    status: past
+                    live_schedule: '2020-06-21T00:00:00.000Z'
+                    live_start: '2020-06-21T00:00:07.649Z'
+                    live_end: '2020-06-21T01:04:09.000Z'
+                    live_viewers: null
+                    channel:
+                      id: 20
+                      yt_channel_id: UCANDOlYTJT7N5jlRC3zfzVA
+                      bb_space_id: null
+                      name: Roberu Ch. 夕刻ロベル
+                      description: "ホロライブプロダクション所属、ホロスターズの夕刻ロベルです！\n一緒に楽しんでいきましょー！！喋るの大好きです\U0001F440✨\n\n-------------------------------------------------------------------------------\n\n\U0001F377配信の情報や近況報告！フォローよろしくです！\U0001F377\n▶https://twitter.com/yukokuroberu\n\n\U0001F377配信関連のハッシュタグ\U0001F377\n【放送タグ】#ROBEL営業中\n【ファンアート】#描クテル\n【切り抜きタグ】#ひとくちロベル\n【ファンネーム】常連さん\n\n-------------------------------------------------------------------------------\n\n【ホロライブプロダクション】\nTwitter // https://twitter.com/hololivetv\n\n【ホロスターズ１期生】\n花咲みやび\nhttps://t.co/usgze638DD\n奏手イヅル\nhttps://t.co/nwIx1O5CXU\n鏡見キラ\nhttps://t.co/7xGlzAFMEn\nアルランディス\nhttps://t.co/a1mZZyiMzv\n律可\nhttps://t.co/zyHXqC4QPQ\n\n【ホロスターズ２期生】\nアステル・レダ\nhttps://t.co/uczREx7rTz\n岸堂天真\nhttps://t.co/nsfPwF2TAw\n\n【ホロスターズ3期生】\n月下カオル\nhttps://t.co/lItlgQpHvx\n影山シエン\nhttps://t.co/rGTjXb1gST\n荒咬オウガ\nhttps://t.co/RzXUeBi3Q8\n\n-------------------------------------------------------------------------------\n\n【お手紙・プレゼント宛先】\n〒173-0003\n東京都板橋区加賀1丁目6番1号　ネットデポ新板橋\nカバー株式会社ホロスターズ　プレゼント係分　夕刻ロベル 宛\n▼お預かりできない物もあるので、詳しくは以下参照▼\nhttps://www.hololive.tv/contact"
+                      photo: 'https://yt3.ggpht.com/a/AATXAJwH2AK290hk9Bg1IgflzfJrMmx1ywyOWtg8mg=s800-c-k-c0xffffffff-no-rj-mo'
+                      published_at: '2019-11-25T10:44:27.000Z'
+                      twitter_link: yukokuroberu
+                cached: false
+  /search:
+    get:
+      description: Search for videos containing timestamped comment that has the query keyword
+      parameters:
+        - name: q
+          description: Query to search.
+          in: query
+          schema:
+            type: string
+            example: Kimi no Shiranai
+          required: true
+        - name: limit
+          description: The number of videos to return.
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 50
+        - name: offset
+          description: The number of videos to skip.
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: channel_id
+          description: 'a channel_id, this is a numerical id obtained from the /channels endpoint that uniquely identifies the channel on our platform. Does not support youtube/other channel hash.'
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: null
+      responses:
+        '200':
+          description: login
