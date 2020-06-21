@@ -15,8 +15,8 @@ exports.STATUSES = {
 
 exports.CACHE_TTL = {
   LIVE: 15,
-  CHANNELS: 6 * 60 * 60, // 1 hour?
-  COMMENTS: 10 * 60, // 10 minutes
+  CHANNELS: 6 * 60 * 60, // 1 hour
+  COMMENTS: 2 * 60, // 2 minutes
 };
 
 exports.VIDEOS_PAST_HOURS = 6;
