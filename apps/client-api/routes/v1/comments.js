@@ -1,4 +1,4 @@
-const { QueryTypes, Op } = require('sequelize');
+const { Op } = require('sequelize');
 const { Router } = require('express');
 const { fixchar } = require('fixchar');
 const { RESPONSE_FIELDS } = require('../../../../consts');
@@ -15,7 +15,7 @@ router.get('/search', limitChecker, asyncMiddleware(async (req, res) => {
     throw new GenericError('Expected ?q param');
   }
 
-  // Sanitizing query to remove full width alphanumeric and half-width kana.
+  // Sanitizing query to remove full width alphanumeric and half-width kana
   const sanitizedQuery = fixchar(q).trim();
 
   const { rows, count } = await db.Video.findAndCountAll({
