@@ -40,6 +40,39 @@ const getTotalCount = async (q, channel_id) => {
   return count;
 };
 
+const getVideoIds = async (q, channel_id) => {
+  const cacheKey = `vids:${q}_${channel_id}`;
+  const cache = await cacheService.getFromCache(cacheKey);
+  if (cache.cached) {
+    return cache.data;
+  }
+
+  // object structure: { count: 132 }
+  const count = await db.VideoComment.findAll({
+    attributes: ['video.id'],
+    include: [
+      {
+        association: 'video',
+        attributes: [],
+        ...channel_id && {
+          where: { channel_id },
+        },
+      },
+    ],
+    where: { message: { [Op.iLike]: `%${q}%` } },
+    group: 'video.id',
+    order: [[db.VideoComment.associations.video, 'published_at', 'DESC']],
+    // Fixes weird subquery that kills performance
+    subQuery: false,
+    raw: true,
+  })
+    .map(({ id }) => id);
+
+  cacheService.saveToCache(cacheKey, { data: count }, CACHE_TTL.COMMENTS);
+  return count;
+};
+
+
 router.get('/search', limitChecker, asyncMiddleware(async (req, res) => {
   const { limit = 25, offset = 0, channel_id, q } = req.query;
 
@@ -52,42 +85,31 @@ router.get('/search', limitChecker, asyncMiddleware(async (req, res) => {
 
   const totalCount = getTotalCount(sanitizedQuery, channel_id);
 
-  const videoIds = await db.VideoComment.findAll({
-    attributes: ['video.id'],
-    include: [
-      {
-        association: 'video',
-        attributes: [],
-      },
-    ],
-    where: { message: { [Op.iLike]: `%${sanitizedQuery}%` } },
-    limit,
-    offset,
-    group: 'video.id',
-    order: [[db.VideoComment.associations.video, 'published_at', 'DESC']],
-    // Fixes weird subquery that kills performance
-    subQuery: false,
-    raw: true,
-  })
-    .map(({ id }) => id);
+  const videoIds = await getVideoIds(q, channel_id);
+
+  const videoIdsInPage = videoIds.slice(offset, offset + limit);
 
   const videos = await db.Video.findAll({
     attributes: RESPONSE_FIELDS.VIDEO,
     where: {
-      id: videoIds,
+      id: videoIdsInPage,
     },
     include: [{
       association: comments,
       attributes: RESPONSE_FIELDS.VIDEO_COMMENT_SIMPLE,
+      required: true,
     }, {
       association: channel,
       attributes: RESPONSE_FIELDS.CHANNEL,
+      required: true,
     }],
   });
 
+  const { count } = await totalCount;
+
   const results = {
     // count: rows.length,
-    total: (await totalCount).count,
+    total: count,
     query: sanitizedQuery,
     comments: videos,
   };
