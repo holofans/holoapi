@@ -3,6 +3,73 @@ info:
   title: Holoapi
   version: v1
 tags: []
+components:
+  schemas:
+    Video:
+      type: object
+      properties:
+        id:
+          type: integer
+        yt_video_key:
+          type: string
+        bb_video_id:
+          type: string
+        title:
+          type: string
+        thumbnail:
+          type: string
+        live_schedule:
+          type: string
+        live_start:
+          type: string
+        live_end:
+          type: string
+        live_viewers:
+          type: string
+        channel:
+          $ref: "#/components/schemas/Channel"
+          required: false
+        comments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+
+    Channel:
+      type: object
+      properties:
+        id:
+          type: integer
+        yt_channel_id:
+          type: string
+        bb_space_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        photo:
+          type: string
+          example: "https://yt3.ggpht.com/a/AATXAJw7R8J8buhX7Cw1m63vK2jlKFv-9YhFf-TQaA=s800-c-k-c0xffffffff-no-rj-mo"
+        published_at:
+          type: string
+        twitter_link:
+          type: string
+          example: yuzukichococh
+
+    Comment:
+      type: object
+      properties:
+        comment_key:
+          type: string
+          description: >-
+            "the youtube comment ID of the comment,
+            use this comment_key along with the video to generate a direct link to the comment."
+        message:
+          type: string
+          description: >-
+            plain text of a comment.
+
+
 paths:
   /live:
     get:
@@ -12,137 +79,24 @@ paths:
           description: SUCCESS
           content:
             application/json:
-              example:
-                live:
-                  - id: 255542
-                    yt_video_key: Y-0PKT3YMhI
-                    bb_video_id: null
-                    title: 【Getting Over It】へなちょこ悪魔が壺おじ初体験！初壺ハマるのか・・・？【ホロライブ/癒月ちょこ】
-                    thumbnail: null
-                    status: live
-                    live_schedule: '2020-06-21T03:00:00.000Z'
-                    live_start: '2020-06-21T02:59:36.327Z'
-                    live_end: null
-                    live_viewers: 917
-                    channel:
-                      id: 34
-                      yt_channel_id: UC1suqwovbL1kzsoaZgFZLKg
-                      bb_space_id: null
-                      name: Choco Ch. 癒月ちょこ
-                      description: |-
-                        新人Vtuberの魔界学校のバーチャル保健医癒月ちょこ（ゆづきちょこ）と申します！ チョコのような甘くとろけるような癒しのひとときをあなたに
-                        ファンアート【 #しょこらーと】※描いて頂いた絵は活動に使用させて頂くことがあります。
-                        母上様：@shima_je
-                      photo: 'https://yt3.ggpht.com/a/AATXAJw7R8J8buhX7Cw1m63vK2jlKFv-9YhFf-TQaA=s800-c-k-c0xffffffff-no-rj-mo'
-                      published_at: '2018-08-20T05:41:58.000Z'
-                      twitter_link: yuzukichococh
-                  - id: 236054
-                    yt_video_key: AdyTUvrpMuk
-                    bb_video_id: null
-                    title: 【初見実況】アサシンクリード4！！！やる！！！！！！！！！！【ホロライブ/大空スバル】
-                    thumbnail: null
-                    status: live
-                    live_schedule: '2020-06-21T04:05:00.000Z'
-                    live_start: '2020-06-21T04:04:19.595Z'
-                    live_end: null
-                    live_viewers: 6602
-                    channel:
-                      id: 43
-                      yt_channel_id: UCvzGlP9oQwU--Y0r9id_jnA
-                      bb_space_id: null
-                      name: Subaru Ch. 大空スバル
-                      description: "総合格闘技部とe-sports部のマネージャーっす！みんなのファイトのお手伝いするッス!!\U0001F31F\n【関連ツイート】#大空スバル 【絵文字】\U0001F691【生放送タグ】#生スバル【アート】#プロテインザスバル 【ﾌｧﾝﾈｰﾑ】スタンド ※このタグのイラストは使わせてもらう事があるっす！ \n大好きな母ちゃん!→@ui_shig"
-                      photo: 'https://yt3.ggpht.com/a/AATXAJw9_oqF22fvOEqGj2rHC12PadwHN-NlFL4DeA=s800-c-k-c0xffffffff-no-rj-mo'
-                      published_at: '2018-08-22T07:29:15.000Z'
-                      twitter_link: oozorasubaru
-                upcoming:
-                  - id: 244174
-                    yt_video_key: 4APnKUx7yMU
-                    bb_video_id: null
-                    title: '【行方不明】怖くないよ【#常闇トワ/ホロライブ】'
-                    thumbnail: null
-                    status: upcoming
-                    live_schedule: '2020-06-21T08:00:00.000Z'
-                    live_start: null
-                    live_end: null
-                    live_viewers: null
-                    channel:
-                      id: 45
-                      yt_channel_id: UC1uv2Oq6kNxgATlCiez59hw
-                      bb_space_id: null
-                      name: Towa Ch. 常闇トワ
-                      description: |-
-                        ホロライブ所属。
-                         1人前の悪魔になる為の社会勉強として人間界にやってきた小悪魔。本来勉強をしなきゃいけないところ、ゲームに出会ってしまい、夢中になる。配信という人間達とのコミュニケーションツールを見つけそこで勉強を試みる。
-                      photo: 'https://yt3.ggpht.com/a/AATXAJxqyp7DhLSSrSYRc5HaLcq5QvJvRp3jDnxTeA=s800-c-k-c0xffffffff-no-rj-mo'
-                      published_at: '2019-12-04T09:06:17.000Z'
-                      twitter_link: tokoyamitowa
-                  - id: 255873
-                    yt_video_key: 9zDrzDF4nFU
-                    bb_video_id: null
-                    title: '【Ark: Survival Evolved】へなちょこ悪魔の素材王の道！テイム素材大量生産編【ホロライブ/癒月ちょこ】'
-                    thumbnail: null
-                    status: upcoming
-                    live_schedule: '2020-06-21T06:00:00.000Z'
-                    live_start: null
-                    live_end: null
-                    live_viewers: null
-                    channel:
-                      id: 35
-                      yt_channel_id: UCp3tgHXw_HI0QMk1K8qh3gQ
-                      bb_space_id: null
-                      name: Choco subCh. 癒月ちょこ
-                      description: ''
-                      photo: 'https://yt3.ggpht.com/a/AATXAJxWHd24AUeLGOugOghgJQEEDiLzsbVZ_Q5Vag=s800-c-k-c0xffffffff-no-rj-mo'
-                      published_at: '2019-12-02T06:10:06.000Z'
-                      twitter_link: ''
-                  - id: 252261
-                    yt_video_key: xroq-LzDLcY
-                    bb_video_id: null
-                    title: '【感謝枠】プレゼントやスパチャ、ありがとう！#桐生ココ'
-                    thumbnail: null
-                    status: upcoming
-                    live_schedule: '2020-06-21T07:00:00.000Z'
-                    live_start: null
-                    live_end: null
-                    live_viewers: null
-                    channel:
-                      id: 14
-                      yt_channel_id: UCS9uQI-jC3DE0L4IpXyvr6w
-                      bb_space_id: null
-                      name: Coco Ch. 桐生ココ
-                      description: |-
-                        ホロライブ所属。
-                        人間の文化に興味を持ち、異世界から日本に語学留学中の子どものドラゴン。
-                        仁義と任侠を重んじる正義感あふれるドラゴンで、気合で人間の姿を保っている。
-
-                        お問い合わせ
-                        カバー株式会社：http://cover-corp.com/
-                        公式Twitter:https://twitter.com/hololivetv
-                      photo: 'https://yt3.ggpht.com/a/AATXAJzsH6iY-VYGVTKqpabDGtK1IO7N7eIDJV-4DQ=s800-c-k-c0xffffffff-no-rj-mo'
-                      published_at: '2019-12-04T09:54:01.000Z'
-                      twitter_link: kiryucoco
-                ended:
-                  - id: 246422
-                    yt_video_key: gnQ16sqgq64
-                    bb_video_id: null
-                    title: 【朝活】生活習慣改善WEEK放送－DAY5－【ホロスターズ/夕刻ロベル】
-                    thumbnail: null
-                    status: past
-                    live_schedule: '2020-06-21T00:00:00.000Z'
-                    live_start: '2020-06-21T00:00:07.649Z'
-                    live_end: '2020-06-21T01:04:09.000Z'
-                    live_viewers: null
-                    channel:
-                      id: 20
-                      yt_channel_id: UCANDOlYTJT7N5jlRC3zfzVA
-                      bb_space_id: null
-                      name: Roberu Ch. 夕刻ロベル
-                      description: "ホロライブプロダクション所属、ホロスターズの夕刻ロベルです！\n一緒に楽しんでいきましょー！！喋るの大好きです\U0001F440✨\n\n-------------------------------------------------------------------------------\n\n\U0001F377配信の情報や近況報告！フォローよろしくです！\U0001F377\n▶https://twitter.com/yukokuroberu\n\n\U0001F377配信関連のハッシュタグ\U0001F377\n【放送タグ】#ROBEL営業中\n【ファンアート】#描クテル\n【切り抜きタグ】#ひとくちロベル\n【ファンネーム】常連さん\n\n-------------------------------------------------------------------------------\n\n【ホロライブプロダクション】\nTwitter // https://twitter.com/hololivetv\n\n【ホロスターズ１期生】\n花咲みやび\nhttps://t.co/usgze638DD\n奏手イヅル\nhttps://t.co/nwIx1O5CXU\n鏡見キラ\nhttps://t.co/7xGlzAFMEn\nアルランディス\nhttps://t.co/a1mZZyiMzv\n律可\nhttps://t.co/zyHXqC4QPQ\n\n【ホロスターズ２期生】\nアステル・レダ\nhttps://t.co/uczREx7rTz\n岸堂天真\nhttps://t.co/nsfPwF2TAw\n\n【ホロスターズ3期生】\n月下カオル\nhttps://t.co/lItlgQpHvx\n影山シエン\nhttps://t.co/rGTjXb1gST\n荒咬オウガ\nhttps://t.co/RzXUeBi3Q8\n\n-------------------------------------------------------------------------------\n\n【お手紙・プレゼント宛先】\n〒173-0003\n東京都板橋区加賀1丁目6番1号　ネットデポ新板橋\nカバー株式会社ホロスターズ　プレゼント係分　夕刻ロベル 宛\n▼お預かりできない物もあるので、詳しくは以下参照▼\nhttps://www.hololive.tv/contact"
-                      photo: 'https://yt3.ggpht.com/a/AATXAJwH2AK290hk9Bg1IgflzfJrMmx1ywyOWtg8mg=s800-c-k-c0xffffffff-no-rj-mo'
-                      published_at: '2019-11-25T10:44:27.000Z'
-                      twitter_link: yukokuroberu
-                cached: false
+              schema:
+                type: object
+                properties:
+                  live:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Video"
+                  upcoming:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Video"
+                  ended:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Video"
+                  cached:
+                    type: boolean
+                    description: whether the response was cached or not
   /comments/search:
     get:
       description: Search for videos containing timestamped comment that has the query keyword
@@ -179,247 +133,26 @@ paths:
             type: integer
             default: null
       responses:
-        '200':
+        "200":
           description: returns search result
           content:
             application/json:
-              example:
-                data:
-                  - id: 649
-                    channel_id: 30
-                    yt_video_key: KI90lVm_vHA
-                    bb_video_id: null
-                    title: 【歌枠】懐 か し の ニ コ ニ コ ソ ン グ メ ド レ ー 改【老人会/アーカイブ残らないかも！】
-                    description: >-
-                      サムネイル：
-
-                      笹井さじせんせえ！@saji_s
-
-
-                      ▷◁－－－－－－－－－－－－－－－－－－－－－－－－－▷◁
-
-
-                      ⚓あくたんとの約束⚓
-
-                      ▷◁－－－－－－－－－－－－－－－－－－－－－－－－－▷◁
-                    thumbnail: null
-                    published_at: 2020-05-24T14:35:01.000Z
-                    status: new
-                    live_schedule: null
-                    live_start: null
-                    live_end: null
-                    live_viewers: null
-                    is_uploaded: null
-                    late_secs: null
-                    duration_secs: null
-                    is_captioned: null
-                    is_licensed: null
-                    is_embeddable: null
-                    created_at: 2020-06-19T01:31:07.124Z
-                    updated_at: 2020-06-19T06:51:30.553Z
-                    comments:
-                      - - UgxGrh9L56qWO-7P91R4AaABAg
-                        - |-
-                          3:10 こんあくあ
-
-
-                          8:15
-                          おちゃめ機能/  Mischievous Function
-
-                          15:25
-                          冒険でしょでしょ/  Bouken Desho Desho
-
-                          21:55
-                          ルカルカ★ナイトフィーバー/  Luka Luka★Night Fever
-
-                          29:40
-                          Help me, ERINNNNNN!!
-
-                          36:05
-                          Lost my music
-
-                          42:41
-                          白金ディスコ/  Platinum disco
-
-                          48:45
-                          Daydream cafe
-
-                          55:15
-                          君の知らない物語/  Kimi no Shiranai Monogatari
-
-                          1:03:25
-                          バラライカ/  Balalaika
-
-                          1:09:55
-                          Bad Apple!!
-
-                          1:18:00
-                          初音ミクの消失/  The Disappearance of Hatsune Miku -DEAD END-
-
-                          1:25:55
-                          だんご大家族/  Dango Daikazoku
-
-                          1:37:05
-                          ニコニコ動画流星群
-                      - - UgzeuO-THd6ExwtPoZp4AaABAg
-                        - |-
-                          (アーカイブ対応済み)
-                          0:00 OP
-                          3:07 開始
-                          8:16 01.おちゃめ機能(2010)
-                          15:24 02.冒険でしょでしょ?(2008)
-                          21:54 03.ルカルカ☆ナイトフィーバー(2009)
-                          29:40 04 Help me，ERINNNNNN!!(2004)
-                          36:09 05.Lost my music(2006)
-                          42:39 06.白金ディスコ(2012)
-                          48:49 07.Daydream Cafe(2014)
-                          55:22 08.君の知らない物語(2009)
-                          1:03:29 09.バラライカ(2010)
-                          1:09:55 10.Bad Apple!!(2007)
-                          1:18:00 11.初音ミクの消失(2011)
-                          1:26:00 12.だんご大家族(2007)
-                          1:37:18 13.ニコニコ動画流星群(2008)
-                          1:51:48 ED
-                      - - UgzWraT7fuBfK7dnX8Z4AaABAg
-                        - |-
-                          8:09 1曲目 おちゃめ機能
-                          15:15 2曲目 冒険でしょでしょ？
-                          21:49 3曲目 ルカルカナイトフィーバー
-                          28:30 4曲目 Helpme,ERINNNNNN!! ( ﾟ∀ﾟ)o彡°えーりん！えーりん！
-                          35:57 5曲目 Lost my music (ハルヒ)
-                          42:04 6曲目 白金ディスコ
-                          48:18 7曲目 Daydream Cafe(ああ^～こころがぴょんぴょんするんじゃ^～)
-                          54:58 8曲目 君の知らない物語
-                          1:03:08 9曲目 バラライカ (ま た お ま え か)
-                          1:09:30 10曲目 Bad Apple!!
-                          1:17:35 11曲目 初音ミクの消失
-                          1:25:07 12曲目 だんご大家族
-                          1:35:52 13曲目 ラスボス ニコニコ動画流星群
-                          配信お疲れ様でした！
-                      - - Ugx-nc9MX9llzmvk5k94AaABAg
-                        - "おつあくあ〜⚓️
-
-                          最高に若返りました(・∀・)+
-
-                          流星群まことにお見事！ぐっじょぶ！
-
-                          03:07 開始\r
-
-                          08:12 １曲目おちゃめ機能\r
-
-                          12:39 １０年前（最近）\r
-
-                          15:19 ２曲目冒険でしょでしょ？\r
-
-                          20:50  新しい（2009年）\r
-
-                          21:47 ３曲目ルカルカナイトフィーバー\r
-
-                          26:09 アニキに釣られる\r
-
-                          29:33 ４曲目Helpme,ERINNNNNN!!\r
-
-                          36:00 ５曲目Lostmymusic\r
-
-                          42:32 ６曲目白金ディスコ\r
-
-                          48:44 ７曲目DaydreamCafe\r
-
-                          55:15 ８曲目君の知らない物語\r
-
-                          1:03:25 ９曲目バラライカ\r
-
-                          1:09:50 １０曲目BadApple\r
-
-                          1:17:54 １１曲目初音ミクの消失\r
-
-                          1:25:57 １２曲目だんご大家族\r
-
-                          1:36:57 １３曲目ニコニコ動画流星群
-
-                          みんなニコニコできてマジ最高でした！
-
-                          これからもみんなであくあさん応援するよ☺️"
-                    channel:
-                      id: 30
-                      yt_channel_id: UC1opHUrw8rvnsadT-iGp7Cg
-                      bb_space_id: null
-                      name: Aqua Ch. 湊あくあ
-                      description: >-
-                        バーチャルメイド⚓️湊あくあ(みなとあくあ)です！ど、ドジとか言わないでください！
-
-                        放送で色んな変わったゲームや雑談をしています…！！
-
-                        【生放送】#湊あくあ生放送【関連ツイート】#湊あくあ 【ファン】 #あくあクルー【絵文字】⚓️【ﾌｧﾝｱｰﾄ】 #あくあーと ※動画やﾂｲｰﾄで使用させて頂くことがあります。担当絵師：がおう先生【@umaiyo_puyoman】
-                      photo: https://yt3.ggpht.com/a/AATXAJwHPp_TkvcWJyblt9XVYDjNSjrj6KdpQSCQNQ=s800-c-k-c0xffffffff-no-rj-mo
-                      published_at: 2018-08-01T06:38:45.000Z
-                      twitter_link: minatoaqua
-                  - id: 166
-                    channel_id: 24
-                    yt_video_key: TdVzrWISD-8
-                    bb_video_id: null
-                    title: 【緊急事態】私たち、入れ替わってる！？愛の力で元に戻れ！！【白上フブキ/夏色まつり】
-                    description: >-
-                      まつりの身体の中に入っている超絶かわいい狐
-                      ■白上フブキ
-                      https://www.youtube.com/channel/UCdn5BQ06XqgXoAxIhbqw5Rg
-                      ▶ホロライブ公式サイト▷ https://www.hololive.tv/
-                    thumbnail: null
-                    published_at: 2020-02-05T13:41:14.000Z
-                    status: past
-                    live_schedule: 2020-02-05T12:00:00.000Z
-                    live_start: 2020-02-05T11:58:58.719Z
-                    live_end: 2020-02-05T12:59:44.000Z
-                    live_viewers: null
-                    is_uploaded: false
-                    late_secs: -61
-                    duration_secs: 3645
-                    is_captioned: false
-                    is_licensed: true
-                    is_embeddable: true
-                    created_at: 2020-06-19T01:30:31.455Z
-                    updated_at: 2020-06-19T01:33:53.149Z
-                    comments:
-                      - - Ugy-8X80zZ9fmJqxSDd4AaABAg
-                        - |-
-                          21:39 OH MY GOD
-                          I LOST
-                    channel:
-                      id: 24
-                      yt_channel_id: UCQ0UDLQCjY0rmuxCDE38FGg
-                      bb_space_id: null
-                      name: Matsuri Channel 夏色まつり
-                      description: |-
-                        ホロライブ所属のバーチャルyoutuber、夏色まつりだよっ！！
-                        チア部に所属してる美少女JK！！
-                        歌歌ったりみんなと話しながら元気に楽しく配信していくから、みんな見てねー！！！
-
-                        Twitterアカウント🏮：https://twitter.com/natsuiromatsuri
-
-                        お問い合わせ
-                        カバー株式会社：http://cover-corp.com/
-                        ホロライブ：https://twitter.com/hololivetv
-                      photo: https://yt3.ggpht.com/a/AATXAJzcbPP43MVs2mlTg4a-u2W1D5g1OBYeJO6pHQ=s800-c-k-c0xffffffff-no-rj-mo
-                      published_at: 2018-05-25T06:58:58.000Z
-                      twitter_link: natsuiromatsuri
-                count: 4
-                cached: false
-                query: Lost
               schema:
                 type: object
                 properties:
                   data:
                     type: array
-                    description: list of videos
+                    description: list of videos along with their channel and all the timestamp comments
+                    items:
+                      $ref: "#/components/schemas/Video"
                   count:
                     type: integer
                     description: count of total number of videos
                   cached:
+                    type: boolean
                     description: whether it's returning you a cached result.
                   query:
                     type: string
-                    description: A sanitized string of the query used for lookup.
-
-
-
-
+                    description: >-
+                      A post-sanitized query text. This query is probably more likely than the input parameter q? to have
+                      matches in the comments.
