@@ -9,8 +9,8 @@ tags:
     description: Everything about Hololive's videos
   - name: comments
     description: Access of HoloAPI's crawled timestamp comments
-x-servers:
-  - url: https://development.gigantic-server.com/v1
+servers:
+  - url: https://holoapi.iamvis.co/v1
     description: Development server
 components:
   schemas:

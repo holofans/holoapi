@@ -31,4 +31,8 @@ router.get('/', asyncMiddleware(async (req, res) => {
   });
 }));
 
+router.get('/docs/', asyncMiddleware(async (req, res) => {
+  res.sendFile('api-doc/api-doc.html', { root: __dirname });
+}));
+
 module.exports = router;

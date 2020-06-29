@@ -110,3 +110,5 @@ database/pgadmin
 /dev
 .vscode/
 .idea/
+redoc-static.html
+apps/client-api/routes/api-doc/api-doc.html
