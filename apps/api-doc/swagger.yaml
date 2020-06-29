@@ -2,7 +2,16 @@ openapi: 3.0.0
 info:
   title: Holoapi
   version: v1
-tags: []
+tags:
+  - name: live
+    description: Information on what's live
+  - name: videos
+    description: Everything about Hololive's videos
+  - name: comments
+    description: Access of HoloAPI's crawled timestamp comments
+x-servers:
+  - url: https://development.gigantic-server.com/v1
+    description: Development server
 components:
   schemas:
     LiveVideo:
@@ -85,6 +94,8 @@ components:
 paths:
   /videos/:
     get:
+      tags:
+        - videos
       description: searches a video. Accepts query parameters
       parameters:
         - name: limit
@@ -164,6 +175,8 @@ paths:
                     description: number of videos fetched
   /videos/{id}:
     get:
+      tags:
+        - videos
       description: fetches a single video by its Holotools record ID.
       parameters:
         - name: id
@@ -187,6 +200,8 @@ paths:
                 $ref: "#/components/schemas/Video"
   /videos/youtube/{yt_video_key}:
     get:
+      tags:
+        - videos
       description: fetches a single video by its Holotools record ID.
       parameters:
         - name: yt_video_key
@@ -210,6 +225,8 @@ paths:
                 $ref: "#/components/schemas/Video"
   /videos/bilibili/{bb_video_id}:
     get:
+      tags:
+        - videos
       description: fetches a single video by its Holotools record ID.
       parameters:
         - name: bb_video_id
@@ -229,6 +246,8 @@ paths:
 
   /live:
     get:
+      tags:
+        - live
       description: Fetches videos that are currently live.
       responses:
         200:
@@ -255,7 +274,9 @@ paths:
                     description: whether the response was cached or not
   /comments/search:
     get:
-      description: Search for videos containing timestamped comment that has the query keyword
+      tags:
+        - comments
+      description: Query search comments by keyword
       parameters:
         - name: q
           description: >-
