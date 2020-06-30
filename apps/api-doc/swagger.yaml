@@ -41,7 +41,7 @@ components:
         channel:
           $ref: "#/components/schemas/Channel"
 
-    CommentlessVideo:
+    Video:
       allOf:
         - $ref: "#/components/schemas/LiveVideo"
         - type: object
@@ -53,16 +53,15 @@ components:
             is_captioned:
               type: boolean
 
-    Video:
+    VideoWithComment:
       allOf:
-        - $ref: "#/components/schemas/CommentlessVideo"
+        - $ref: "#/components/schemas/Video"
         - type: object
           properties:
             comments:
               type: array
               items:
                 $ref: "#/components/schemas/Comment"
-
 
     Channel:
       type: object
@@ -296,7 +295,7 @@ paths:
                     type: array
                     description: List of videos, there are no comments here.
                     items:
-                      $ref: "#/components/schemas/CommentlessVideo"
+                      $ref: "#/components/schemas/Video"
                   total:
                     type: integer
                     description: Count of total number of videos
@@ -327,7 +326,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#/components/schemas/Video"
+                $ref: "#/components/schemas/VideoWithComment"
   /videos/youtube/{yt_video_key}:
     get:
       tags:
@@ -352,7 +351,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#/components/schemas/Video"
+                $ref: "#/components/schemas/VideoWithComment"
   /videos/bilibili/{bb_video_id}:
     get:
       tags:
@@ -452,7 +451,7 @@ paths:
                     type: array
                     description: list of videos along with their channel and all the timestamp comments
                     items:
-                      $ref: "#/components/schemas/Video"
+                      $ref: "#/components/schemas/VideoWithComment"
                   count:
                     type: integer
                     description: count of total number of videos
