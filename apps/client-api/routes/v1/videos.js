@@ -57,6 +57,7 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
 
 router.get('/:id', asyncMiddleware(async (req, res) => {
   const { id } = req.params;
+  const { with_comments } = req.query;
 
   const video = await db.Video.findOne({
     attributes: RESPONSE_FIELDS.VIDEO,
@@ -65,6 +66,10 @@ router.get('/:id', asyncMiddleware(async (req, res) => {
         association: 'channel',
         attributes: RESPONSE_FIELDS.CHANNEL,
       },
+      ...(with_comments === '1' ? [{
+        association: 'comments',
+        attributes: RESPONSE_FIELDS.VIDEO_COMMENT,
+      }] : []),
     ],
     where: { id },
     rejectOnEmpty: true,
@@ -75,6 +80,7 @@ router.get('/:id', asyncMiddleware(async (req, res) => {
 
 router.get('/youtube/:yt_video_key', asyncMiddleware(async (req, res) => {
   const { yt_video_key } = req.params;
+  const { with_comments } = req.query;
 
   const video = await db.Video.findOne({
     attributes: RESPONSE_FIELDS.VIDEO,
@@ -83,6 +89,10 @@ router.get('/youtube/:yt_video_key', asyncMiddleware(async (req, res) => {
         association: 'channel',
         attributes: RESPONSE_FIELDS.CHANNEL,
       },
+      ...(with_comments === '1' ? [{
+        association: 'comments',
+        attributes: RESPONSE_FIELDS.VIDEO_COMMENT,
+      }] : []),
     ],
     where: { yt_video_key },
     rejectOnEmpty: true,
