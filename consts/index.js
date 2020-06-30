@@ -29,6 +29,5 @@ exports.RESPONSE_FIELDS = {
   VIDEO: ['id', 'yt_video_key', 'bb_video_id', 'title', 'thumbnail', 'published_at',
     'status', 'live_schedule', 'live_start', 'live_end', 'is_uploaded', 'duration_secs', 'is_captioned'],
   CHANNEL: ['id', 'yt_channel_id', 'bb_space_id', 'name', 'description', 'photo', 'published_at', 'twitter_link'],
-  VIDEO_COMMENT: ['comment_key', 'message', 'video_id'],
-  VIDEO_COMMENT_SIMPLE: ['comment_key', 'message'],
+  VIDEO_COMMENT: ['comment_key', 'message'],
 };
