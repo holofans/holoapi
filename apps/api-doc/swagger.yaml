@@ -7,8 +7,11 @@ tags:
     description: Information on what's live
   - name: videos
     description: Everything about Hololive's videos
+  - name: channels
+    description: Everything about Hololive's channels
   - name: comments
     description: Access of HoloAPI's crawled timestamp comments
+
 servers:
   - url: https://holoapi.iamvis.co/v1
     description: Development server
@@ -38,7 +41,7 @@ components:
         channel:
           $ref: "#/components/schemas/Channel"
 
-    Video:
+    CommentlessVideo:
       allOf:
         - $ref: "#/components/schemas/LiveVideo"
         - type: object
@@ -49,10 +52,17 @@ components:
               type: integer
             is_captioned:
               type: boolean
+
+    Video:
+      allOf:
+        - $ref: "#/components/schemas/CommentlessVideo"
+        - type: object
+          properties:
             comments:
               type: array
               items:
                 $ref: "#/components/schemas/Comment"
+
 
     Channel:
       type: object
@@ -82,21 +92,141 @@ components:
         comment_key:
           type: string
           description: >-
-            "the youtube comment ID of the comment,
+            "The youtube comment ID of the comment,
             use this comment_key along with the video to generate a direct link to the comment."
         message:
           type: string
           description: >-
-            plain text of a comment.
-
-
+            Plain text of a comment.
 
 paths:
+  /channels/:
+    get:
+      tags:
+        - channels
+      description: Lists/Query all channels with pagination.
+      parameters:
+        - name: limit
+          description: The number of channels to return.
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 50
+        - name: offset
+          description: The number of channels to skip.
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: Column name to sort by, defaults to id
+        - name: order
+          in: query
+          schema:
+            type: string
+          description: Can be desc or asc, defaults to asc
+        - name: name
+          in: query
+          schema:
+            type: string
+          description: Partial name of Channel to match on.
+
+      responses:
+        '200':
+          description: Returns list of channels
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  channels:
+                    type: array
+                    description: List of channels
+                    items:
+                      $ref: "#/components/schemas/Channel"
+                  total:
+                    type: integer
+                    description: Count of total number of channels in this list
+                  count:
+                    type: integer
+                    description: Number of channels fetched
+
+  /channels/{id}:
+    get:
+      tags:
+        - channels
+      description: Fetches a single channel by its Holotools record ID.
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+          description: Holotools record ID of the channel
+      responses:
+        "200":
+          description: Returns the requested channel if found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Channel"
+  /channels/youtube/{yt_channel_id}:
+    get:
+      tags:
+        - channels
+      description: Fetches a single channel by its youtube hash.
+      parameters:
+        - name: yt_channel_id
+          required: true
+          in: path
+          schema:
+            type: string
+          description: The youtube hash of the channel
+      responses:
+        "200":
+          description: Returns the requested channel if found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Channel"
+  /channels/bilibili/{bb_space_id}:
+    get:
+      tags:
+        - channels
+      description: Fetches a single channel by its bilibili space ID.
+      parameters:
+        - name: bb_space_id
+          required: true
+          in: path
+          schema:
+            type: string
+          description: The bilibili space ID
+      responses:
+        "200":
+          description: Returns the requested channel if found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Channel"
+
   /videos/:
     get:
       tags:
         - videos
-      description: searches a video. Accepts query parameters
+      summary: Lists/Query for videos
+      description: |
+        Searches a video. Accepts query parameters.
+        Does not output comments in video body.
+
       parameters:
         - name: limit
           description: The number of videos to return.
@@ -122,27 +252,27 @@ paths:
           in: query
           schema:
             type: string
-          description: can be desc or asc
+          description: Can be desc or asc
         - name: title
           in: query
           schema:
             type: string
-          description: partial title to match on
+          description: Partial title to match on
         - name: start_date
           in: query
           schema:
             type: string
-          description: date string parsable by momentJS with 1 day granularity.
+          description: Date string parsable by momentJS with 1 day granularity.
         - name: end_date
           in: query
           schema:
             type: string
-          description: date string parsable by momentJS with 1 day granularity.
+          description: Date string parsable by momentJS with 1 day granularity.
         - name: status
           in: query
           schema:
             type: string
-          description: status of video to fetch.
+          description: Status of video to fetch.
         - name: is_uploaded
           in: query
           schema:
@@ -156,7 +286,7 @@ paths:
 
       responses:
         "200":
-          description: returns search result
+          description: Returns search result
           content:
             application/json:
               schema:
@@ -164,35 +294,35 @@ paths:
                 properties:
                   videos:
                     type: array
-                    description: list of videos, there are no comments here.
+                    description: List of videos, there are no comments here.
                     items:
-                      $ref: "#/components/schemas/Video"
+                      $ref: "#/components/schemas/CommentlessVideo"
                   total:
                     type: integer
-                    description: count of total number of videos
+                    description: Count of total number of videos
                   count:
                     type: integer
-                    description: number of videos fetched
+                    description: Number of videos fetched
   /videos/{id}:
     get:
       tags:
         - videos
-      description: fetches a single video by its Holotools record ID.
+      description: Fetches a single video by its Holotools record ID.
       parameters:
         - name: id
           required: true
           in: path
           schema:
             type: integer
-          description: holotools record ID of the video
+          description: Holotools record ID of the video
         - name: with_comments
           in: query
           schema:
             type: integer
-          description: will only return comments array if 1
+          description: Will only return comments array if 1
       responses:
         "200":
-          description: returns the requested video if found
+          description: Returns the requested video if found
           content:
             application/json:
               schema:
@@ -202,22 +332,22 @@ paths:
     get:
       tags:
         - videos
-      description: fetches a single video by its Holotools record ID.
+      description: Fetches a single video by its Holotools record ID.
       parameters:
         - name: yt_video_key
           required: true
           in: path
           schema:
             type: string
-          description: the youtube hash of the video
+          description: The youtube hash of the video
         - name: with_comments
           in: query
           schema:
             type: integer
-          description: will only return comments array if 1
+          description: Will only return comments array if 1
       responses:
         "200":
-          description: returns the requested video if found
+          description: Returns the requested video if found
           content:
             application/json:
               schema:
@@ -227,17 +357,17 @@ paths:
     get:
       tags:
         - videos
-      description: fetches a single video by its Holotools record ID.
+      description: Fetches a single video by its Holotools record ID.
       parameters:
         - name: bb_video_id
           required: true
           in: path
           schema:
             type: string
-          description: the bilibili video ID of the video
+          description: The bilibili video ID of the video
       responses:
         "200":
-          description: returns the requested video if found
+          description: Returns the requested video if found
           content:
             application/json:
               schema:
@@ -271,7 +401,8 @@ paths:
                       $ref: "#/components/schemas/LiveVideo"
                   cached:
                     type: boolean
-                    description: whether the response was cached or not
+                    description: Whether the response was cached or not
+
   /comments/search:
     get:
       tags:
@@ -303,7 +434,7 @@ paths:
             type: integer
             default: 0
         - name: channel_id
-          description: a channel_id, this is a numerical id obtained from the /channels endpoint that uniquely identifies the channel on our platform. Does not support youtube/other channel hash.
+          description: A channel_id, this is a numerical id obtained from the /channels endpoint that uniquely identifies the channel on our platform. Does not support youtube/other channel hash.
           in: query
           required: false
           schema:
@@ -311,7 +442,7 @@ paths:
             default: null
       responses:
         "200":
-          description: returns search result
+          description: Returns search result in an list of videos.
           content:
             application/json:
               schema:

@@ -111,4 +111,4 @@ database/pgadmin
 .vscode/
 .idea/
 redoc-static.html
-apps/client-api/routes/api-doc/api-doc.html
+apps/client-api/routes/api-docs/api-doc.html
