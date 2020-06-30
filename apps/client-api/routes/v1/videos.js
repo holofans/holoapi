@@ -20,6 +20,7 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
     status,
     is_uploaded,
     is_captioned,
+    channel_id,
   } = req.query;
 
   const where = {
@@ -38,6 +39,7 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
       {
         association: 'channel',
         attributes: RESPONSE_FIELDS.CHANNEL,
+        ...channel_id && { where: { id: channel_id } },
       },
     ],
     where,

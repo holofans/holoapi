@@ -1,12 +1,11 @@
 const sequelize = require('sequelize');
 const { Router } = require('express');
 const { fixchar } = require('fixchar');
-const { RESPONSE_FIELDS, CACHE_TTL } = require('../../../../consts');
+const { RESPONSE_FIELDS } = require('../../../../consts');
 const { db, GenericError } = require('../../../../modules');
 const { asyncMiddleware } = require('../../middleware/error');
 const { limitChecker } = require('../../middleware/filters');
 const { channel, comments } = require('../../../../database/models/video');
-const cacheService = require('../../services/CacheService');
 
 const { Op } = sequelize;
 
