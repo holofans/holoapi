@@ -68,7 +68,7 @@ router.get('/:id', asyncMiddleware(async (req, res) => {
       },
       ...(with_comments === '1' ? [{
         association: 'comments',
-        attributes: RESPONSE_FIELDS.VIDEO_COMMENT_SIMPLE,
+        attributes: RESPONSE_FIELDS.VIDEO_COMMENT,
       }] : []),
     ],
     where: { id },
@@ -91,7 +91,7 @@ router.get('/youtube/:yt_video_key', asyncMiddleware(async (req, res) => {
       },
       ...(with_comments === '1' ? [{
         association: 'comments',
-        attributes: RESPONSE_FIELDS.VIDEO_COMMENT_SIMPLE,
+        attributes: RESPONSE_FIELDS.VIDEO_COMMENT,
       }] : []),
     ],
     where: { yt_video_key },
