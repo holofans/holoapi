@@ -377,7 +377,15 @@ paths:
     get:
       tags:
         - live
-      description: Fetches videos that are currently live.
+      description: Fetches currently live/ended streams
+      parameters:
+        - name: channel_id
+          required: true
+          in: query
+          schema:
+            type: string
+          description: Limit output to a single channel identified by its Holotools ID
+
       responses:
         200:
           description: SUCCESS
@@ -387,14 +395,17 @@ paths:
                 type: object
                 properties:
                   live:
+                    description: Currently live streams / videos
                     type: array
                     items:
                       $ref: "#/components/schemas/LiveVideo"
                   upcoming:
+                    description: All upcoming streams / videos
                     type: array
                     items:
                       $ref: "#/components/schemas/LiveVideo"
                   ended:
+                    description: Recently ended streams / videos in the last 6 hours.
                     type: array
                     items:
                       $ref: "#/components/schemas/LiveVideo"
