@@ -68,6 +68,7 @@ components:
       properties:
         id:
           type: integer
+          example: 3
         yt_channel_id:
           type: string
         bb_space_id:
@@ -91,8 +92,8 @@ components:
         comment_key:
           type: string
           description: >-
-            "The youtube comment ID of the comment,
-            use this comment_key along with the video to generate a direct link to the comment."
+            The youtube comment ID of the comment,
+            use this comment_key along with the video to generate a direct link to the comment.
         message:
           type: string
           description: >-
@@ -124,12 +125,14 @@ paths:
           in: query
           schema:
             type: string
-          description: Column name to sort by, defaults to id
+            default: id
+          description: Column name to sort by
         - name: order
           in: query
           schema:
             type: string
-          description: Can be desc or asc, defaults to asc
+            default: asc
+          description: Can be desc or asc
         - name: name
           in: query
           schema:
@@ -137,7 +140,7 @@ paths:
           description: Partial name of Channel to match on.
 
       responses:
-        '200':
+        "200":
           description: Returns list of channels
           content:
             application/json:
@@ -176,26 +179,7 @@ paths:
               schema:
                 type: object
                 $ref: "#/components/schemas/Channel"
-  /channels/youtube/{yt_channel_id}:
-    get:
-      tags:
-        - channels
-      description: Fetches a single channel by its youtube hash.
-      parameters:
-        - name: yt_channel_id
-          required: true
-          in: path
-          schema:
-            type: string
-          description: The youtube hash of the channel
-      responses:
-        "200":
-          description: Returns the requested channel if found
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/Channel"
+
   /channels/bilibili/{bb_space_id}:
     get:
       tags:
@@ -217,6 +201,27 @@ paths:
                 type: object
                 $ref: "#/components/schemas/Channel"
 
+  /channels/youtube/{yt_channel_id}:
+    get:
+      tags:
+        - channels
+      description: Fetches a single channel by its youtube id.
+      parameters:
+        - name: yt_channel_id
+          required: true
+          in: path
+          schema:
+            type: string
+          description: The youtube id of the channel
+      responses:
+        "200":
+          description: Returns the requested channel if found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Channel"
+
   /videos/:
     get:
       tags:
@@ -224,7 +229,7 @@ paths:
       summary: Lists/Query for videos
       description: |
         Searches a video. Accepts query parameters.
-        Does not output comments in video body.
+        Does not include comments.
 
       parameters:
         - name: limit
@@ -246,11 +251,13 @@ paths:
           in: query
           schema:
             type: string
-          description: Column name to sort by, defaults to published_at
+            default: published_at
+          description: Column name to sort by
         - name: order
           in: query
           schema:
             type: string
+            default: asc
           description: Can be desc or asc
         - name: title
           in: query
@@ -259,26 +266,33 @@ paths:
           description: Partial title to match on
         - name: start_date
           in: query
+          required: false
           schema:
             type: string
-          description: Date string parsable by momentJS with 1 day granularity.
+          description: >
+            Date string parsable by momentJS with 1 day granularity.
+            Optional.
         - name: end_date
           in: query
+          required: false
           schema:
             type: string
           description: Date string parsable by momentJS with 1 day granularity.
         - name: status
           in: query
+          required: false
           schema:
             type: string
           description: Status of video to fetch.
         - name: is_uploaded
           in: query
+          required: false
           schema:
             type: integer
-          description: 1 to only return uploaded videos
+          description: 1 to only return uploaded videos, otherwise returns all streams and videos.
         - name: is_captioned
           in: query
+          required: false
           schema:
             type: integer
           description: 1 to only return videos with CC
@@ -318,7 +332,7 @@ paths:
           in: query
           schema:
             type: integer
-          description: Will only return comments array if 1
+          description: If set to 1, will include comments in the response
       responses:
         "200":
           description: Returns the requested video if found
@@ -343,7 +357,7 @@ paths:
           in: query
           schema:
             type: integer
-          description: Will only return comments array if 1
+          description: If set to 1, will include comments in the response
       responses:
         "200":
           description: Returns the requested video if found
@@ -387,8 +401,7 @@ paths:
           description: Limit output to a single channel identified by its Holotools ID
 
       responses:
-        200:
-          description: SUCCESS
+        "200":
           content:
             application/json:
               schema:
@@ -444,7 +457,10 @@ paths:
             type: integer
             default: 0
         - name: channel_id
-          description: A channel_id, this is a numerical id obtained from the /channels endpoint that uniquely identifies the channel on our platform. Does not support youtube/other channel hash.
+          description: >-
+            A channel_id, this is a numerical id obtained from the /channels endpoint
+            that uniquely identifies the channel on our platform.
+            Does not support youtube/other channel hash.
           in: query
           required: false
           schema:
@@ -460,15 +476,15 @@ paths:
                 properties:
                   data:
                     type: array
-                    description: list of videos along with their channel and all the timestamp comments
+                    description: List of videos, along with channel and all comments (not just matching the query)
                     items:
                       $ref: "#/components/schemas/VideoWithComment"
                   count:
                     type: integer
-                    description: count of total number of videos
+                    description: Count of total number of videos
                   cached:
                     type: boolean
-                    description: whether it's returning you a cached result.
+                    description: Whether it is returning a cached result.
                   query:
                     type: string
                     description: >-
