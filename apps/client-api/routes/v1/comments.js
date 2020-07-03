@@ -75,7 +75,7 @@ router.get('/search', limitChecker, asyncMiddleware(async (req, res) => {
       {
         association: 'comments',
         attributes: RESPONSE_FIELDS.VIDEO_COMMENT,
-        required: true,
+        where: { message: { [Op.iLike]: `%${q}%` } },
       },
       {
         association: 'channel',
