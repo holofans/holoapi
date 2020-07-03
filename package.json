@@ -6,6 +6,7 @@
     "start": "nodemon apps/client-api",
     "crawl": "nodemon apps/crawler-youtube",
     "migrate": "sequelize db:migrate",
+    "generate-api": "redoc-cli bundle apps/api-doc/swagger.yaml && cp -f redoc-static.html apps/client-api/routes/api-docs/api-doc.html && rm redoc-static.html",
     "rollback": "sequelize db:migrate:undo"
   },
   "dependencies": {
@@ -23,6 +24,7 @@
     "node-schedule-tz": "^1.2.1-4",
     "pg": "^8.2.1",
     "pg-hstore": "^2.3.3",
+    "redoc-cli": "^0.9.8",
     "sequelize": "^5.21.11",
     "url": "^0.11.0",
     "uuid": "^8.1.0",
