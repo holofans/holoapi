@@ -1,34 +1,14 @@
-const Sequelize = require('sequelize');
 const { Router } = require('express');
-const { db } = require('../../../modules');
 const { asyncMiddleware } = require('../middleware/error');
 
 const router = new Router();
 
 router.get('/', asyncMiddleware(async (req, res) => {
-  const randomChannel = await db.Channel.findOne({
-    include: [{
-      as: 'stats',
-      model: db.ChannelStats,
-    }, {
-      as: 'videos',
-      model: db.Video,
-      include: [
-        {
-          as: 'comments',
-          model: db.VideoComment,
-        },
-      ],
-    }],
-    order: Sequelize.literal('RANDOM()'),
-  });
+  res.redirect('/api-docs');
+}));
 
-  // Might be a good idea redirect to docs site from here
-  // or serve a static page
-  res.json({
-    time: Date.now(),
-    random_channel: randomChannel,
-  });
+router.get('/api-docs', asyncMiddleware(async (req, res) => {
+  res.sendFile('api-docs/api-doc.html', { root: __dirname });
 }));
 
 module.exports = router;

@@ -10,12 +10,12 @@ const { RESPONSE_FIELDS } = require('../../../../consts');
 const router = new Router();
 
 router.get('/', asyncMiddleware(async (req, res) => {
-  const cacheKey = 'live';
+  const { channel_id } = req.query;
+  const cacheKey = channel_id ? `live-${channel_id}` : 'live';
   const cache = await cacheService.getFromCache(cacheKey);
   if (cache.cached) {
     return res.json(cache);
   }
-
 
   const results = {
     live: [],
@@ -30,6 +30,7 @@ router.get('/', asyncMiddleware(async (req, res) => {
       {
         association: 'channel',
         attributes: RESPONSE_FIELDS.CHANNEL,
+        ...channel_id && { where: { id: channel_id } },
       },
     ],
     where: {
@@ -55,6 +56,7 @@ router.get('/', asyncMiddleware(async (req, res) => {
       {
         association: 'channel',
         attributes: RESPONSE_FIELDS.CHANNEL,
+        ...channel_id && { where: { id: channel_id } },
       },
     ],
     where: {

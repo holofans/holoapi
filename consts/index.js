@@ -15,7 +15,8 @@ exports.STATUSES = {
 
 exports.CACHE_TTL = {
   LIVE: 15,
-  CHANNELS: 6 * 60 * 60,
+  CHANNELS: 6 * 60 * 60, // 1 hour
+  COMMENTS: 2 * 60, // 2 minutes
 };
 
 exports.VIDEOS_PAST_HOURS = 6;
@@ -28,4 +29,5 @@ exports.RESPONSE_FIELDS = {
   VIDEO: ['id', 'yt_video_key', 'bb_video_id', 'title', 'thumbnail', 'published_at',
     'status', 'live_schedule', 'live_start', 'live_end', 'is_uploaded', 'duration_secs', 'is_captioned'],
   CHANNEL: ['id', 'yt_channel_id', 'bb_space_id', 'name', 'description', 'photo', 'published_at', 'twitter_link'],
+  VIDEO_COMMENT: ['comment_key', 'message'],
 };
