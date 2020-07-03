@@ -26,8 +26,17 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
   const where = {
     ...title && { title: { [Op.iLike]: `%${title}%` } },
     // TODO: Figure out and fix timezones
-    ...start_date && { published_at: { [Op.gte]: moment(start_date).startOf('day') } },
-    ...end_date && { published_at: { [Op.lte]: moment(end_date).endOf('day') } },
+    ...start_date && !end_date && { published_at: { [Op.gte]: moment(start_date).startOf('day') } },
+    ...end_date && !start_date && { published_at: { [Op.lte]: moment(end_date).endOf('day') } },
+    ...start_date && end_date && {
+      published_at: {
+        [Op.between]:
+          [
+            moment(start_date).startOf('day'),
+            moment(end_date).endOf('day'),
+          ],
+      },
+    },
     ...status && { status },
     ...is_uploaded && { is_uploaded: is_uploaded === '1' },
     ...is_captioned && { is_captioned: is_captioned === '1' },
