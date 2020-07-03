@@ -20,13 +20,23 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
     status,
     is_uploaded,
     is_captioned,
+    channel_id,
   } = req.query;
 
   const where = {
     ...title && { title: { [Op.iLike]: `%${title}%` } },
     // TODO: Figure out and fix timezones
-    ...start_date && { published_at: { [Op.gte]: moment(start_date).startOf('day') } },
-    ...end_date && { published_at: { [Op.lte]: moment(end_date).endOf('day') } },
+    ...start_date && !end_date && { published_at: { [Op.gte]: moment(start_date).startOf('day') } },
+    ...end_date && !start_date && { published_at: { [Op.lte]: moment(end_date).endOf('day') } },
+    ...start_date && end_date && {
+      published_at: {
+        [Op.between]:
+          [
+            moment(start_date).startOf('day'),
+            moment(end_date).endOf('day'),
+          ],
+      },
+    },
     ...status && { status },
     ...is_uploaded && { is_uploaded: is_uploaded === '1' },
     ...is_captioned && { is_captioned: is_captioned === '1' },
@@ -38,6 +48,7 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
       {
         association: 'channel',
         attributes: RESPONSE_FIELDS.CHANNEL,
+        ...channel_id && { where: { id: channel_id } },
       },
     ],
     where,
