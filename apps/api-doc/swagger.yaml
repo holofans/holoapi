@@ -1,7 +1,22 @@
 openapi: 3.0.0
 info:
   title: HoloAPI
-  version: v1
+  version: 1.0.1
+#  x-logo:
+#    Needs to be a reliable absolute link - this one will change on frontend rebuild.
+#    url: https://hololive.jetri.co/add82d630ceb94a7b730fe820c09e73d.png
+#    backgroundColor: "#FFFFFF"
+  description: |
+    # About
+    The HoloAPI platform provides compiled and reformatted data related to Virtual Youtubers. This document aims
+    to provide all of the information needed for developers to use HoloAPI's resources.
+    The whole project and documentation are open-source and are available [here](https://github.com/holofans/holoapi).
+
+    Icons by [Sorekasho](https://twitter.com/KoshmarRin).
+    ## Feedback
+    Any feedback is greatly appreciated. You can contact us on [Hololive Creators Club](https://discord.gg/xJd9Der)
+    in #holofans-api channel. We also collect impressions from twitter
+    using [#holotools](https://twitter.com/intent/tweet?text=%23holotools) hashtag.
 tags:
   - name: Live
     description: Information on what's currently live.
@@ -108,13 +123,13 @@ components:
       properties:
         comment_key:
           type: string
-          description: >-
+          description: >
             The YouTube comment ID of the comment.
             You can use this along with the yt_video_key
             to generate a direct link to the comment.
         message:
           type: string
-          description: >-
+          description: >
             Comment text.
 
     Error:
@@ -138,6 +153,51 @@ components:
             $ref: '#/components/schemas/Error'
 
 paths:
+  /live:
+    get:
+      tags:
+        - Live
+      summary: Get live, upcoming and ended steams.
+      description: Fetches live, upcoming and recently ended streams.
+      parameters:
+        - name: channel_id
+          description: >
+            Limit output to a single channel, identified
+            by its HoloAPI ID.
+          in: query
+          example: 34
+          schema:
+            type: integer
+
+      responses:
+        "200":
+          description: Returns 3 arrays with live, upcoming and ended streams.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  live:
+                    description: Currently live streams.
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LiveVideo"
+                  upcoming:
+                    description: Upcoming and scheduled streams.
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LiveVideo"
+                  ended:
+                    description: Streams that ended in the last 6 hours.
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LiveVideo"
+                  cached:
+                    type: boolean
+                    description: Whether the response was from cache or not.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
   /channels/:
     get:
       tags:
@@ -203,14 +263,14 @@ paths:
       tags:
         - Channels
       summary: Get one by ID.
-      description: Fetches a single channel by its Holotools ID.
+      description: Fetches a single channel by its HoloAPI ID.
       parameters:
         - name: id
           required: true
           in: path
           schema:
             type: integer
-          description: Holotools record ID of the channel.
+          description: HoloAPI record ID of the channel.
       responses:
         "200":
           description: Returns requested channel data.
@@ -318,7 +378,7 @@ paths:
           schema:
             type: string
         - name: start_date
-          description: >-
+          description: >
             Date string, preferably in ISO-8601 format.
             Cuts off all videos below this date.
           in: query
@@ -326,7 +386,7 @@ paths:
           schema:
             type: string
         - name: end_date
-          description: >-
+          description: >
             Date string, preferably in ISO-8601 format.
             Cuts off all videos above this date.
           in: query
@@ -340,7 +400,7 @@ paths:
             type: string
             enum: [new, live, upcoming, past, missing]
         - name: is_uploaded
-          description: >-
+          description: >
             Set to 1 to only return uploaded videos, otherwise
             returns both streams and videos.
           in: query
@@ -384,11 +444,11 @@ paths:
       tags:
         - Videos
       summary: Get one by ID.
-      description: Fetches a single video by its Holotools ID.
+      description: Fetches a single video by its HoloAPI ID.
       parameters:
         - name: id
           required: true
-          description: Holotools record ID of the video.
+          description: HoloAPI record ID of the video.
           in: path
           example: 34
           schema:
@@ -474,50 +534,6 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
-  /live:
-    get:
-      tags:
-        - Live
-      summary: Get live, upcoming and ended steams.
-      description: Fetches live, upcoming and recently ended streams.
-      parameters:
-        - name: channel_id
-          description: >-
-            Limit output to a single channel, identified
-            by its Holotools ID.
-          in: query
-          example: 34
-          schema:
-            type: integer
-
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  live:
-                    description: Currently live streams.
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/LiveVideo"
-                  upcoming:
-                    description: Upcoming and scheduled streams.
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/LiveVideo"
-                  ended:
-                    description: Streams that ended in the last 6 hours.
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/LiveVideo"
-                  cached:
-                    type: boolean
-                    description: Whether the response was from cache or not.
-        "400":
-          $ref: "#/components/responses/BadRequest"
-
   /comments/search:
     get:
       tags:
@@ -526,7 +542,7 @@ paths:
       description: Query search comments by keyword.
       parameters:
         - name: q
-          description: >-
+          description: >
             Query to search. This parameter will be sanitized and returned
             back to you, since all the comment strings in the db have been sanitized.
             There are no full width alphanumerics or half width kana characters.
@@ -549,7 +565,7 @@ paths:
             type: integer
             default: 0
         - name: channel_id
-          description: >-
+          description: >
             A numerical ID obtained from the /channels endpoint
             that uniquely identifies the channel on this platform.
             Does not support youtube/bilibili ID.
@@ -566,7 +582,7 @@ paths:
                 properties:
                   data:
                     type: array
-                    description: >-
+                    description: >
                       List of videos, along with channel and matched comments.
                     items:
                       $ref: "#/components/schemas/VideoWithComment"
@@ -578,7 +594,7 @@ paths:
                     description: Whether the response was from cache or not.
                   query:
                     type: string
-                    description: >-
+                    description: >
                       A post-sanitized query text. This query is what
                       was used to match comments text.
         "400":
