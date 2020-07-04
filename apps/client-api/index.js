@@ -4,6 +4,7 @@ const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
 const moment = require('moment-timezone');
+const ExpressGA = require('express-universal-analytics');
 
 const { db, log } = require('../../modules');
 const { notFoundHandler, errorHandler } = require('./middleware/error');
@@ -17,6 +18,8 @@ app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json({ strict: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(ExpressGA('UA-171623120-1'));
 
 app.use(rootRoutes);
 app.use('/v1', v1Routes);
