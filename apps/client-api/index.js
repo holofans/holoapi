@@ -19,11 +19,11 @@ app.use(cors());
 app.use(bodyParser.json({ strict: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
 
-if (process.env.GOOGLE_UA_TACKING_CODE) {
+if (process.env.GOOGLE_UA_TRACKING_CODE) {
   log.info('Setting up Google Analytics tracking middleware.');
-  app.use(ExpressGA(process.env.GOOGLE_UA_TACKING_CODE));
+  app.use(ExpressGA(process.env.GOOGLE_UA_TRACKING_CODE));
 } else {
-  log.info('No Google Analytics tracking code specified in env var GOOGLE_UA_TRACKING_CODE, skipping setup.');
+  log.warn('No Google Analytics tracking code specified in env var GOOGLE_UA_TRACKING_CODE, skipping setup.');
 }
 
 app.use(rootRoutes);

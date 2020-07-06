@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: HoloAPI
-  version: 1.0.1
+  version: 1.0.2
 #  x-logo:
 #    Needs to be a reliable absolute link - this one will change on frontend rebuild.
 #    url: https://hololive.jetri.co/add82d630ceb94a7b730fe820c09e73d.png
@@ -28,8 +28,8 @@ tags:
     description: Provides endpoints to search timestamped comments.
 
 servers:
-  - url: https://holoapi.iamvis.co/v1
-    description: Development server
+  - url: https://api.holotools.app/v1
+    description: Production server
 components:
   schemas:
     LiveVideo:
