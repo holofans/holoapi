@@ -48,4 +48,8 @@ exports.SWAGGER_STATS_CONF = {
   requestSizeBuckets: [10, 100, 1000, 10000, 30000],
   responseSizeBuckets: [100, 500, 1000, 5000, 10000, 50000, 100000],
   apdexThreshold: 250,
+  authentication: process.env.API_STATS_USERNAME && process.env.API_STATS_PASSWORD,
+  onAuthenticate(req, username, password) {
+    return username === process.env.API_STATS_USERNAME && password === process.env.API_STATS_PASSWORD;
+  },
 };
