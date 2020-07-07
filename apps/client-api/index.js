@@ -10,6 +10,7 @@ const { db, log } = require('../../modules');
 const { notFoundHandler, errorHandler } = require('./middleware/error');
 const rootRoutes = require('./routes/root');
 const v1Routes = require('./routes/v1');
+const { SWAGGER_STATS_CONF } = require('../../consts');
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 2434;
@@ -19,7 +20,7 @@ app.use(cors());
 app.use(bodyParser.json({ strict: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(swStats.getMiddleware({}));
+app.use(swStats.getMiddleware(SWAGGER_STATS_CONF));
 
 app.use(rootRoutes);
 app.use('/v1', v1Routes);

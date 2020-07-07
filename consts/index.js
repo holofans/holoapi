@@ -31,3 +31,16 @@ exports.RESPONSE_FIELDS = {
   CHANNEL: ['id', 'yt_channel_id', 'bb_space_id', 'name', 'description', 'photo', 'published_at', 'twitter_link'],
   VIDEO_COMMENT: ['comment_key', 'message'],
 };
+
+// reference: https://swaggerstats.io/guide/conf.html#options
+exports.SWAGGER_STATS_CONF = {
+  name: 'HoloAPI',
+  version: '1.0.2',
+  hostname: 'api.holotools.app',
+  // 5 minutes per bucket, swagger_stats hardcodes 60 buckets, for total of 5 hours of timeline available
+  timelineBucketDuration: 300000,
+  durationBuckets: [50, 100, 250, 500, 1000, 2500, 5000, 10000],
+  requestSizeBuckets: [10, 100, 1000, 10000, 30000],
+  responseSizeBuckets: [100, 500, 1000, 5000, 10000, 50000, 100000],
+  apdexThreshold: 250,
+};
