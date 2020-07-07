@@ -6,7 +6,7 @@
     "start": "nodemon apps/client-api",
     "crawl": "nodemon apps/crawler-youtube",
     "migrate": "sequelize db:migrate",
-    "generate-api": "redoc-cli bundle apps/api-doc/swagger.yaml && cp -f redoc-static.html apps/client-api/routes/api-docs/api-doc.html && rm redoc-static.html",
+    "generate-api": "redoc-cli bundle apps/api-doc/swagger.yaml --options.jsonSampleExpandLevel=3 --options.hideDownloadButton --options.theme.spacing.unit=3 && cp -f redoc-static.html apps/client-api/routes/api-docs/api-doc.html && rm redoc-static.html",
     "rollback": "sequelize db:migrate:undo"
   },
   "dependencies": {
