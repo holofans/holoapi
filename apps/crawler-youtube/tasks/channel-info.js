@@ -27,7 +27,7 @@ module.exports = async () => {
 
     // Check if there's any channel to be updated
     if (!channelInstances || !channelInstances.length) {
-      log.debug('channelInfo() No channels to be updated');
+      log.info('channelInfo() No channels to be updated');
       return;
     }
 
