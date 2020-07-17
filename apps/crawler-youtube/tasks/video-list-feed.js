@@ -110,7 +110,7 @@ module.exports = async () => {
     // Wait for all database saves
     await Promise.all(dbSaves);
 
-    log.info('videoListFeed() Saved video list', { results: logResults });
+    log.info('videoListFeed() Saved video list', { count: Object.keys(logResults).length });
   } catch (error) {
     log.error('videoListFeed() Uncaught error', { error: error.toString() });
   }
