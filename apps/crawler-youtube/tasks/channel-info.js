@@ -44,7 +44,7 @@ module.exports = async () => {
     const ytFetches = batch.map((batchItems) => (
       // Fetch data from YouTube
       youtube.channels.list({
-        part: 'snippet,contentDetails',
+        part: 'snippet,contentDetails,statistics',
         id: batchItems,
         maxResults: 50,
       })
@@ -95,6 +95,8 @@ module.exports = async () => {
         name: channelInfo.snippet.title,
         description: channelInfo.snippet.description,
         photo: channelInfo.snippet.thumbnails.high.url,
+        view_count: channelInfo.statistics.viewCount,
+        subscriber_count: channelInfo.statistics.subscriberCount,
         published_at: moment(channelInfo.snippet.publishedAt).tz('UTC'),
         updated_at: moment.utc(),
       })
