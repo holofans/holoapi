@@ -102,7 +102,10 @@ module.exports = async () => {
       })
         .then((dbResult) => {
           // Add to result list
-          logResults[channelInfo.id] = dbResult;
+          logResults[channelInfo.id] = {
+            dbResult,
+            statistics: channelInfo.statistics,
+          };
         })
         .catch((err) => {
           // Log error
