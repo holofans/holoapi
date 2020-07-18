@@ -56,6 +56,12 @@ class Channel extends Model {
         instagram_link: {
           type: DataTypes.STRING,
         },
+        view_count: {
+          type: DataTypes.INTEGER,
+        },
+        subscriber_count: {
+          type: DataTypes.INTEGER,
+        },
         crawled_at: {
           type: DataTypes.DATE,
         },
