@@ -1,6 +1,8 @@
 const yaml = require('yaml-js');
 const fs = require('fs');
 
+const swaggerJson = yaml.load(fs.readFileSync('apps/api-doc/swagger.yaml'));
+
 exports.TABLES = {
   CHANNEL: 'channel',
   CHANNEL_STATS: 'channel_stats',
@@ -35,13 +37,11 @@ exports.RESPONSE_FIELDS = {
   VIDEO_COMMENT: ['comment_key', 'message'],
 };
 
-const swaggerJs = yaml.load(fs.readFileSync('apps/api-doc/swagger.yaml'));
-
 // reference: https://swaggerstats.io/guide/conf.html#options
 exports.SWAGGER_STATS_CONF = {
-  name: swaggerJs.info.title,
-  version: swaggerJs.info.version,
-  hostname: new URL(swaggerJs.servers[0].url).hostname,
+  name: swaggerJson.info.title,
+  version: swaggerJson.info.version,
+  hostname: new URL(swaggerJson.servers[0].url).hostname,
   // 5 minutes per bucket, swagger_stats hardcodes 60 buckets, for total of 5 hours of timeline available
   timelineBucketDuration: 300000,
   durationBuckets: [50, 100, 250, 500, 1000, 2500, 5000, 10000],
