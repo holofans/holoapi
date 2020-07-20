@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf8" />
+  <title>Holoapi Documentation</title>
+  <!-- needed for adaptive design -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/polished@3.4.1/dist/polished.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+  <script>
+    const { darken, desaturate, lighten, readableColor, transparentize } = polished;
+    const defaultTheme = {
+      spacing: {
+        unit: 3,
+      },
+      breakpoints: {
+        small: '20rem',
+        medium: '35rem',
+        large: '35rem',
+      },
+      colors: {
+        tonalOffset: 0.4,
+        primary: {
+          main: '#32329f',
+        },
+        success: {
+          main: '#1d8127',
+        },
+        warning: {
+          main: '#ffa500',
+        },
+        error: {
+          main: '#d41f1c',
+        },
+        gray: {
+          50: '#FAFAFA',
+          100: '#F5F5F5',
+        },
+        text: {
+          primary: '#333333',
+        },
+        border: {
+          dark: 'rgba(0,0,0, 0.1)',
+          light: '#ffffff',
+        },
+        responses: {
+          info: {
+            color: '#87ceeb',
+            backgroundColor: ({ colors }) => transparentize(0.9, colors.responses.info.color),
+          },
+        },
+        http: {
+          get: '#3a9138',
+          post: '#248fb2',
+          put: '#9b708b',
+          options: '#d3ca12',
+          patch: '#e09d43',
+          delete: '#e27a7a',
+          basic: '#999',
+          link: '#31bbb6',
+          head: '#c167e4',
+        },
+      },
+      schema: {
+        defaultDetailsWidth: '75%',
+        labelsTextSize: '0.9em',
+        nestingSpacing: '1em',
+        nestedBackground: '#fafafa',
+        arrow: {
+          size: '1.1em',
+          color: theme => theme.colors.text.secondary,
+        },
+      },
+      sidebar: {
+        width: '240px',
+        backgroundColor: '#e0fafa',
+        textColor: '#333333',
+      },
+      logo: {
+        maxHeight: ({ sidebar: menu }) => menu.width,
+        maxWidth: ({ sidebar: menu }) => menu.width,
+        gutter: '2px',
+      },
+      rightPanel: {
+        backgroundColor: '#0d3c4c',
+        width: '40%',
+        textColor: '#e4e4e4',
+      },
+    }
+  </script>
+</head>
+
+<body>
+
+  <div id="redoc"></div>
+  <script>
+    var container = document.getElementById('redoc');
+    Redoc.init("/swagger.json", {
+      theme: defaultTheme,
+    }, container);
+  </script>
+</body>
+
+</html>

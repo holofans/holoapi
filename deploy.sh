@@ -10,6 +10,4 @@ npm install
 
 npm run migrate
 
-npm run generate-api
-
 pm2 reload all
