@@ -55,3 +55,5 @@ exports.SWAGGER_STATS_CONF = {
       && Buffer.from(password).toString('base64') === process.env.API_STATS_PASSWORD_BASE64);
   },
 };
+
+exports.SWAGGER_JSON = swaggerJson;

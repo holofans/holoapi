@@ -29,7 +29,7 @@ const getTotalCount = async (q, channel_id) => {
 };
 
 const getVideoIds = async (q, channel_id) => {
-  const videoIds = await db.VideoComment.findAll({
+  const videoIds = (await db.VideoComment.findAll({
     attributes: ['video.id'],
     include: [
       {
@@ -44,7 +44,7 @@ const getVideoIds = async (q, channel_id) => {
     group: 'video.id',
     order: [[db.VideoComment.associations.video, 'published_at', 'DESC']],
     raw: true,
-  }).map(({ id }) => id);
+  })).map(({ id }) => id);
 
   return videoIds;
 };
