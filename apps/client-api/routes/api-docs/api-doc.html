@@ -104,6 +104,8 @@
   <script>
     var container = document.getElementById('redoc');
     Redoc.init("/swagger.json", {
+      jsonSampleExpandLevel: 3,
+      hideDownloadButton: true,
       theme: defaultTheme,
     }, container);
   </script>
