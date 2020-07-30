@@ -62,6 +62,9 @@ class Channel extends Model {
         subscriber_count: {
           type: DataTypes.INTEGER,
         },
+        video_count: {
+          type: DataTypes.INTEGER,
+        },
         crawled_at: {
           type: DataTypes.DATE,
         },

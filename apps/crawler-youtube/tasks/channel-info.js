@@ -16,12 +16,12 @@ module.exports = async () => {
     const channelInstances = await db.Channel.findAll({
       where: [
         { yt_channel_id: { [Op.not]: null } },
-        {
-          [Op.or]: [
-            { updated_at: { [Op.is]: null } },
-            { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').startOf('day') } },
-          ],
-        },
+        // {
+        //   [Op.or]: [
+        //     { updated_at: { [Op.is]: null } },
+        //     { updated_at: { [Op.lt]: moment.tz('Asia/Tokyo').startOf('day') } },
+        //   ],
+        // },
       ],
     });
 
@@ -97,20 +97,17 @@ module.exports = async () => {
         photo: channelInfo.snippet.thumbnails.high.url,
         view_count: channelInfo.statistics.viewCount,
         subscriber_count: channelInfo.statistics.subscriberCount,
+        video_count: Number(channelInfo.statistics.videoCount),
         published_at: moment(channelInfo.snippet.publishedAt).tz('UTC'),
         updated_at: moment.utc(),
       })
         .then((dbResult) => {
           // Add to result list
-          logResults[channelInfo.id] = {
-            dbResult,
-            statistics: channelInfo.statistics,
-          };
+          logResults[channelInfo.id] = dbResult;
         })
         .catch((err) => {
           // Log error
           log.error('channelInfo() Cannot save to database', {
-            channelInfo: { ...channelInfo, description: '' },
             error: err.toString(),
           });
           // Add to result list
