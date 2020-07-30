@@ -25,6 +25,22 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
     channels: rows,
   };
 
+  // Get videos per channel
+  const { rows: videoRows } = await db.Video.findAndCountAll({
+    attributes: ['channel_id', [db.client.fn('COUNT', 'channel_id'), 'video_count']],
+    group: ['channel_id'],
+    where: { status: 'past' },
+  });
+
+  // Distribute to respective channel objects
+  videoRows.forEach((videoRow) => {
+    results.channels.forEach((channel, index) => {
+      if (Number(videoRow.channel_id) === Number(channel.id)) {
+        results.channels[index].dataValues.video_original = Number(videoRow.dataValues.video_count);
+      }
+    });
+  });
+
   res.json(results);
 }));
 
