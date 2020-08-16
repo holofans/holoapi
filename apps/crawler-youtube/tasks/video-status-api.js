@@ -24,7 +24,10 @@ module.exports = async () => {
     const targetVideos = await db.Video.findAll({
       where: {
         yt_video_key: { [Op.not]: null },
-        status: [STATUSES.LIVE, STATUSES.UPCOMING],
+        [Op.or]: [
+          { status: [STATUSES.LIVE, STATUSES.UPCOMING] },
+          { status: STATUSES.MISSING, live_schedule: { [Op.gt]: utcDate.clone().subtract(3, 'hour') } },
+        ],
       },
       order: [
         ['status', 'ASC'],
