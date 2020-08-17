@@ -13,5 +13,5 @@ status=$?
 if ! [ $status -eq 0 ]
 then
   echo "RESTARTING"
-  pm2 restart api
+  /etc/init.d/postgresql restart
 fi
