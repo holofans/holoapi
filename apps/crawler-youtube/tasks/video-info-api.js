@@ -123,14 +123,8 @@ module.exports = async () => {
           saveInfo.live_start = ytInfo.liveStreamingDetails.actualStartTime || null;
           saveInfo.live_end = ytInfo.liveStreamingDetails.actualEndTime || null;
           const currentViewers = ytInfo.liveStreamingDetails.concurrentViewers || null;
-          if (currentViewers && !Number.isNaN(Number(currentViewers))) {
-            const viewerCount = Number(currentViewers);
-            if (viewerCount > 1000) {
-              saveInfo.live_viewers = Number(viewerCount.toPrecision(3));
-            } else {
-              saveInfo.live_viewers = Number(viewerCount.toPrecision(2));
-            }
-          }
+          saveInfo.live_viewers = (currentViewers && +(+currentViewers).toPrecision((+currentViewers) > 1000 ? 3 : 2))
+            || null;
           // Get moment objects
           const scheduleMoment = moment(saveInfo.live_schedule);
           const startMoment = moment(saveInfo.live_start);
