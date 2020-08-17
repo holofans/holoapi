@@ -117,10 +117,17 @@ module.exports = async () => {
     );
 
     // populate the foreign key video_id --FK--> video.id
-    const commentsToUpsert = comments.map((comment) => ({
+    const commentsWithVideoID = comments.map((comment) => ({
       video_id: videoKeyToIdMap[comment.video_key],
       ...comment,
     }));
+
+    // log a warning for comments that will not save due to video_id missing from db
+    commentsWithVideoID.filter(({ video_id }) => video_id === null).forEach((comment) => {
+      log.warn('Orphan comment not saved', comment);
+    });
+
+    const commentsToUpsert = commentsWithVideoID.filter(({ video_id }) => video_id !== null);
 
     await db.VideoComment.bulkCreate(commentsToUpsert, {
       updateOnDuplicate: ['updated_at', 'message'],

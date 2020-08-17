@@ -10,7 +10,6 @@ const moment = require('moment-timezone');
 const { Op } = require('sequelize');
 const { db, youtube, log, GenericError } = require('../../../modules');
 
-
 const fetchAllChannelVideos = async (playlistId, pageToken, list = []) => {
   log.debug('videoListAPI() fetchVideoPage()', { playlistId, pageToken });
 
@@ -53,7 +52,6 @@ const fetchAllChannelVideos = async (playlistId, pageToken, list = []) => {
   }
   return list;
 };
-
 
 module.exports = async () => {
   try {
