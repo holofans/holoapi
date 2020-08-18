@@ -97,7 +97,7 @@ module.exports = async () => {
           saveInfo.live_start = ytInfo.liveStreamingDetails.actualStartTime || null;
           saveInfo.live_end = ytInfo.liveStreamingDetails.actualEndTime || null;
           const currentViewers = +ytInfo.liveStreamingDetails.concurrentViewers || null;
-          saveInfo.live_viewers = currentViewers && +(currentViewers.toPrecision(currentViewers > 1000 ? 3 : 2));
+          saveInfo.live_viewers = currentViewers && +(currentViewers.toPrecision(currentViewers > 1000 ? 2 : 1));
           // Get moment objects
           const scheduleMoment = moment(saveInfo.live_schedule);
           const startMoment = moment(saveInfo.live_start);
