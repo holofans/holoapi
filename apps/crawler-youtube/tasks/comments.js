@@ -123,15 +123,15 @@ module.exports = async () => {
     }));
 
     // log a warning for comments that will not save due to video_id missing from db
-    commentsWithVideoID.filter(({ video_id }) => video_id === null).forEach((comment) => {
+    commentsWithVideoID.filter(({ video_id }) => video_id == null).forEach((comment) => {
       log.warn('Orphan comment not saved', comment);
     });
 
-    const commentsToUpsert = commentsWithVideoID.filter(({ video_id }) => video_id !== null);
+    const commentsToUpsert = commentsWithVideoID.filter(({ video_id }) => video_id != null);
 
     await db.VideoComment.bulkCreate(commentsToUpsert, {
       updateOnDuplicate: ['updated_at', 'message'],
-    });
+    }).catch((e) => log.error('Comments Crawler save comments to db error', e));
 
     log.info(`Comments Crawler saved: ${commentsToUpsert.length} comments.`);
 
@@ -140,12 +140,12 @@ module.exports = async () => {
     await db.Channel.update({ comments_crawled_at: moment().subtract(2, 'h').tz('utc') },
       {
         where: { id: uncrawledChannel.id },
-      });
+      }).catch((e) => log.error('Comments Crawler update channel crawl time error', e));
   } else {
     await db.Channel.update({ comments_crawled_at: moment().subtract(2, 'h').tz('utc') },
       {
         where: { id: uncrawledChannel.id },
-      });
+      }).catch((e) => log.error('Comments Crawler update channel crawl time (found no new comments) error', e));
   }
 };
 
