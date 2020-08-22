@@ -33,13 +33,13 @@ router.get('/', asyncMiddleware(async (req, res) => {
     include: [
       {
         association: 'channel',
-        attributes: hide_channel_desc ? RESPONSE_FIELDS.CHANNEL_SIMPLE : RESPONSE_FIELDS.CHANNEL,
+        attributes: +hide_channel_desc ? RESPONSE_FIELDS.CHANNEL_SIMPLE : RESPONSE_FIELDS.CHANNEL,
         ...channel_id && { where: { id: channel_id } },
       },
     ],
     where: {
       status: [STATUSES.LIVE, STATUSES.UPCOMING],
-      ...max_upcoming_hours && {
+      ...(+max_upcoming_hours) && {
         live_schedule: { [Op.lt]: nowMoment.clone().add(max_upcoming_hours, 'hour').toISOString() },
       },
     },
@@ -55,9 +55,10 @@ router.get('/', asyncMiddleware(async (req, res) => {
     }
   });
 
-  if (lookback_hours === 0) {
+  const lookback = +lookback_hours;
+  if (lookback === 0) {
     results.ended = [];
-  } else if (lookback_hours >= 12) {
+  } else if (lookback >= 12) {
     throw new GenericError('Cannot ask for more than 12 hours of lookback, try video endpoint instead', req.query);
   } else {
     const pastVideos = await db.Video.findAll({
@@ -65,12 +66,12 @@ router.get('/', asyncMiddleware(async (req, res) => {
       include: [
         {
           association: 'channel',
-          attributes: hide_channel_desc ? RESPONSE_FIELDS.CHANNEL_SIMPLE : RESPONSE_FIELDS.CHANNEL,
+          attributes: +hide_channel_desc ? RESPONSE_FIELDS.CHANNEL_SIMPLE : RESPONSE_FIELDS.CHANNEL,
           ...channel_id && { where: { id: channel_id } },
         },
       ],
       where: {
-        live_end: { [Op.gte]: nowMoment.clone().subtract(lookback_hours || VIDEOS_PAST_HOURS, 'hour').toISOString() },
+        live_end: { [Op.gte]: nowMoment.clone().subtract(lookback || VIDEOS_PAST_HOURS, 'hour').toISOString() },
       },
     });
     results.ended = pastVideos;
