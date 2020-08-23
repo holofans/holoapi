@@ -165,10 +165,40 @@ paths:
             Limit output to a single channel, identified
             by its HoloAPI ID.
           in: query
+          required: false
           example: 34
           schema:
             type: integer
-
+        - name: max_upcoming_hours
+          description: >
+            Sometimes members would set up Free Chat rooms.
+            Using this you can constrain how far ahead of now we will return scheduled streams.
+          in: query
+          example: 48
+          schema:
+            type: integer
+          required: false
+        - name: lookback_hours
+          description: >
+            Control how far back in the past you'd like to receive recently-ended videos
+            in the `ended` field.
+            Maximum is 12 hours. Unset, we will return 6 hours of recently-ended videos.
+            By setting this to 0, the `ended` field will be empty.
+          in: query
+          example: 6
+          schema:
+            type: integer
+          required: false
+        - name: hide_channel_desc
+          description: >
+            If 1, will hide the channel `description` key in all of the channel objects.
+            Default 0. Set this to 1 if the application does not need that data,
+            as a bandwidth saving measure.
+          in: query
+          example: 1
+          schema:
+            type: integer
+          required: false
       responses:
         "200":
           description: Returns 3 arrays with live, upcoming and ended streams.
