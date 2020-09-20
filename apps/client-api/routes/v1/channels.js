@@ -29,7 +29,7 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
   const { rows: videoRows } = await db.Video.findAndCountAll({
     attributes: ['channel_id', [db.client.fn('COUNT', 'channel_id'), 'video_count']],
     group: ['channel_id'],
-    where: { status: 'past' },
+    where: { status: ['past', 'live', 'upcoming'] },
   });
 
   // Distribute to respective channel objects
