@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const { Router } = require('express');
 const moment = require('moment-timezone');
-const { STATUSES, VIDEOS_PAST_HOURS, CACHE_TTL, ORGANIZATIONS } = require('../../../../consts');
+const { STATUSES, VIDEOS_PAST_HOURS, CACHE_TTL } = require('../../../../consts');
 const { asyncMiddleware } = require('../../middleware/error');
 const { db, GenericError } = require('../../../../modules');
 const cacheService = require('../../services/CacheService');
@@ -34,9 +34,7 @@ router.get('/', asyncMiddleware(async (req, res) => {
       {
         association: 'channel',
         attributes: +hide_channel_desc ? RESPONSE_FIELDS.CHANNEL_SIMPLE : RESPONSE_FIELDS.CHANNEL,
-        where: {
-          organization: ORGANIZATIONS.HOLOLIVE,
-          ...channel_id && { id: channel_id } },
+        ...channel_id && { where: { id: channel_id } },
       },
     ],
     where: {
@@ -69,10 +67,7 @@ router.get('/', asyncMiddleware(async (req, res) => {
         {
           association: 'channel',
           attributes: +hide_channel_desc ? RESPONSE_FIELDS.CHANNEL_SIMPLE : RESPONSE_FIELDS.CHANNEL,
-          where: {
-            organization: ORGANIZATIONS.HOLOLIVE,
-            ...channel_id && { id: channel_id },
-          },
+          ...channel_id && { where: { id: channel_id } },
         },
       ],
       where: {
