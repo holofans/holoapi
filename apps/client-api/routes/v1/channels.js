@@ -1,9 +1,10 @@
 const { Op } = require('sequelize');
 const { Router } = require('express');
 const { db } = require('../../../../modules');
-const { RESPONSE_FIELDS, ORGANIZATIONS } = require('../../../../consts');
+const { ORGANIZATIONS } = require('../../../../consts');
 const { asyncMiddleware } = require('../../middleware/error');
 const { limitChecker } = require('../../middleware/filters');
+const { RESPONSE_FIELDS } = require('../../../../consts/v1_consts');
 
 const router = new Router();
 
