@@ -8,14 +8,15 @@ class Game extends Model {
         id: {
           type: DataTypes.INTEGER,
           autoIncrement: true,
-          primaryKey: true,
         },
         video_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          primaryKey: true,
         },
         name: DataTypes.STRING,
         created_at: DataTypes.DATE,
+        updated_at: DataTypes.DATE,
         contributor_id: DataTypes.INTEGER,
       },
       {

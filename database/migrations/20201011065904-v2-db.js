@@ -20,6 +20,7 @@ module.exports = {
       discord_name: DataTypes.STRING,
       is_admin: DataTypes.BOOLEAN,
       created_at: DataTypes.DATE,
+      updated_at: DataTypes.DATE,
       granted_by: DataTypes.INTEGER,
     });
 
@@ -41,6 +42,7 @@ module.exports = {
       duration: DataTypes.INTEGER,
       name: DataTypes.STRING,
       created_at: DataTypes.DATE,
+      updated_at: DataTypes.DATE,
       contributor_id: DataTypes.INTEGER,
     });
 
@@ -48,11 +50,11 @@ module.exports = {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
-        primaryKey: true,
       },
       video_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        primaryKey: true,
         references: {
           model: TABLES.VIDEO,
           key: 'id',
@@ -60,6 +62,7 @@ module.exports = {
       },
       name: DataTypes.STRING,
       created_at: DataTypes.DATE,
+      updated_at: DataTypes.DATE,
       contributor_id: DataTypes.INTEGER,
     });
   },
