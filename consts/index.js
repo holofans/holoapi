@@ -8,6 +8,9 @@ exports.TABLES = {
   CHANNEL_STATS: 'channel_stats',
   VIDEO: 'video',
   VIDEO_COMMENT: 'video_comment',
+  ADMIN: 'admin',
+  SONG: 'song',
+  GAME: 'game',
 };
 
 exports.STATUSES = {
