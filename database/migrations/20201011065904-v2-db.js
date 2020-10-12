@@ -1,4 +1,4 @@
-const { TABLES } = require('../../consts');
+const { TABLES, ORGANIZATIONS } = require('../../consts');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -65,6 +65,10 @@ module.exports = {
       updated_at: DataTypes.DATE,
       contributor_id: DataTypes.INTEGER,
     });
+
+    await queryInterface.bulkUpdate(TABLES.CHANNEL, {
+      organization: ORGANIZATIONS.HOLOLIVE,
+    }, {}); // update all rows currently to contain 'Hololive' org
   },
 
   down: async (queryInterface) => {
