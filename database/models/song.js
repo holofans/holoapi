@@ -18,7 +18,6 @@ class Song extends Model {
         duration: DataTypes.INTEGER,
         name: DataTypes.STRING,
         created_at: DataTypes.DATE,
-        updated_at: DataTypes.DATE,
         contributor_id: DataTypes.INTEGER,
       },
       {
