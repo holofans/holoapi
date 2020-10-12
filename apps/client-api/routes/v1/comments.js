@@ -1,12 +1,11 @@
 const { Op } = require('sequelize');
 const { Router } = require('express');
 const { fixchar } = require('fixchar');
-const { CACHE_TTL } = require('../../../../consts');
+const { RESPONSE_FIELDS, CACHE_TTL } = require('../../../../consts');
 const { db, GenericError } = require('../../../../modules');
 const { asyncMiddleware } = require('../../middleware/error');
 const { limitChecker } = require('../../middleware/filters');
 const cacheService = require('../../services/CacheService');
-const { RESPONSE_FIELDS } = require('../../../../consts/v1_consts');
 
 const router = new Router();
 

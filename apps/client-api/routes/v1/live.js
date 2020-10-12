@@ -5,7 +5,7 @@ const { STATUSES, VIDEOS_PAST_HOURS, CACHE_TTL, ORGANIZATIONS } = require('../..
 const { asyncMiddleware } = require('../../middleware/error');
 const { db, GenericError } = require('../../../../modules');
 const cacheService = require('../../services/CacheService');
-const { RESPONSE_FIELDS } = require('../../../../consts/v1_consts');
+const { RESPONSE_FIELDS } = require('../../../../consts');
 
 const router = new Router();
 
