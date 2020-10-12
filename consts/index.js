@@ -61,4 +61,8 @@ exports.SWAGGER_STATS_CONF = {
   },
 };
 
+exports.ORGANIZATIONS = {
+  HOLOLIVE: 'Hololive',
+};
+
 exports.SWAGGER_JSON_V1 = swaggerJsonV1;

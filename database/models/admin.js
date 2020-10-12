@@ -13,6 +13,7 @@ class Admin extends Model {
         discord_name: DataTypes.STRING,
         is_admin: DataTypes.STRING,
         created_at: DataTypes.DATE,
+        updated_at: DataTypes.DATE,
         granted_by: DataTypes.INTEGER,
       },
       {
