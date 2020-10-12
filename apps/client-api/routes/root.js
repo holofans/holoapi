@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { asyncMiddleware } = require('../middleware/error');
+const { SWAGGER_JSON } = require('../../../consts');
 
 const router = new Router();
 
@@ -8,7 +9,11 @@ router.get('/', asyncMiddleware(async (req, res) => {
 }));
 
 router.get('/api-docs', asyncMiddleware(async (req, res) => {
-  res.redirect('/v1/api-docs/');
+  res.sendFile('api-docs/api-doc.html', { root: __dirname });
+}));
+
+router.get('/swagger.json', asyncMiddleware(async (req, res) => {
+  res.json(SWAGGER_JSON);
 }));
 
 module.exports = router;
