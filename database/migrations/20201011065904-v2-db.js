@@ -2,68 +2,84 @@ const { TABLES, ORGANIZATIONS } = require('../../consts');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const { DataTypes } = Sequelize;
-
     await queryInterface.addColumn(TABLES.CHANNEL, 'organization', {
-      type: Sequelize.DataTypes.STRING,
+      type: Sequelize.STRING,
     });
     await queryInterface.addColumn(TABLES.CHANNEL, 'group', {
-      type: Sequelize.DataTypes.STRING,
+      type: Sequelize.STRING,
     });
 
-    await queryInterface.createTable(TABLES.ADMIN, {
+    await queryInterface.createTable(TABLES.CURATOR, {
       discord_id: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.BIGINT,
         allowNull: false,
         primaryKey: true,
       },
-      discord_name: DataTypes.STRING,
-      is_admin: DataTypes.BOOLEAN,
-      created_at: DataTypes.DATE,
-      updated_at: DataTypes.DATE,
-      granted_by: DataTypes.INTEGER,
+      discord_name: Sequelize.STRING,
+      is_admin: Sequelize.BOOLEAN,
+      is_editor: Sequelize.BOOLEAN,
+      granted_by: {
+        type: Sequelize.BIGINT,
+        allowNull: true,
+        references: {
+          model: TABLES.CURATOR,
+          key: 'discord_id',
+        },
+        onDelete: 'cascade',
+      },
+      created_at: Sequelize.DATE,
+      updated_at: Sequelize.DATE,
     });
 
     await queryInterface.createTable(TABLES.SONG, {
       id: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
       video_id: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: TABLES.VIDEO,
           key: 'id',
         },
+        onDelete: 'cascade',
       },
-      start: DataTypes.INTEGER,
-      duration: DataTypes.INTEGER,
-      name: DataTypes.STRING,
-      created_at: DataTypes.DATE,
-      updated_at: DataTypes.DATE,
-      contributor_id: DataTypes.INTEGER,
+      start: Sequelize.INTEGER,
+      duration: Sequelize.INTEGER,
+      name: Sequelize.STRING,
+      contributor_id: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        references: {
+          model: TABLES.CURATOR,
+          key: 'discord_id',
+        },
+        onDelete: 'cascade',
+      },
+      created_at: Sequelize.DATE,
+      updated_at: Sequelize.DATE,
     });
 
     await queryInterface.createTable(TABLES.GAME, {
       id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-      },
-      video_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+        type: Sequelize.STRING,
         primaryKey: true,
-        references: {
-          model: TABLES.VIDEO,
-          key: 'id',
-        },
       },
-      name: DataTypes.STRING,
-      created_at: DataTypes.DATE,
-      updated_at: DataTypes.DATE,
-      contributor_id: DataTypes.INTEGER,
+      name: Sequelize.STRING,
+      created_at: Sequelize.DATE,
+      updated_at: Sequelize.DATE,
+    });
+
+    await queryInterface.addColumn(TABLES.VIDEO, 'game_id', {
+      type: Sequelize.STRING,
+      allowNull: true,
+      references: {
+        model: TABLES.GAME,
+        key: 'id',
+      },
+      onDelete: 'SET NULL',
     });
 
     await queryInterface.bulkUpdate(TABLES.CHANNEL, {
@@ -74,8 +90,10 @@ module.exports = {
   down: async (queryInterface) => {
     await queryInterface.removeColumn(TABLES.CHANNEL, 'organization');
     await queryInterface.removeColumn(TABLES.CHANNEL, 'group');
-    await queryInterface.dropTable(TABLES.CHANNEL);
+    await queryInterface.removeColumn(TABLES.VIDEO, 'game_id');
+
     await queryInterface.dropTable(TABLES.SONG);
     await queryInterface.dropTable(TABLES.GAME);
+    await queryInterface.dropTable(TABLES.CURATOR);
   },
 };

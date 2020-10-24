@@ -6,18 +6,12 @@ class Game extends Model {
     return super.init(
       {
         id: {
-          type: DataTypes.INTEGER,
-          autoIncrement: true,
-        },
-        video_id: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
+          type: DataTypes.STRING,
           primaryKey: true,
         },
         name: DataTypes.STRING,
         created_at: DataTypes.DATE,
         updated_at: DataTypes.DATE,
-        contributor_id: DataTypes.INTEGER,
       },
       {
         tableName: TABLES.GAME,
@@ -27,8 +21,7 @@ class Game extends Model {
   }
 
   static associate(models) {
-    this.contributor = this.belongsTo(models.Admin, { as: 'contributor', foreignKey: 'contributor_id' });
-    this.video = this.belongsTo(models.Video, { as: 'video', foreignKey: 'video_id' });
+    this.videos = this.hasMany(models.Video, { as: 'videos', foreignKey: 'game_id' });
   }
 }
 

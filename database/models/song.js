@@ -13,13 +13,26 @@ class Song extends Model {
         video_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          references: {
+            model: TABLES.VIDEO,
+            key: 'id',
+          },
+          onDelete: 'cascade',
         },
         start: DataTypes.INTEGER,
         duration: DataTypes.INTEGER,
         name: DataTypes.STRING,
+        contributor_id: {
+          type: DataTypes.BIGINT,
+          allowNull: false,
+          references: {
+            model: TABLES.CURATOR,
+            key: 'discord_id',
+          },
+          onDelete: 'cascade',
+        },
         created_at: DataTypes.DATE,
         updated_at: DataTypes.DATE,
-        contributor_id: DataTypes.INTEGER,
       },
       {
         tableName: TABLES.SONG,
@@ -29,7 +42,7 @@ class Song extends Model {
   }
 
   static associate(models) {
-    this.contributor = this.belongsTo(models.Admin, { as: 'contributor', foreignKey: 'contributor_id' });
+    this.contributor = this.belongsTo(models.Curator, { as: 'contributor', foreignKey: 'contributor_id' });
     this.video = this.belongsTo(models.Video, { as: 'video', foreignKey: 'video_id' });
   }
 }

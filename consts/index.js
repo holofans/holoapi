@@ -8,7 +8,7 @@ exports.TABLES = {
   CHANNEL_STATS: 'channel_stats',
   VIDEO: 'video',
   VIDEO_COMMENT: 'video_comment',
-  ADMIN: 'admin',
+  CURATOR: 'curator',
   SONG: 'song',
   GAME: 'game',
 };
@@ -49,7 +49,7 @@ exports.SWAGGER_STATS_CONF = {
 };
 
 exports.ORGANIZATIONS = {
-  HOLOLIVE: 'Hololive',
+  HOLOLIVE: 'hololive',
 };
 
 exports.SWAGGER_JSON_V1 = swaggerJsonV1;
