@@ -32,12 +32,12 @@ class Curator extends Model {
   }
 
   static associate(models) {
-    this.granter = this.belongsTo(models.Curator, { as: 'granter', sourceKey: 'discord_id', foreignKey: 'granted_by' });
-    this.children = this.hasMany(models.Curator, { as: 'children', foreignKey: 'discord_id', sourceKey: 'granted_by' });
-    this.createdSongs = this.hasMany(models.Song, {
-      as: 'created_songs',
-      sourceKey: 'contributor_id',
-      foreignKey: 'discord_id' });
+    this.granter = this.belongsTo(models.Curator,
+      { as: 'granter', sourceKey: 'discord_id', foreignKey: 'granted_by' });
+    this.children = this.hasMany(models.Curator,
+      { as: 'children', sourceKey: 'granted_by', foreignKey: 'discord_id' });
+    this.createdSongs = this.hasMany(models.Song,
+      { as: 'created_songs', sourceKey: 'contributor_id', foreignKey: 'discord_id' });
   }
 }
 
