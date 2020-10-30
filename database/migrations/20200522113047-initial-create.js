@@ -78,7 +78,7 @@ module.exports = {
           model: TABLES.CHANNEL,
           key: 'id',
         },
-        onDelete: 'cascade',
+        onDelete: 'CASCADE',
       },
       yt_views: DataTypes.INTEGER,
       yt_subscribers: DataTypes.INTEGER,
@@ -100,7 +100,7 @@ module.exports = {
           model: TABLES.CHANNEL,
           key: 'id',
         },
-        onDelete: 'cascade',
+        onDelete: 'CASCADE',
       },
       yt_video_id: {
         type: DataTypes.INTEGER,
@@ -147,7 +147,7 @@ module.exports = {
           model: TABLES.VIDEO,
           key: 'id',
         },
-        onDelete: 'cascade',
+        onDelete: 'CASCADE',
       },
       timecode: {
         type: DataTypes.INTEGER,

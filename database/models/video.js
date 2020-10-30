@@ -41,6 +41,7 @@ class Video extends Model {
         is_captioned: DataTypes.BOOLEAN,
         is_licensed: DataTypes.BOOLEAN,
         is_embeddable: DataTypes.BOOLEAN,
+        game_id: DataTypes.STRING,
         created_at: DataTypes.DATE,
         updated_at: DataTypes.DATE,
       },
@@ -54,6 +55,7 @@ class Video extends Model {
   static associate(models) {
     this.channel = this.belongsTo(models.Channel, { as: 'channel', foreignKey: 'channel_id' });
     this.comments = this.hasMany(models.VideoComment, { as: 'comments', foreignKey: 'video_id' });
+    this.game = this.belongsTo(models.Game, { as: 'game', foreignKey: 'game_id' });
   }
 }
 

@@ -1,11 +1,11 @@
 const { Op } = require('sequelize');
 const { Router } = require('express');
 const moment = require('moment-timezone');
-const { STATUSES, VIDEOS_PAST_HOURS, CACHE_TTL } = require('../../../../consts');
+const { STATUSES, VIDEOS_PAST_HOURS, CACHE_TTL, ORGANIZATIONS } = require('../../../../consts');
 const { asyncMiddleware } = require('../../middleware/error');
 const { db, GenericError } = require('../../../../modules');
 const cacheService = require('../../services/CacheService');
-const { RESPONSE_FIELDS } = require('../../../../consts');
+const { RESPONSE_FIELDS } = require('../../../../consts/v1_consts');
 
 const router = new Router();
 
@@ -41,7 +41,9 @@ router.get('/', asyncMiddleware(async (req, res) => {
       {
         association: 'channel',
         attributes: +hide_channel_desc ? RESPONSE_FIELDS.CHANNEL_SIMPLE : RESPONSE_FIELDS.CHANNEL,
-        ...channel_id && { where: { id: channel_id } },
+        where: {
+          organization: ORGANIZATIONS.HOLOLIVE,
+          ...channel_id && { id: channel_id } },
       },
     ],
     where: {
@@ -77,7 +79,10 @@ router.get('/', asyncMiddleware(async (req, res) => {
         {
           association: 'channel',
           attributes: +hide_channel_desc ? RESPONSE_FIELDS.CHANNEL_SIMPLE : RESPONSE_FIELDS.CHANNEL,
-          ...channel_id && { where: { id: channel_id } },
+          where: {
+            organization: ORGANIZATIONS.HOLOLIVE,
+            ...channel_id && { id: channel_id },
+          },
         },
       ],
       where: {
