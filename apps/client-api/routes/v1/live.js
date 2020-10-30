@@ -1,18 +1,25 @@
 const { Op } = require('sequelize');
 const { Router } = require('express');
 const moment = require('moment-timezone');
-const { STATUSES, VIDEOS_PAST_HOURS, CACHE_TTL } = require('../../../../consts');
+const { STATUSES, VIDEOS_PAST_HOURS, CACHE_TTL, ORGANIZATIONS } = require('../../../../consts');
 const { asyncMiddleware } = require('../../middleware/error');
 const { db, GenericError } = require('../../../../modules');
 const cacheService = require('../../services/CacheService');
-const { RESPONSE_FIELDS } = require('../../../../consts');
+const { RESPONSE_FIELDS } = require('../../../../consts/v1_consts');
 
 const router = new Router();
 
 router.get('/', asyncMiddleware(async (req, res) => {
-  const { channel_id, max_upcoming_hours, lookback_hours, hide_channel_desc } = req.query;
-  const cacheKey = (channel_id || max_upcoming_hours || lookback_hours || hide_channel_desc)
-    ? `live-${channel_id}-${max_upcoming_hours}-${lookback_hours}-${hide_channel_desc}` : 'live';
+  const { channel_id, max_upcoming_hours, lookback_hours, hide_channel_desc, channel_simple } = req.query;
+  if (channel_simple && hide_channel_desc) {
+    throw new GenericError(
+      'Cannot have both "channel_simple" and "hide_channel_desc". Choose one or the other.',
+      req.query,
+    );
+  }
+
+  const cacheKey = (channel_id || max_upcoming_hours || lookback_hours || hide_channel_desc || channel_simple)
+    ? `live-${channel_id}-${max_upcoming_hours}-${lookback_hours}-${hide_channel_desc}-${channel_simple}` : 'live';
 
   const cache = await cacheService.getFromCache(cacheKey);
   if (cache.cached) {
@@ -34,7 +41,9 @@ router.get('/', asyncMiddleware(async (req, res) => {
       {
         association: 'channel',
         attributes: +hide_channel_desc ? RESPONSE_FIELDS.CHANNEL_SIMPLE : RESPONSE_FIELDS.CHANNEL,
-        ...channel_id && { where: { id: channel_id } },
+        where: {
+          organization: ORGANIZATIONS.HOLOLIVE,
+          ...channel_id && { id: channel_id } },
       },
     ],
     where: {
@@ -46,6 +55,9 @@ router.get('/', asyncMiddleware(async (req, res) => {
   });
 
   videos.forEach((video) => {
+    if (channel_simple === '1') {
+      video.channel = video.channel.yt_channel_id || video.channel.bb_space_id;
+    }
     if (video.status === STATUSES.UPCOMING) {
       results.upcoming.push(video);
       return;
@@ -67,7 +79,10 @@ router.get('/', asyncMiddleware(async (req, res) => {
         {
           association: 'channel',
           attributes: +hide_channel_desc ? RESPONSE_FIELDS.CHANNEL_SIMPLE : RESPONSE_FIELDS.CHANNEL,
-          ...channel_id && { where: { id: channel_id } },
+          where: {
+            organization: ORGANIZATIONS.HOLOLIVE,
+            ...channel_id && { id: channel_id },
+          },
         },
       ],
       where: {

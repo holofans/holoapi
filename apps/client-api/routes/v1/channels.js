@@ -1,9 +1,10 @@
 const { Op } = require('sequelize');
 const { Router } = require('express');
 const { db } = require('../../../../modules');
-const { RESPONSE_FIELDS } = require('../../../../consts');
+const { ORGANIZATIONS } = require('../../../../consts');
 const { asyncMiddleware } = require('../../middleware/error');
 const { limitChecker } = require('../../middleware/filters');
+const { RESPONSE_FIELDS } = require('../../../../consts/v1_consts');
 
 const router = new Router();
 
@@ -13,6 +14,7 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
   const { rows, count } = await db.Channel.findAndCountAll({
     attributes: RESPONSE_FIELDS.CHANNEL,
     where: {
+      organization: ORGANIZATIONS.HOLOLIVE,
       ...name && { name: { [Op.iLike]: `%${name}%` } },
     },
     order: [[sort, order]],

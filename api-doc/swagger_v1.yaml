@@ -193,12 +193,17 @@ paths:
           description: >
             If 1, will hide the channel `description` key in all of the channel objects.
             Default 0. Set this to 1 if the application does not need that data,
-            as a bandwidth saving measure.
+            as a bandwidth saving measure. Cannot be used with `channel_simple`.
           in: query
           example: 1
           schema:
             type: integer
           required: false
+        - name: channel_simple
+          description: >
+            0: Displays full channel info as object.
+            1: Only returns channel as `yt_channel_key` or `bb_channel_id` string.
+            Defaults to 0. Cannot be used with `hide_channel_desc`.
       responses:
         "200":
           description: Returns 3 arrays with live, upcoming and ended streams.

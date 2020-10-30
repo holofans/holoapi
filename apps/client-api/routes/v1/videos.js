@@ -2,9 +2,10 @@ const moment = require('moment-timezone');
 const { Op } = require('sequelize');
 const { Router } = require('express');
 const { db } = require('../../../../modules');
-const { RESPONSE_FIELDS } = require('../../../../consts');
+const { ORGANIZATIONS } = require('../../../../consts');
 const { asyncMiddleware } = require('../../middleware/error');
 const { limitChecker } = require('../../middleware/filters');
+const { RESPONSE_FIELDS } = require('../../../../consts/v1_consts');
 
 const router = new Router();
 
@@ -48,7 +49,10 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
       {
         association: 'channel',
         attributes: RESPONSE_FIELDS.CHANNEL,
-        ...channel_id && { where: { id: channel_id } },
+        where: {
+          organization: ORGANIZATIONS.HOLOLIVE,
+          ...channel_id && { id: channel_id },
+        },
       },
     ],
     where,

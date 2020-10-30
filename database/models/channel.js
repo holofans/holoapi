@@ -77,6 +77,8 @@ class Channel extends Model {
         updated_at: {
           type: DataTypes.DATE,
         },
+        organization: DataTypes.STRING,
+        group: DataTypes.STRING,
       },
       {
         tableName: TABLES.CHANNEL,
