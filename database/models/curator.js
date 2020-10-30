@@ -37,7 +37,7 @@ class Curator extends Model {
     this.children = this.hasMany(models.Curator,
       { as: 'children', sourceKey: 'granted_by', foreignKey: 'discord_id' });
     this.createdSongs = this.hasMany(models.Song,
-      { as: 'created_songs', sourceKey: 'contributor_id', foreignKey: 'discord_id' });
+      { as: 'created_songs', foreignKey: 'contributor_id', sourceKey: 'discord_id' });
   }
 }
 
