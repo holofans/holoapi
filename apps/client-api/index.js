@@ -5,10 +5,6 @@ const express = require('express');
 const helmet = require('helmet');
 const moment = require('moment-timezone');
 const swaggerStats = require('swagger-stats');
-const ExpressGA = require('express-universal-analytics');
-
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
 
 const { db, log } = require('../../modules');
 const { notFoundHandler, errorHandler } = require('./middleware/error');
@@ -24,11 +20,7 @@ app.use(cors());
 app.use(bodyParser.json({ strict: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(cookieParser());
-app.use(session({ secret: 'OnlyForGoogleAnalytics' }));
-
 app.use(swaggerStats.getMiddleware(SWAGGER_STATS_CONF));
-app.use(ExpressGA(process.env.GOOGLE_UA_TACKING_CODE));
 
 app.use(rootRoutes);
 app.use('/v1', v1Routes);
