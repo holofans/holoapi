@@ -5,8 +5,9 @@ const express = require('express');
 const helmet = require('helmet');
 const moment = require('moment-timezone');
 const swaggerStats = require('swagger-stats');
+const ExpressGA = require('express-universal-analytics');
 
-const { db, log } = require('../../modules');
+const { db, log, hashCode } = require('../../modules');
 const { notFoundHandler, errorHandler } = require('./middleware/error');
 const rootRoutes = require('./routes/root');
 const v1Routes = require('./routes/v1');
@@ -19,6 +20,18 @@ app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json({ strict: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(ExpressGA({
+  uaCode: process.env.GOOGLE_UA_TACKING_CODE,
+  reqToUserId(req) {
+    const uid = hashCode(req.headers['x-forwarded-for'] || req.connection.remoteAddress);
+    req.visitor.set('cid', uid);
+    req.visitor.cid = uid;
+    return uid;
+  },
+  uaOptions: {
+    strictCidFormat: false,
+  },
+}));
 
 app.use(swaggerStats.getMiddleware(SWAGGER_STATS_CONF));
 
