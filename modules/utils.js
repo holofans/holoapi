@@ -6,7 +6,7 @@ function hashCode(s) {
 }
 
 function updateIfSignificant(oldNumber, newNumber, minDelta) {
-  if (oldNumber == null) return newNumber;
+  if (oldNumber === null) return newNumber;
   if (!oldNumber) return newNumber;
   if (Math.abs(oldNumber - newNumber) >= minDelta) return newNumber;
   return oldNumber; // don't update
