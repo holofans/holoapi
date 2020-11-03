@@ -53,3 +53,5 @@ exports.ORGANIZATIONS = {
 };
 
 exports.SWAGGER_JSON_V1 = swaggerJsonV1;
+
+exports.MINIMUM_DELTA_FOR_VIEWER_CHANGE = process.env.MINIMUM_DELTA_FOR_VIEWER_CHANGE || 300;
