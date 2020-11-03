@@ -3,7 +3,7 @@ const log = require('./logger');
 const youtube = require('./youtube');
 const error = require('./error');
 const memcached = require('./memcached');
-const hashCode = require('./hash');
+const utils = require('./utils');
 
 module.exports = {
   ...error,
@@ -11,5 +11,5 @@ module.exports = {
   log,
   youtube,
   memcached,
-  ...hashCode,
+  ...utils,
 };
