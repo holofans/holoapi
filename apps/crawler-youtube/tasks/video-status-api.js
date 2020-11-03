@@ -10,7 +10,7 @@
 require('dotenv').config();
 const moment = require('moment-timezone');
 const { Op } = require('sequelize');
-const { db, youtube, log, GenericError } = require('../../../modules');
+const { db, youtube, log, GenericError, updateIfSignificant } = require('../../../modules');
 const { STATUSES } = require('../../../consts');
 
 module.exports = async () => {
@@ -96,8 +96,9 @@ module.exports = async () => {
           saveInfo.live_schedule = ytInfo.liveStreamingDetails.scheduledStartTime || null;
           saveInfo.live_start = ytInfo.liveStreamingDetails.actualStartTime || null;
           saveInfo.live_end = ytInfo.liveStreamingDetails.actualEndTime || null;
+          const oldViewerCount = targetVideo.live_viewers;
           const currentViewers = +ytInfo.liveStreamingDetails.concurrentViewers || null;
-          saveInfo.live_viewers = currentViewers && +(currentViewers.toPrecision(currentViewers > 1000 ? 2 : 1));
+          saveInfo.live_viewers = currentViewers && updateIfSignificant(oldViewerCount, +(currentViewers.toPrecision(currentViewers > 1000 ? 2 : 1)), 300);
           // Get moment objects
           const scheduleMoment = moment(saveInfo.live_schedule);
           const startMoment = moment(saveInfo.live_start);
