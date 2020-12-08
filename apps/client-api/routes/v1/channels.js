@@ -10,7 +10,7 @@ const cacheService = require('../../services/CacheService');
 const router = new Router();
 
 router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
-  const { limit = 25, offset = 0, sort = 'id', order = 'asc', name } = req.query;
+  const { limit = 25, offset = 0, sort = 'id', order = 'asc', name = '' } = req.query;
 
   const cacheKey = (limit || offset || sort || order || name)
     ? `channel-${limit}-${offset}-${sort}-${order}-${name}` : 'channel';
@@ -56,9 +56,7 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
   const resultsJSON = JSON.stringify(results);
   cacheService.saveStringToCache(cacheKey, resultsJSON, CACHE_TTL.CHANNELS);
 
-  res.send(
-    resultsJSON,
-  );
+  res.send(resultsJSON);
 }));
 
 router.get('/:id', asyncMiddleware(async (req, res) => {
