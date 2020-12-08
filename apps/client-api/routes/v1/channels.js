@@ -1,15 +1,25 @@
 const { Op } = require('sequelize');
 const { Router } = require('express');
 const { db } = require('../../../../modules');
-const { ORGANIZATIONS } = require('../../../../consts');
+const { ORGANIZATIONS, CACHE_TTL } = require('../../../../consts');
 const { asyncMiddleware } = require('../../middleware/error');
 const { limitChecker } = require('../../middleware/filters');
 const { RESPONSE_FIELDS } = require('../../../../consts/v1_consts');
+const cacheService = require('../../services/CacheService');
 
 const router = new Router();
 
 router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
-  const { limit = 25, offset = 0, sort = 'id', order = 'asc', name } = req.query;
+  const { limit = 25, offset = 0, sort = 'id', order = 'asc', name = '' } = req.query;
+
+  const cacheKey = (limit || offset || sort || order || name)
+    ? `channel-${limit}-${offset}-${sort}-${order}-${name}` : 'channel';
+
+  const cache = await cacheService.getStringFromCache(cacheKey); // nonnull indicates cached.
+  res.setHeader('Content-Type', 'application/json');
+  if (cache) {
+    return res.send(cache);
+  }
 
   const { rows, count } = await db.Channel.findAndCountAll({
     attributes: RESPONSE_FIELDS.CHANNEL,
@@ -43,7 +53,10 @@ router.get('/', limitChecker, asyncMiddleware(async (req, res) => {
     });
   });
 
-  res.json(results);
+  const resultsJSON = JSON.stringify(results);
+  cacheService.saveStringToCache(cacheKey, resultsJSON, CACHE_TTL.CHANNELS);
+
+  res.send(resultsJSON);
 }));
 
 router.get('/:id', asyncMiddleware(async (req, res) => {
