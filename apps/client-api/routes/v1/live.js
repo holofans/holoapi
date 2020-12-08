@@ -22,9 +22,9 @@ router.get('/', asyncMiddleware(async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
   if (cache) {
-    return res.end(cache);
+    return res.send(cache);
   }
-  return res.end(
+  return res.send(
     await computeLive(cacheKey, channel_id, max_upcoming_hours, lookback_hours, hide_channel_desc, channel_simple),
   );
 }));
