@@ -37,3 +37,6 @@ schedule.scheduleJob('video-status-api', env.SCHEDULE_VIDEO_STAT_API, 'Asia/Toky
 
 // Gets comments from videos to check for timestamps
 schedule.scheduleJob('video-comments', env.SCHEDULE_COMMENTS, 'Asia/Tokyo', comments);
+
+// Reguarly updates the Live cache with new data so new requests don't have to.
+schedule.scheduleJob('live-cache-refresh', env.SCHEDULE_UPDATE_LIVE, 'Asia/Tokyo', comments);
