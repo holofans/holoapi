@@ -22,7 +22,7 @@ exports.STATUSES = {
 };
 
 exports.CACHE_TTL = {
-  LIVE: 15,
+  LIVE: 20,
   CHANNELS: 6 * 60 * 60, // 1 hour
   COMMENTS: 2 * 60, // 2 minutes
 };
