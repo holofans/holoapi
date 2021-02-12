@@ -615,7 +615,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
+                  videos:
                     type: array
                     description: >
                       List of videos, along with channel and matched comments.
