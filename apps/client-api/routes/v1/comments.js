@@ -89,7 +89,7 @@ router.get('/search', limitChecker, asyncMiddleware(async (req, res) => {
     count: videos.length,
     total: await totalCount,
     query: sanitizedQuery,
-    comments: videos,
+    videos,
     cached: false,
   };
 
