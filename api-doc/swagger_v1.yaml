@@ -48,6 +48,8 @@ components:
         thumbnail:
           type: string
           nullable: true
+        status:
+          type: string
         live_schedule:
           type: string
           nullable: true
@@ -68,6 +70,8 @@ components:
         - $ref: "#/components/schemas/LiveVideo"
         - type: object
           properties:
+            published_at:
+              type: string
             is_uploaded:
               type: boolean
               nullable: true
@@ -117,6 +121,12 @@ components:
           type: string
           example: yuzukichococh
           nullable: true
+        view_count:
+          type: integer
+        subscribers:
+          type: integer
+        videos:
+          type: integer
 
     Comment:
       type: object
@@ -615,15 +625,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
+                  comments:
                     type: array
                     description: >
                       List of videos, along with channel and matched comments.
                     items:
                       $ref: "#/components/schemas/VideoWithComment"
+                  total:
+                    type: integer
+                    description: Count of total number of matched comments.
                   count:
                     type: integer
-                    description: Count of total number of videos.
+                    description: Number of comments fetched.
                   cached:
                     type: boolean
                     description: Whether the response was from cache or not.
