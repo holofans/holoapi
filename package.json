@@ -22,7 +22,7 @@
     "helmet": "^3.23.3",
     "memcached": "^2.2.2",
     "memcached-promise": "^1.0.1",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.35",
     "node-schedule-tz": "^1.2.1-4",
     "pg": "^8.4.2",
     "pg-hstore": "^2.3.3",
